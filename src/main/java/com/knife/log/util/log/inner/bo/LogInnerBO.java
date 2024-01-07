@@ -1,6 +1,6 @@
 package com.knife.log.util.log.inner.bo;
 
-import com.knife.example.common.util.log.bo.LogBO;
+import com.knife.log.util.log.bo.LogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
