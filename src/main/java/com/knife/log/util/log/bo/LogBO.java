@@ -1,6 +1,6 @@
 package com.knife.log.util.log.bo;
 
-import com.knife.example.common.util.log.LogUtil;
+import com.knife.log.util.log.LogUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
