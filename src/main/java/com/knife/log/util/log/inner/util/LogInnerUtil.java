@@ -1,6 +1,5 @@
 package com.knife.log.util.log.inner.util;
 
-import com.knife.log.util.JsonUtil;
 import com.knife.log.util.log.context.LogContextThreadLocal;
 import com.knife.log.util.log.inner.bo.LogInnerBO;
 import lombok.extern.slf4j.Slf4j;

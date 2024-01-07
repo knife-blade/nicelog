@@ -1,14 +1,14 @@
-package com.knife.log.util.log.aspect;
+package com.knife.log.aspect.impl;
 
-import com.knife.example.common.constant.ProcessIgnoreUrl;
-import com.knife.example.common.util.JsonUtil;
-import com.knife.example.common.util.ThrowableUtil;
-import com.knife.example.common.util.TraceIdUtil;
-import com.knife.example.common.util.log.bo.LogBO;
-import com.knife.example.common.util.log.context.LogContext;
-import com.knife.example.common.util.log.context.LogContextThreadLocal;
-import com.knife.example.common.util.log.inner.bo.LogInnerBO;
-import com.knife.example.common.util.log.inner.util.LogInnerUtil;
+import com.knife.log.util.TraceIdUtil;
+import com.knife.log.util.log.bo.LogBO;
+import com.knife.log.util.log.context.LogContext;
+import com.knife.log.util.log.context.LogContextThreadLocal;
+import com.knife.log.util.log.inner.bo.LogInnerBO;
+import com.knife.log.util.log.inner.util.LogInnerUtil;
+import com.knife.util.JsonUtil;
+import com.knife.util.ThrowableUtil;
+import com.knife.util.constant.ProcessIgnoreUrl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
