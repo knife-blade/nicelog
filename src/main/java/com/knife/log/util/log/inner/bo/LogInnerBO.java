@@ -1,5 +1,7 @@
 package com.knife.log.util.log.inner.bo;
 
+import com.knife.log.constant.AspectTypeEnum;
+import com.knife.log.constant.LogLevelEnum;
 import com.knife.log.util.log.bo.LogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -60,17 +62,20 @@ public class LogInnerBO extends LogBO {
 
     /**
      * 日志级别
-     *   INFO：信息
-     *   WARNING：警告
-     *   ERROR：错误
      */
-    private String level;
+    private LogLevelEnum level;
 
     /**
-     * 日志类型。取值如下：
-     *   手动打印、接口请求、接口返回、接口报错、RabbitMQ消费
+     * 类型
      */
-    private String type;
+    private AspectTypeEnum type;
+
+    /**
+     * 日志类型详情
+     * 用{@link LogInnerBO#type}的getName()拼接"进入"、"返回"等而来
+     * 比如：手动、接口进入、接口返回、接口报错、RabbitMQ进入
+     */
+    private String typeDetail;
 
     /**
      * TraceId
@@ -91,4 +96,6 @@ public class LogInnerBO extends LogBO {
      * 时间
      */
     private String logTime;
+
+
 }

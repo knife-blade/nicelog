@@ -22,9 +22,9 @@ public class LogBO {
     private String returnValue;
 
     /**
-     * 自定义信息
+     * 标记
      */
-    private String customInfo;
+    private String mark;
 
     /**
      * 异常简要信息
