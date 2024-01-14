@@ -25,7 +25,7 @@ public class LogUtil {
         LogInnerBO logInnerBO = new LogInnerBO();
         BeanUtils.copyProperties(logBO, logInnerBO);
         logInnerBO.setLogTime(level);
-        logInnerBO.setType("手动打印");
+        logInnerBO.setTypeDetail("手动打印");
         logInnerBO.setLevel(level);
 
         LogInnerUtil.record(logInnerBO);
