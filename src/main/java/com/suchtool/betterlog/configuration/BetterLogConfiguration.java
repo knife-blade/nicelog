@@ -22,15 +22,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 @Configuration(proxyBeanMethods = false)
-public class BetterLogConfiguration implements ImportAware {
-    @Nullable
-    protected AnnotationAttributes enableBetterLog;
-
-    public void setImportMetadata(AnnotationMetadata importMetadata) {
-        this.enableBetterLog = AnnotationAttributes.fromMap(
-                importMetadata.getAnnotationAttributes(EnableBetterLog.class.getName(), false));
-    }
-
+public class BetterLogConfiguration {
     /**
      * 只为代码提示，无实际作用
      */
@@ -40,40 +32,71 @@ public class BetterLogConfiguration implements ImportAware {
         return new BetterLogProperty();
     }
 
-    @Bean(name = "com.suchtool.betterlog.controllerLogAspect")
-    @ConditionalOnProperty(name = "com.suchtool.betterlog.enableControllerLog", havingValue = "true", matchIfMissing = true)
-    public ControllerLogAspect controllerLogAspect() {
-        int order = Ordered.LOWEST_PRECEDENCE;
-        if (enableBetterLog != null) {
-            order = enableBetterLog.<Integer>getNumber("controllerLogOrder");
-        }
+    @Configuration(proxyBeanMethods = false)
+    protected static class ControllerAspectConfiguration extends AbstractBetterLogAspectConfiguration {
+        @Bean(name = "com.suchtool.betterlog.controllerLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.betterlog.enableControllerLog", havingValue = "true", matchIfMissing = true)
+        public ControllerLogAspect controllerLogAspect() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableBetterLog != null) {
+                order = enableBetterLog.<Integer>getNumber("controllerLogOrder");
+            }
 
-        return new ControllerLogAspect(order);
+            return new ControllerLogAspect(order);
+        }
     }
 
-    @Bean(name = "com.suchtool.betterlog.xxlJobLogAspect")
     @ConditionalOnClass(XxlJob.class)
-    @ConditionalOnProperty(name = "com.suchtool.betterlog.enableXxlJobLog", havingValue = "true", matchIfMissing = true)
-    public XxlJobLogAspect xxlJobLogAspect() {
-        int order = Ordered.LOWEST_PRECEDENCE;
-        if (enableBetterLog != null) {
-            order = enableBetterLog.<Integer>getNumber("xxlJobLogOrder");
-        }
+    @Configuration(proxyBeanMethods = false)
+    protected static class XxlJobAspectConfiguration extends AbstractBetterLogAspectConfiguration {
+        @Bean(name = "com.suchtool.betterlog.xxlJobLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.betterlog.enableControllerLog", havingValue = "true", matchIfMissing = true)
+        public XxlJobLogAspect xxlJobLogAspect() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableBetterLog != null) {
+                order = enableBetterLog.<Integer>getNumber("xxlJobLogOrder");
+            }
 
-        return new XxlJobLogAspect(order);
+            return new XxlJobLogAspect(order);
+        }
     }
 
-    @Bean(name = "com.suchtool.betterlog.rabbitMQLogAspect")
     @ConditionalOnClass(RabbitListener.class)
-    @ConditionalOnProperty(name = "com.suchtool.betterlog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
-    public RabbitMQLogAspect rabbitMQLogAspect() {
-        int order = Ordered.LOWEST_PRECEDENCE;
-        if (enableBetterLog != null) {
-            order = enableBetterLog.<Integer>getNumber("rabbitMQLogOrder");
-        }
+    @Configuration(proxyBeanMethods = false)
+    protected static class RabbitMQAspectConfiguration extends AbstractBetterLogAspectConfiguration {
+        public RabbitMQLogAspect rabbitMQLogAspect() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableBetterLog != null) {
+                order = enableBetterLog.<Integer>getNumber("rabbitMQLogOrder");
+            }
 
-        return new RabbitMQLogAspect(order);
+            return new RabbitMQLogAspect(order);
+        }
     }
+
+    // @Bean(name = "com.suchtool.betterlog.xxlJobLogAspect")
+    // @ConditionalOnClass(XxlJob.class)
+    // @ConditionalOnProperty(name = "com.suchtool.betterlog.enableXxlJobLog", havingValue = "true", matchIfMissing = true)
+    // public XxlJobLogAspect xxlJobLogAspect() {
+    //     int order = Ordered.LOWEST_PRECEDENCE;
+    //     if (enableBetterLog != null) {
+    //         order = enableBetterLog.<Integer>getNumber("xxlJobLogOrder");
+    //     }
+    //
+    //     return new XxlJobLogAspect(order);
+    // }
+
+    // @Bean(name = "com.suchtool.betterlog.rabbitMQLogAspect")
+    // @ConditionalOnClass(RabbitListener.class)
+    // @ConditionalOnProperty(name = "com.suchtool.betterlog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
+    // public RabbitMQLogAspect rabbitMQLogAspect() {
+    //     int order = Ordered.LOWEST_PRECEDENCE;
+    //     if (enableBetterLog != null) {
+    //         order = enableBetterLog.<Integer>getNumber("rabbitMQLogOrder");
+    //     }
+    //
+    //     return new RabbitMQLogAspect(order);
+    // }
 
     @Bean(name = "com.suchtool.betterlog.betterLogProcessDefaultImpl")
     @ConditionalOnMissingBean(BetterLogProcess.class)
