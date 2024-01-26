@@ -57,8 +57,8 @@ public class ControllerLogAspect implements LogAspectProcessor, Ordered {
     }
 
     @Override
-    public boolean requireProcess() {
-        String url = provideEntry();
+    public boolean requireProcess(Method method) {
+        String url = provideEntry(method);
         return !ProcessIgnoreUrl.isInWrapperIgnoreUrl(url);
     }
 
@@ -114,7 +114,7 @@ public class ControllerLogAspect implements LogAspectProcessor, Ordered {
     }
 
     @Override
-    public String provideEntry() {
+    public String provideEntry(Method method) {
         String url = null;
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
