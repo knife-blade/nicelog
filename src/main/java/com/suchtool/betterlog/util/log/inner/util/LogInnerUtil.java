@@ -1,8 +1,10 @@
 package com.suchtool.betterlog.util.log.inner.util;
 
+import com.suchtool.betterlog.process.BetterLogProcess;
 import com.suchtool.betterlog.util.log.context.LogContextThreadLocal;
 import com.suchtool.betterlog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.betterlog.constant.LogLevelEnum;
+import com.suchtool.betterutil.util.ApplicationContextHolder;
 import com.suchtool.betterutil.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -18,18 +20,9 @@ public class LogInnerUtil {
 
         fillCommonField(logInnerBO);
 
-        // 本处只是将日志打印出来。实际项目可以将日志上传到ES。
-        switch (logInnerBO.getLevel()) {
-            case INFO:
-                log.info("日志：{}", JsonUtil.toJson(logInnerBO));
-                break;
-            case WARNING:
-                log.warn("日志：{}", JsonUtil.toJson(logInnerBO));
-                break;
-            case ERROR:
-                log.error("日志：{}", JsonUtil.toJson(logInnerBO));
-                break;
-        }
+        BetterLogProcess betterLogProcess = ApplicationContextHolder.getContext()
+                .getBean(BetterLogProcess.class);
+        betterLogProcess.process(logInnerBO);
     }
 
     /**

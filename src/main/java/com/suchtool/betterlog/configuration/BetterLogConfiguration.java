@@ -4,10 +4,13 @@ import com.suchtool.betterlog.annotation.EnableBetterLog;
 import com.suchtool.betterlog.aspect.impl.ControllerLogAspect;
 import com.suchtool.betterlog.aspect.impl.RabbitMQLogAspect;
 import com.suchtool.betterlog.aspect.impl.XxlJobLogAspect;
+import com.suchtool.betterlog.process.BetterLogProcess;
+import com.suchtool.betterlog.process.impl.BetterLogProcessDefaultImpl;
 import com.suchtool.betterlog.property.BetterLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -72,4 +75,9 @@ public class BetterLogConfiguration implements ImportAware {
         return new RabbitMQLogAspect(order);
     }
 
+    @Bean(name = "com.suchtool.betterlog.betterLogProcessDefaultImpl")
+    @ConditionalOnMissingBean(BetterLogProcess.class)
+    public BetterLogProcessDefaultImpl betterLogProcessDefaultImpl() {
+        return new BetterLogProcessDefaultImpl();
+    }
 }
