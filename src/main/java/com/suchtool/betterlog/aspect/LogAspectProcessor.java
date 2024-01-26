@@ -1,4 +1,4 @@
-package com.knife.log.aspect;
+package com.suchtool.betterlog.aspect;
 
 public interface LogAspectProcessor extends LogParamProvider{
     /**

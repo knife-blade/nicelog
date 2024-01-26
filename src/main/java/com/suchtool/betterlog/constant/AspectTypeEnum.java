@@ -1,4 +1,4 @@
-package com.knife.log.constant;
+package com.suchtool.betterlog.constant;
 
 import lombok.Getter;
 

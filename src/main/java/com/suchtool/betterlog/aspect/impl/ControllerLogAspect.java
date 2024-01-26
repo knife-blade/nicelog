@@ -1,15 +1,15 @@
-package com.knife.log.aspect.impl;
+package com.suchtool.betterlog.aspect.impl;
 
-import com.knife.log.aspect.LogAspectExecutor;
-import com.knife.log.aspect.LogAspectProcessor;
-import com.knife.log.constant.AspectTypeEnum;
-import com.knife.log.util.log.context.LogContextThreadLocal;
-import com.knife.util.constant.ProcessIgnoreUrl;
+import com.suchtool.betterlog.aspect.LogAspectExecutor;
+import com.suchtool.betterlog.aspect.LogAspectProcessor;
+import com.suchtool.betterlog.constant.AspectTypeEnum;
+import com.suchtool.betterlog.constant.ProcessIgnoreUrl;
+import com.suchtool.betterlog.util.log.context.LogContextThreadLocal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.stereotype.Component;
+import org.springframework.core.Ordered;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,12 +22,19 @@ import java.lang.reflect.Method;
  * Controller的日志
  */
 @Aspect
-@Component
-public class ControllerLogAspect implements LogAspectProcessor {
+public class ControllerLogAspect implements LogAspectProcessor, Ordered {
     private final LogAspectExecutor logAspectExecutor;
 
-    public ControllerLogAspect() {
-        logAspectExecutor = new LogAspectExecutor(this);
+    private final int order;
+
+    public ControllerLogAspect(int order) {
+        this.logAspectExecutor = new LogAspectExecutor(this);
+        this.order = order;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
     }
 
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
