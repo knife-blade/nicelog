@@ -1,12 +1,12 @@
-package com.knife.log.aspect;
+package com.suchtool.betterlog.aspect;
 
-import com.knife.log.constant.LogLevelEnum;
-import com.knife.log.util.TraceIdUtil;
-import com.knife.log.util.log.bo.LogBO;
-import com.knife.log.util.log.context.LogContext;
-import com.knife.log.util.log.context.LogContextThreadLocal;
-import com.knife.log.util.log.inner.bo.LogInnerBO;
-import com.knife.log.util.log.inner.util.LogInnerUtil;
+import com.suchtool.betterlog.constant.LogLevelEnum;
+import com.suchtool.betterlog.util.TraceIdUtil;
+import com.suchtool.betterlog.util.log.bo.LogBO;
+import com.suchtool.betterlog.util.log.context.LogContext;
+import com.suchtool.betterlog.util.log.context.LogContextThreadLocal;
+import com.suchtool.betterlog.util.log.inner.bo.LogInnerBO;
+import com.suchtool.betterlog.util.log.inner.util.LogInnerUtil;
 import com.knife.util.JsonUtil;
 import com.knife.util.ThrowableUtil;
 import org.aspectj.lang.JoinPoint;

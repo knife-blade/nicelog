@@ -1,8 +1,9 @@
-package com.knife.log.util.log.inner.util;
+package com.suchtool.betterlog.util.log.inner.util;
 
-import com.knife.log.util.log.context.LogContextThreadLocal;
-import com.knife.log.util.log.inner.bo.LogInnerBO;
+import com.suchtool.betterlog.util.log.context.LogContextThreadLocal;
+import com.suchtool.betterlog.util.log.inner.bo.LogInnerBO;
 import com.knife.util.JsonUtil;
+import com.suchtool.betterlog.constant.LogLevelEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -19,13 +20,13 @@ public class LogInnerUtil {
 
         // 本处只是将日志打印出来。实际项目可以将日志上传到ES。
         switch (logInnerBO.getLevel()) {
-            case INFO:
+            case LogLevelEnum.INFO:
                 log.info("日志：{}", JsonUtil.toJson(logInnerBO));
                 break;
-            case WARNING:
+            case LogLevelEnum.WARNING:
                 log.warn("日志：{}", JsonUtil.toJson(logInnerBO));
                 break;
-            case ERROR:
+            case LogLevelEnum.ERROR:
                 log.error("日志：{}", JsonUtil.toJson(logInnerBO));
                 break;
         }

@@ -1,6 +1,6 @@
-package com.knife.log.aspect;
+package com.suchtool.betterlog.aspect;
 
-import com.knife.log.constant.AspectTypeEnum;
+import com.suchtool.betterlog.constant.AspectTypeEnum;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

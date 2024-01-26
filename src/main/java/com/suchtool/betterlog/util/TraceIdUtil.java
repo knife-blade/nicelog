@@ -1,4 +1,4 @@
-package com.knife.log.util;
+package com.suchtool.betterlog.util;
 
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 import org.springframework.util.StringUtils;

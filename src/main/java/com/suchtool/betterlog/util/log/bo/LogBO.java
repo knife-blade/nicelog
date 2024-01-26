@@ -1,6 +1,6 @@
-package com.knife.log.util.log.bo;
+package com.suchtool.betterlog.util.log.bo;
 
-import com.knife.log.util.log.LogUtil;
+import com.suchtool.betterlog.util.log.LogUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
