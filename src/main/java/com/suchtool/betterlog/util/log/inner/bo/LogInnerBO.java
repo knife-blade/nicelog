@@ -1,8 +1,8 @@
-package com.knife.log.util.log.inner.bo;
+package com.suchtool.betterlog.util.log.inner.bo;
 
-import com.knife.log.constant.AspectTypeEnum;
-import com.knife.log.constant.LogLevelEnum;
-import com.knife.log.util.log.bo.LogBO;
+import com.suchtool.betterlog.constant.AspectTypeEnum;
+import com.suchtool.betterlog.constant.LogLevelEnum;
+import com.suchtool.betterlog.util.log.bo.LogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
