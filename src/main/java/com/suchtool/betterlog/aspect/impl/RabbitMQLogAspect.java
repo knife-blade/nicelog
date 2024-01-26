@@ -6,20 +6,24 @@ import com.suchtool.betterlog.constant.AspectTypeEnum;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.Ordered;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 /**
- * XxlJob日志
+ * RabbitMQ日志
  */
 @Aspect
-public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
+public class RabbitMQLogAspect implements LogAspectProcessor, Ordered {
     private final LogAspectExecutor logAspectExecutor;
 
     private final int order;
 
-    public XxlJobLogAspect(int order) {
+    public RabbitMQLogAspect(int order) {
         this.logAspectExecutor = new LogAspectExecutor(this);
         this.order = order;
     }
@@ -29,7 +33,7 @@ public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
         return order;
     }
 
-    @Pointcut("@annotation(com.xxl.job.core.handler.annotation.XxlJob)")
+    @Pointcut("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")
     public void pointcut() {
     }
 
@@ -53,17 +57,20 @@ public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
         return true;
     }
 
-    /**
-     * 正常返回或者抛异常的处理
-     */
     @Override
     public void returningOrThrowingProcess() {
 
     }
 
     @Override
+    public Object provideParam(Object[] args) {
+        Message message = (Message) args[0];
+        return new String(message.getBody(), StandardCharsets.UTF_8);
+    }
+
+    @Override
     public AspectTypeEnum provideType() {
-        return AspectTypeEnum.XXL_JOB;
+        return AspectTypeEnum.RABBIT_MQ;
     }
 
     @Override
@@ -75,8 +82,9 @@ public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
     public String provideMethodTag(Method method) {
         String methodTag = null;
 
-        if (method.isAnnotationPresent(XxlJob.class)) {
-            methodTag = method.getAnnotation(XxlJob.class).value();
+        if (method.isAnnotationPresent(RabbitListener.class)) {
+            String[] queues = method.getAnnotation(RabbitListener.class).queues();
+            methodTag = String.join(",", queues);
         }
 
         return methodTag;
