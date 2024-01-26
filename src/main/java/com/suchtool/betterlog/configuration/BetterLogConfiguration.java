@@ -2,7 +2,10 @@ package com.suchtool.betterlog.configuration;
 
 import com.suchtool.betterlog.annotation.EnableBetterLog;
 import com.suchtool.betterlog.aspect.impl.ControllerLogAspect;
+import com.suchtool.betterlog.aspect.impl.XxlJobLogAspect;
+import com.suchtool.betterlog.property.BetterLogProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -21,8 +24,17 @@ public class BetterLogConfiguration implements ImportAware {
                 importMetadata.getAnnotationAttributes(EnableBetterLog.class.getName(), false));
     }
 
+    /**
+     * 只为代码提示，无实际作用
+     */
+    @Bean(name = "com.suchtool.betterlog.betterLogProperty")
+    @ConfigurationProperties(prefix = "suchtool.betterlog")
+    public BetterLogProperty betterLogProperty() {
+        return new BetterLogProperty();
+    }
+
     @Bean(name = "com.suchtool.betterlog.controllerLogAspect")
-    @ConditionalOnProperty(name = "com.suchtool.betterlog.controllerlog.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "com.suchtool.betterlog.enableControllerLog", havingValue = "true", matchIfMissing = true)
     public ControllerLogAspect controllerLogAspect() {
         int order = Ordered.LOWEST_PRECEDENCE;
         if (enableBetterLog != null) {
@@ -31,4 +43,16 @@ public class BetterLogConfiguration implements ImportAware {
 
         return new ControllerLogAspect(order);
     }
+
+    @Bean(name = "com.suchtool.betterlog.xxlJobLogAspect")
+    @ConditionalOnProperty(name = "com.suchtool.betterlog.enableXxlJobLog", havingValue = "true", matchIfMissing = true)
+    public XxlJobLogAspect xxlJobLogAspect() {
+        int order = Ordered.LOWEST_PRECEDENCE;
+        if (enableBetterLog != null) {
+            order = enableBetterLog.<Integer>getNumber("xxlJobLogOrder");
+        }
+
+        return new XxlJobLogAspect(order);
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 public interface LogParamProvider {
     AspectTypeEnum provideType();
 
-    String provideEntry();
+    String provideEntry(Method method);
 
     default String provideClassName(Method method) {
         return method.getDeclaringClass().getName();
