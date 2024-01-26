@@ -24,7 +24,7 @@ public class BetterLogConfiguration implements ImportAware {
     @Bean(name = "com.suchtool.betterlog.controllerLogAspect")
     @ConditionalOnProperty(name = "com.suchtool.betterlog.controllerlog.enabled", havingValue = "true", matchIfMissing = true)
     public ControllerLogAspect controllerLogAspect() {
-        Integer order = Ordered.LOWEST_PRECEDENCE;
+        int order = Ordered.LOWEST_PRECEDENCE;
         if (enableBetterLog != null) {
             order = enableBetterLog.<Integer>getNumber("controllerLogOrder");
         }
