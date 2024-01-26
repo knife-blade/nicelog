@@ -7,8 +7,8 @@ import com.suchtool.betterlog.util.log.context.LogContext;
 import com.suchtool.betterlog.util.log.context.LogContextThreadLocal;
 import com.suchtool.betterlog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.betterlog.util.log.inner.util.LogInnerUtil;
-import com.knife.util.JsonUtil;
-import com.knife.util.ThrowableUtil;
+import com.suchtool.betterutil.util.JsonUtil;
+import com.suchtool.betterutil.util.ThrowableUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -22,12 +22,12 @@ public class LogAspectExecutor {
     }
 
     public void before(JoinPoint joinPoint) {
-        if (!logAspectProcessor.requireProcess()) {
-            return;
-        }
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
+
+        if (!logAspectProcessor.requireProcess(method)) {
+            return;
+        }
 
         String param = null;
         try {
@@ -41,7 +41,7 @@ public class LogAspectExecutor {
         }
 
         LogInnerBO logInnerBO = new LogInnerBO();
-        logInnerBO.setEntry(logAspectProcessor.provideEntry());
+        logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
         logInnerBO.setClassName(logAspectProcessor.provideClassName(method));
         logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
@@ -53,23 +53,23 @@ public class LogAspectExecutor {
         logInnerBO.setTypeDetail(logAspectProcessor.provideType().getName() + "进入");
         logInnerBO.setParam(param);
 
-        recordContext();
+        recordContext(logInnerBO);
 
         LogInnerUtil.record(logInnerBO);
     }
 
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        if (!logAspectProcessor.requireProcess()) {
-            return;
-        }
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
+
+        if (!logAspectProcessor.requireProcess(method)) {
+            return;
+        }
 
         String response = JsonUtil.toJson(returnValue);
 
         LogInnerBO logInnerBO = new LogInnerBO();
-        logInnerBO.setEntry(logAspectProcessor.provideEntry());
+        logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
         logInnerBO.setClassName(logAspectProcessor.provideClassName(method));
         logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
@@ -81,7 +81,7 @@ public class LogAspectExecutor {
         logInnerBO.setTypeDetail(logAspectProcessor.provideType().getName() + "返回");
         logInnerBO.setReturnValue(response);
 
-        recordContext();
+        recordContext(logInnerBO);
 
         LogInnerUtil.record(logInnerBO);
 
@@ -92,15 +92,15 @@ public class LogAspectExecutor {
     }
 
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        if (!logAspectProcessor.requireProcess()) {
-            return;
-        }
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
+        if (!logAspectProcessor.requireProcess(method)) {
+            return;
+        }
+
         LogInnerBO logInnerBO = new LogInnerBO();
-        logInnerBO.setEntry(logAspectProcessor.provideEntry());
+        logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
         logInnerBO.setClassName(logAspectProcessor.provideClassName(method));
         logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
@@ -117,7 +117,7 @@ public class LogAspectExecutor {
 
         LogInnerUtil.record(logInnerBO);
 
-        recordContext();
+        recordContext(logInnerBO);
 
         logAspectProcessor.returningOrThrowingProcess();
 
@@ -128,9 +128,9 @@ public class LogAspectExecutor {
     /**
      * 记录上下文信息
      */
-    private void recordContext() {
+    private void recordContext(LogInnerBO logInnerBO) {
         LogContext logContext = new LogContext();
-        logContext.setEntry(logAspectProcessor.provideEntry());
+        logContext.setEntry(logInnerBO.getEntry());
         logContext.setTraceId(TraceIdUtil.createTraceId());
         LogContextThreadLocal.write(logContext);
     }
