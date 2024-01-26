@@ -1,8 +1,8 @@
-package com.knife.log.util.log;
+package com.suchtool.betterlog.util.log;
 
-import com.knife.log.util.log.bo.LogBO;
-import com.knife.log.util.log.inner.bo.LogInnerBO;
-import com.knife.log.util.log.inner.util.LogInnerUtil;
+import com.suchtool.betterlog.util.log.bo.LogBO;
+import com.suchtool.betterlog.util.log.inner.bo.LogInnerBO;
+import com.suchtool.betterlog.util.log.inner.util.LogInnerUtil;
 import org.springframework.beans.BeanUtils;
 
 public class LogUtil {
