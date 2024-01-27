@@ -74,30 +74,6 @@ public class BetterLogConfiguration {
         }
     }
 
-    // @Bean(name = "com.suchtool.betterlog.xxlJobLogAspect")
-    // @ConditionalOnClass(XxlJob.class)
-    // @ConditionalOnProperty(name = "com.suchtool.betterlog.enableXxlJobLog", havingValue = "true", matchIfMissing = true)
-    // public XxlJobLogAspect xxlJobLogAspect() {
-    //     int order = Ordered.LOWEST_PRECEDENCE;
-    //     if (enableBetterLog != null) {
-    //         order = enableBetterLog.<Integer>getNumber("xxlJobLogOrder");
-    //     }
-    //
-    //     return new XxlJobLogAspect(order);
-    // }
-
-    // @Bean(name = "com.suchtool.betterlog.rabbitMQLogAspect")
-    // @ConditionalOnClass(RabbitListener.class)
-    // @ConditionalOnProperty(name = "com.suchtool.betterlog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
-    // public RabbitMQLogAspect rabbitMQLogAspect() {
-    //     int order = Ordered.LOWEST_PRECEDENCE;
-    //     if (enableBetterLog != null) {
-    //         order = enableBetterLog.<Integer>getNumber("rabbitMQLogOrder");
-    //     }
-    //
-    //     return new RabbitMQLogAspect(order);
-    // }
-
     @Bean(name = "com.suchtool.betterlog.betterLogProcessDefaultImpl")
     @ConditionalOnMissingBean(BetterLogProcess.class)
     public BetterLogProcessDefaultImpl betterLogProcessDefaultImpl() {
