@@ -1,6 +1,7 @@
 package com.suchtool.betterlog.util.log.inner.bo;
 
 import com.suchtool.betterlog.constant.AspectTypeEnum;
+import com.suchtool.betterlog.constant.DirectionTypeEnum;
 import com.suchtool.betterlog.constant.LogLevelEnum;
 import com.suchtool.betterlog.util.log.bo.LogBO;
 import lombok.Data;
@@ -13,19 +14,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class LogInnerBO extends LogBO {
     /**
-     * 应用编码
-     */
-    private String appCode;
-
-    /**
      * 应用名字
      */
     private String appName;
 
     /**
      * 入口
-     *   对于Controller，是URL
-     *   对于MQ，是队列名
+     * <p>对于Controller，是URL</p>
+     * <p>对于RabbitMQ，是@RabbitMQ的queues</p>
+     * <p>对于XXL-JOB，是@XxlJob的value</p>
      */
     private String entry;
 
@@ -36,22 +33,18 @@ public class LogInnerBO extends LogBO {
 
     /**
      * 类的标签
-     *  对于Controller，是Controller的@Api的tags值
-     *  对于MQ，是空值
+     * <p>对于Controller，是Controller的@Api的tags值</p>
      */
     private String classTag;
 
     /**
      * 入口的方法名字
-     *    对于Controller，是Controller的方法
-     *    对于MQ，是消费类对应的方法
      */
     private String methodName;
 
     /**
      * 入口的方法标签
-     *    对于Controller，是Controller的方法的@ApiOperation的value字段值
-     *    对于MQ，是空值
+     * <p>对于Controller，是Controller的方法的@ApiOperation的value字段值</p>
      */
     private String methodTag;
 
@@ -71,11 +64,9 @@ public class LogInnerBO extends LogBO {
     private AspectTypeEnum type;
 
     /**
-     * 日志类型详情
-     * 用{@link LogInnerBO#type}的getName()拼接"进入"、"返回"等而来
-     * 比如：手动、接口进入、接口返回、接口报错、RabbitMQ进入
+     * 方向
      */
-    private String typeDetail;
+    private DirectionTypeEnum directionType;
 
     /**
      * TraceId
@@ -83,19 +74,17 @@ public class LogInnerBO extends LogBO {
     private String traceId;
 
     /**
-     * 操作人编码
-     */
-    private String operatorCode;
-
-    /**
-     * 操作人名字
-     */
-    private String operatorName;
-
-    /**
      * 时间
      */
     private String logTime;
 
+    /**
+     * 客户端ip
+     */
+    private String clientIp;
 
+    /**
+     * ip
+     */
+    private String ip;
 }

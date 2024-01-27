@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class LogInnerUtil {
     public static void record(LogInnerBO logInnerBO) {
-        logInnerBO.setAppCode("ORDER");
-        logInnerBO.setAppName("订单");
+        logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
+                .getProperty("spring.application.name", ""));
 
         fillCommonField(logInnerBO);
 

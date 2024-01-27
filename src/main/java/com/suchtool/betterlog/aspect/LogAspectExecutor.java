@@ -1,5 +1,6 @@
 package com.suchtool.betterlog.aspect;
 
+import com.suchtool.betterlog.constant.DirectionTypeEnum;
 import com.suchtool.betterlog.constant.LogLevelEnum;
 import com.suchtool.betterlog.util.TraceIdUtil;
 import com.suchtool.betterlog.util.log.bo.LogBO;
@@ -49,8 +50,8 @@ public class LogAspectExecutor {
         // 这里无法获得代码所在行
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.INFO);
+        logInnerBO.setDirectionType(DirectionTypeEnum.IN);
         logInnerBO.setType(logAspectProcessor.provideType());
-        logInnerBO.setTypeDetail(logAspectProcessor.provideType().getName() + "进入");
         logInnerBO.setParam(param);
 
         recordContext(logInnerBO);
