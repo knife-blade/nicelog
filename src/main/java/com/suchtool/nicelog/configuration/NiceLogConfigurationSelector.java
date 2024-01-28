@@ -7,7 +7,7 @@ public class NiceLogConfigurationSelector implements ImportSelector {
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
         return new String[]{
-                BetterLogConfiguration.class.getName()
+                NiceLogConfiguration.class.getName()
         };
     }
 }
