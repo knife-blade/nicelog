@@ -5,7 +5,7 @@
 
     <groupId>com.suchtool</groupId>
     <artifactId>nice-log-spring-boot-starter</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 
     <packaging>jar</packaging>
     <name>nice-log-spring-boot-starter</name>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.suchtool</groupId>
             <artifactId>nice-util-spring-boot-starter</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.5</version>
         </dependency>
 
         <dependency>
@@ -97,7 +97,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!-- <version>3.5.1</version> -->
+                 <version>3.5.1</version>
                 <!-- 指定maven编译的jdk版本。对于JDK8，写成8或者1.8都可以 -->
                 <configuration>
                     <source>8</source>
@@ -208,8 +208,8 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/knife-blade/nice-lock</url>
-        <connection>https://github.com/knife-blade/nice-lock.git</connection>
+        <url>https://github.com/knife-blade/nice-log</url>
+        <connection>https://github.com/knife-blade/nice-log.git</connection>
     </scm>
     <developers>
         <developer>
