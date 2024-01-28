@@ -3,7 +3,7 @@ package com.suchtool.nicelog.property;
 import lombok.Data;
 
 @Data
-public class BetterLogProperty {
+public class NiceLogProperty {
     /**
      * 启用Controller日志
      */

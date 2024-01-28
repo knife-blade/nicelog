@@ -4,6 +4,10 @@ import lombok.Data;
 
 @Data
 public class LogBO {
+    public static LogBOBuilder createBuilder() {
+        return new LogBOBuilder();
+    }
+
     /**
      * 参数
      */
@@ -49,5 +53,15 @@ public class LogBO {
      * 其他3
      */
     private String other3;
+
+    /**
+     * 其他4
+     */
+    private String other4;
+
+    /**
+     * 其他5
+     */
+    private String other5;
 
 }
