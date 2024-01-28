@@ -5,12 +5,20 @@ import com.suchtool.nicelog.util.log.LogUtil;
 public final class LogBOBuilder {
     private final LogBO logBO;
 
-    private LogBOBuilder() {
+    public LogBOBuilder() {
         this.logBO = new LogBO();
     }
 
-    public static LogBOBuilder create() {
-        return new LogBOBuilder();
+    public void info() {
+        LogUtil.info(logBO);
+    }
+
+    public void warning() {
+        LogUtil.warning(logBO);
+    }
+
+    public void error() {
+        LogUtil.error(logBO);
     }
 
     public LogBOBuilder param(String param) {
@@ -58,15 +66,13 @@ public final class LogBOBuilder {
         return this;
     }
 
-    public void info() {
-        LogUtil.info(logBO);
+    public LogBOBuilder other4(String other4) {
+        logBO.setOther4(other4);
+        return this;
     }
 
-    public void warning() {
-        LogUtil.warning(logBO);
-    }
-
-    public void error() {
-        LogUtil.error(logBO);
+    public LogBOBuilder other5(String other5) {
+        logBO.setOther5(other5);
+        return this;
     }
 }

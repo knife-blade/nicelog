@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.util.log.inner.util;
 
 import com.suchtool.nicelog.constant.AspectTypeEnum;
-import com.suchtool.nicelog.process.BetterLogProcess;
+import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.niceutil.util.ApplicationContextHolder;
@@ -18,9 +18,9 @@ public class LogInnerUtil {
 
         fillCommonField(logInnerBO);
 
-        BetterLogProcess betterLogProcess = ApplicationContextHolder.getContext()
-                .getBean(BetterLogProcess.class);
-        betterLogProcess.process(logInnerBO);
+        NiceLogProcess niceLogProcess = ApplicationContextHolder.getContext()
+                .getBean(NiceLogProcess.class);
+        niceLogProcess.process(logInnerBO);
     }
 
     /**

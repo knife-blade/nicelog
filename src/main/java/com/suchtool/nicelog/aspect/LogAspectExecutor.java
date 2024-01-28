@@ -2,6 +2,7 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.util.MethodUtil;
 import com.suchtool.nicelog.util.TraceIdUtil;
 import com.suchtool.nicelog.util.log.bo.LogBO;
 import com.suchtool.nicelog.util.log.bo.LogBOBuilder;
@@ -9,6 +10,7 @@ import com.suchtool.nicelog.util.log.context.LogContext;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.LogInnerUtil;
+import com.suchtool.niceutil.util.IpUtil;
 import com.suchtool.niceutil.util.JsonUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -32,10 +34,13 @@ public class LogAspectExecutor {
 
         String param = null;
         try {
-            param = JsonUtil.toJsonString(logAspectProcessor.provideParam(joinPoint.getArgs()));
+            Object provideParam = logAspectProcessor.provideParam(joinPoint.getArgs());
+            if (provideParam != null) {
+                param = JsonUtil.toJsonString(provideParam);
+            }
         } catch (Throwable t) {
-            LogBOBuilder.create()
-                    .errorInfo("JSON序列化异常")
+            LogBO.createBuilder()
+                    .errorInfo("参数转JSON字符串异常")
                     .throwable(t)
                     .error();
         }
@@ -125,6 +130,9 @@ public class LogAspectExecutor {
         logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
+        logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
         logInnerBO.setAspectType(logAspectProcessor.provideType());
+        logInnerBO.setIp(IpUtil.parseIP());
+        logInnerBO.setClientIp(IpUtil.parseClientIP());
     }
 }

@@ -8,12 +8,12 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 @Configuration
-public abstract class AbstractBetterLogAspectConfiguration implements ImportAware {
+public abstract class AbstractNiceLogAspectConfiguration implements ImportAware {
     @Nullable
-    protected AnnotationAttributes enableBetterLog;
+    protected AnnotationAttributes enableNiceLog;
 
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        this.enableBetterLog = AnnotationAttributes.fromMap(
+        this.enableNiceLog = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableNiceLog.class.getName(), false));
     }
 }
