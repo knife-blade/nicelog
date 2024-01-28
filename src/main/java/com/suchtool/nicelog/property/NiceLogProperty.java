@@ -5,6 +5,11 @@ import lombok.Data;
 @Data
 public class NiceLogProperty {
     /**
+     * 启用所有日志
+     */
+    private Boolean enabled;
+
+    /**
      * 启用Controller日志
      */
     private Boolean enableControllerLog;
