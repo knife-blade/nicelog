@@ -56,7 +56,7 @@ public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
     }
 
     @Override
-    public Object provideParam(Object[] args) {
+    public Object provideParam(Object[] args, Method method) {
         Message message = (Message) args[0];
         return new String(message.getBody(), StandardCharsets.UTF_8);
     }

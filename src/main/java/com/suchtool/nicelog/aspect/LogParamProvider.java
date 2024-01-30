@@ -1,6 +1,11 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.util.MethodUtil;
+import org.springframework.context.expression.MethodBasedEvaluationContext;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -30,23 +35,25 @@ public interface LogParamProvider {
         return null;
     }
 
-    default Object provideParam(Object[] args) {
-        if (args == null
-            || args.length == 0) {
-            return null;
-        }
+    default Object provideParam(Object[] args, Method method) {
+        return MethodUtil.parseParam(args, method);
 
-        if (args.length == 1) {
-            return args[0];
-        }
-
-        Map<String, Object> map = new HashMap<>();
-        int i = 1;
-        for (Object arg : args) {
-            String key = "arg" + i;
-            map.put(key, arg);
-            i++;
-        }
-        return map;
+        // if (args == null
+        //     || args.length == 0) {
+        //     return null;
+        // }
+        //
+        // if (args.length == 1) {
+        //     return args[0];
+        // }
+        //
+        // Map<String, Object> map = new HashMap<>();
+        // int i = 1;
+        // for (Object arg : args) {
+        //     String key = "arg" + i;
+        //     map.put(key, arg);
+        //     i++;
+        // }
+        // return map;
     }
 }
