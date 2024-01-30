@@ -2,7 +2,6 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
-import com.suchtool.nicelog.util.MethodUtil;
 import com.suchtool.nicelog.util.TraceIdUtil;
 import com.suchtool.nicelog.util.log.bo.LogBO;
 import com.suchtool.nicelog.util.log.context.LogContext;
@@ -11,6 +10,7 @@ import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.LogInnerUtil;
 import com.suchtool.niceutil.util.IpUtil;
 import com.suchtool.niceutil.util.JsonUtil;
+import com.suchtool.niceutil.util.MethodUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
