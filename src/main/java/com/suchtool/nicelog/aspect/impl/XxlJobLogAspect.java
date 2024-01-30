@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * XxlJob日志
  */
 @Aspect
-public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
+public class XxlJobLogAspect  extends LogAspectProcessor implements Ordered {
     private final LogAspectExecutor logAspectExecutor;
 
     private final int order;
@@ -48,11 +48,6 @@ public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
         logAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
-    @Override
-    public boolean requireProcess(Method method) {
-        return true;
-    }
-
     /**
      * 正常返回或者抛异常的处理
      */
@@ -64,11 +59,6 @@ public class XxlJobLogAspect  implements LogAspectProcessor, Ordered {
     @Override
     public AspectTypeEnum provideType() {
         return AspectTypeEnum.XXL_JOB;
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        return null;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class LogInnerUtil {
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement stackTraceElement = stackTrace[5];
+        StackTraceElement stackTraceElement = stackTrace[6];
 
         if (AspectTypeEnum.MANUAL.equals(logInnerBO.getAspectType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());

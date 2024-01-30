@@ -19,9 +19,6 @@ import org.springframework.core.Ordered;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "suchtool.nicelog.enabled", havingValue = "true", matchIfMissing = true)
 public class NiceLogConfiguration {
-    /**
-     * 只为代码提示，无实际作用
-     */
     @Bean(name = "com.suchtool.nicelog.niceLogProperty")
     @ConfigurationProperties(prefix = "suchtool.nicelog")
     public NiceLogProperty niceLogProperty() {
