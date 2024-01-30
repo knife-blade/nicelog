@@ -17,6 +17,7 @@
 1. Controller日志
 2. RabbitMQ日志
 3. XXL-JOB日志
+4. Bean的方法或者类上加@NiceLog注解
 
 ### 2.3 更多功能
 准备支持：Feign日志、RocketMQ、Kafka等
@@ -46,8 +47,11 @@ LogBO.createBuilder()
 
 此工具支持通过lambda的形式构造参数并打印，每次输入.都会有代码提示，类似于MyBatis-Plus的lambdaQuery
 
+### 3.4 手动打印日志
+在方法或者是类上加@NiceLog，即可打印出入参、返回值、异常信息。
+注意：此类必须注入Spring，方法必须是public。
 
-### 3.4 设置优先级
+### 3.5 设置优先级
 日志自动收集功能是通过AOP实现的，你可以手动指定AOP的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
 @EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3)
@@ -75,6 +79,7 @@ public class DemoApplication {
 | 配置  | 描述  | 默认值  |
 | ------------ | ------------ | ------------ |
 | suchtool.nicelog.enabled  | 启用日志  | true  |
+| suchtool.nicelog.collectAll  | 收集所有  | true  |
 | suchtool.nicelog.enableControllerLog  | 启用Controller日志  |  true |
 | suchtool.nicelog.enableXxlJobLog  | 启用XXL-JOB日志  |  true |
 | suchtool.nicelog.enableXxlJobLog  | 启用RabbitMQ日志  |  true |

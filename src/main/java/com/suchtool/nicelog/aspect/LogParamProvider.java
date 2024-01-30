@@ -11,7 +11,9 @@ import java.lang.reflect.Method;
 public interface LogParamProvider {
     AspectTypeEnum provideType();
 
-    String provideEntry(Method method);
+    default String provideEntry(Method method){
+        return provideClassTag(method);
+    }
 
     default String provideClassName(Method method) {
         return method.getDeclaringClass().getName();
