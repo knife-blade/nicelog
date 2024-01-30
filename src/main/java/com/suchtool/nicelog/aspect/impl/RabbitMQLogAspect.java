@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
  * RabbitMQ日志
  */
 @Aspect
-public class RabbitMQLogAspect implements LogAspectProcessor, Ordered {
+public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
     private final LogAspectExecutor logAspectExecutor;
 
     private final int order;
@@ -48,11 +48,6 @@ public class RabbitMQLogAspect implements LogAspectProcessor, Ordered {
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
         logAspectExecutor.afterThrowing(joinPoint, throwingValue);
-    }
-
-    @Override
-    public boolean requireProcess(Method method) {
-        return true;
     }
 
     @Override

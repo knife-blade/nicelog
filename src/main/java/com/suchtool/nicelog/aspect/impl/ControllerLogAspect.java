@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
  * Controller的日志
  */
 @Aspect
-public class ControllerLogAspect implements LogAspectProcessor, Ordered {
+public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
     private final LogAspectExecutor logAspectExecutor;
 
     private final int order;
@@ -59,7 +59,11 @@ public class ControllerLogAspect implements LogAspectProcessor, Ordered {
     @Override
     public boolean requireProcess(Method method) {
         String url = provideEntry(method);
-        return !ProcessIgnoreUrl.isInWrapperIgnoreUrl(url);
+        if (ProcessIgnoreUrl.isInWrapperIgnoreUrl(url)) {
+            return false;
+        }
+
+        return super.requireProcess(method);
     }
 
     /**
