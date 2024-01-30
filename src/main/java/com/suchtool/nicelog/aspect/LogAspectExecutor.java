@@ -5,7 +5,6 @@ import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.MethodUtil;
 import com.suchtool.nicelog.util.TraceIdUtil;
 import com.suchtool.nicelog.util.log.bo.LogBO;
-import com.suchtool.nicelog.util.log.bo.LogBOBuilder;
 import com.suchtool.nicelog.util.log.context.LogContext;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
@@ -34,7 +33,7 @@ public class LogAspectExecutor {
 
         String param = null;
         try {
-            Object provideParam = logAspectProcessor.provideParam(joinPoint.getArgs());
+            Object provideParam = logAspectProcessor.provideParam(joinPoint.getArgs(), method);
             if (provideParam != null) {
                 param = JsonUtil.toJsonString(provideParam);
             }
