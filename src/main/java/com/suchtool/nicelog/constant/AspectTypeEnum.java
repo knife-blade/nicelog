@@ -8,6 +8,7 @@ public enum AspectTypeEnum {
     CONTROLLER("接口"),
     RABBIT_MQ("RabbitMQ"),
     XXL_JOB("XXL-JOB"),
+    NICE_LOG_ANNOTATION("NiceLog注解")
     ;
 
     private final String name;
