@@ -27,12 +27,22 @@ public class LogInnerBO extends LogBO {
     private String entry;
 
     /**
+     * 入口类上的标签
+     */
+    private String entryClassTag;
+
+    /**
+     * 入口方法的标记
+     */
+    private String entryMethodTag;
+
+    /**
      * 类名
      */
     private String className;
 
     /**
-     * 类的标签
+     * 类的标记
      * <p>对于Controller，是Controller的@Api的tags值</p>
      */
     private String classTag;
@@ -43,7 +53,7 @@ public class LogInnerBO extends LogBO {
     private String methodName;
 
     /**
-     * 入口的方法标签
+     * 入口的方法标记
      * <p>对于Controller，是Controller的方法的@ApiOperation的value字段值</p>
      */
     private String methodTag;

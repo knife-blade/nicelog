@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.AspectTypeEnum;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
+import com.suchtool.nicelog.util.log.context.LogContext;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,45 +77,16 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
         Assert.notNull(servletRequestAttributes, "RequestAttributes不能为null");
         HttpServletResponse response = servletRequestAttributes.getResponse();
 
-        // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-        response.addHeader("traceId", LogContextThreadLocal.read().getTraceId());
+        LogContext logContext = LogContextThreadLocal.read();
+        if (logContext != null) {
+            // 将traceId返给前端，这样即可通过traceId查到所有日志信息
+            response.addHeader("traceId", logContext.getTraceId());
+        }
     }
 
     @Override
     public AspectTypeEnum provideType() {
         return AspectTypeEnum.CONTROLLER;
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        String classTag = null;
-
-        Class<?> declaringClass = method.getDeclaringClass();
-
-        if (declaringClass.isAnnotationPresent(Api.class)) {
-            Api api = declaringClass.getAnnotation(Api.class);
-            String[] tags = api.tags();
-            String value = api.value();
-            String tagJoin = String.join("+", tags);
-            if (tags.length > 0) {
-                classTag = tagJoin;
-            } else {
-                classTag = value;
-            }
-        }
-
-        return classTag;
-    }
-
-    @Override
-    public String provideMethodTag(Method method) {
-        String methodTag = null;
-
-        if (method.isAnnotationPresent(ApiOperation.class)) {
-            methodTag = method.getAnnotation(ApiOperation.class).value();
-        }
-
-        return methodTag;
     }
 
     @Override
