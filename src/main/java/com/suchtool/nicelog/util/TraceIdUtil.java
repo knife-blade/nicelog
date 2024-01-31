@@ -9,7 +9,7 @@ import java.util.UUID;
  * traceId工具类
  */
 public class TraceIdUtil {
-    public static String createTraceId() {
+    public static String readTraceId() {
         String traceId = null;
 
         // 如果使用了skywalking，则使用它的traceId
