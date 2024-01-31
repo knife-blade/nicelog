@@ -8,13 +8,23 @@ import lombok.Data;
 @Data
 public class LogContext {
     /**
+     * TraceId
+     */
+    private String traceId;
+
+    /**
      * 入口
      */
     private String entry;
 
     /**
-     * TraceId
+     * 入口类标记
      */
-    private String traceId;
+    private String entryClassTag;
+
+    /**
+     * 入口方法标记
+     */
+    private String entryMethodTag;
 
 }

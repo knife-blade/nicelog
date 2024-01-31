@@ -32,10 +32,6 @@ public class LogContextThreadLocal {
      * 获取当前日志上下文信息
      */
     public static LogContext read() {
-        LogContext logContext = LOG_CONTEXT_THREAD_LOCAL.get();
-        if (logContext == null) {
-            logContext =  new LogContext();
-        }
-        return logContext;
+        return LOG_CONTEXT_THREAD_LOCAL.get();
     }
 }

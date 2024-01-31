@@ -91,11 +91,7 @@ public class LogAspectExecutor {
         }
 
         LogInnerBO logInnerBO = new LogInnerBO();
-        logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
-        logInnerBO.setClassName(logAspectProcessor.provideClassName(method));
-        logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
-        logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
-        logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
+        fillCommonField(logInnerBO, method);
         // 这里无法获得代码所在行
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.ERROR);
@@ -103,8 +99,6 @@ public class LogAspectExecutor {
         logInnerBO.setThrowable(throwable);
 
         LogInnerUtil.record(logInnerBO);
-
-        recordContext(logInnerBO);
 
         logAspectProcessor.returningOrThrowingProcess();
 
@@ -117,14 +111,18 @@ public class LogAspectExecutor {
      */
     private void recordContext(LogInnerBO logInnerBO) {
         LogContext logContext = new LogContext();
+        logContext.setTraceId(TraceIdUtil.readTraceId());
         logContext.setEntry(logInnerBO.getEntry());
-        logContext.setTraceId(TraceIdUtil.createTraceId());
+        logContext.setEntryClassTag(logInnerBO.getEntryClassTag());
+        logContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
         LogContextThreadLocal.write(logContext);
     }
 
     private void fillCommonField(LogInnerBO logInnerBO,
                                  Method method) {
         logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
+        logInnerBO.setEntryClassTag(logAspectProcessor.provideEntryClassTag(method));
+        logInnerBO.setEntryMethodTag(logAspectProcessor.provideEntryMethodTag(method));
         logInnerBO.setClassName(logAspectProcessor.provideClassName(method));
         logInnerBO.setClassTag(logAspectProcessor.provideClassTag(method));
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
