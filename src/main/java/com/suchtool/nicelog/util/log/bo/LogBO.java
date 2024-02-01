@@ -35,11 +35,6 @@ public class LogBO {
     private Throwable throwable;
 
     /**
-     * 请求头
-     */
-    private String header;
-
-    /**
      * 其他1
      */
     private String other1;

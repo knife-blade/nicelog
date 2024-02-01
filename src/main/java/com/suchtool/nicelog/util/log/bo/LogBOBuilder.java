@@ -46,11 +46,6 @@ public final class LogBOBuilder {
         return this;
     }
 
-    public LogBOBuilder header(String header) {
-        logBO.setHeader(header);
-        return this;
-    }
-
     public LogBOBuilder other1(String other1) {
         logBO.setOther1(other1);
         return this;
