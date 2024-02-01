@@ -5,6 +5,7 @@
 功能强大的Java日志组件。
 
 ## 2.功能
+
 **1. 手动打印**
 
 手动打印日志。
@@ -12,7 +13,9 @@
 **2. 自动收集日志**
 
 在三处收集日志：进入时、返回时、报异常时。
+
 默认情况下，只要你的项目里有相关的组件，比如XXL-JOB，就会自动收集其日志。
+
 当前支持的组件有：
 
 1. Controller日志
@@ -27,6 +30,7 @@
 ## 3.快速开始
 
 **1. 引入依赖**
+
 ```xml
 <dependency>
     <groupId>com.suchtool</groupId>
@@ -66,7 +70,9 @@ public class HelloController {
 ## 4 使用说明
 
 **1. 打印日志**
+
 默认情况下，会通过logback输出。
+
 支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(LogInnerBO logInnerBO)方法即可。
 
 **2. 自动收集日志**
@@ -93,6 +99,7 @@ LogBO.createBuilder()
 ## 5.详细配置
 
 ### 5.1 yml配置
+
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
 | 配置  | 描述  | 默认值  |
