@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.suchtool.niceutil.util.ApplicationContextHolder;
+import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 
 import java.lang.reflect.Method;
 

@@ -5,8 +5,8 @@ import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.LogBO;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.LogInnerUtil;
-import com.suchtool.niceutil.constant.DateTimeFormatConstant;
-import com.suchtool.niceutil.util.DateTimeUtil;
+import com.suchtool.niceutil.util.lib.datetime.DateTimeUtil;
+import com.suchtool.niceutil.util.lib.datetime.constant.DateTimeFormatConstant;
 import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
