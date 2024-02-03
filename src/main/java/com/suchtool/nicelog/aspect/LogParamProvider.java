@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.AspectTypeEnum;
-import com.suchtool.niceutil.util.MethodUtil;
+import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
