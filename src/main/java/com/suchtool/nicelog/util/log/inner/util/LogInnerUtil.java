@@ -5,7 +5,7 @@ import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.context.LogContext;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
-import com.suchtool.niceutil.util.ApplicationContextHolder;
+import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;

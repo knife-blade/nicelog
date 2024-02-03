@@ -8,9 +8,9 @@ import com.suchtool.nicelog.util.log.context.LogContext;
 import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.LogInnerUtil;
-import com.suchtool.niceutil.util.IpUtil;
-import com.suchtool.niceutil.util.JsonUtil;
-import com.suchtool.niceutil.util.MethodUtil;
+import com.suchtool.niceutil.util.base.JsonUtil;
+import com.suchtool.niceutil.util.reflect.MethodUtil;
+import com.suchtool.niceutil.util.web.ip.IpUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
