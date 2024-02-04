@@ -1,14 +1,14 @@
 package com.suchtool.nicelog.process.impl;
 
 import com.suchtool.nicelog.process.NiceLogProcess;
-import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.niceutil.util.base.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     @Override
-    public void process(LogInnerBO logInnerBO) {
+    public void process(NiceLogInnerBO logInnerBO) {
         // 本处只是将日志打印出来。实际项目可以将日志上传到ES。
         switch (logInnerBO.getLevel()) {
             case INFO:

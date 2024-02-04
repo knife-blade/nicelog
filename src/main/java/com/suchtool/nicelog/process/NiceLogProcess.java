@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.process;
 
-import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 
 public interface NiceLogProcess {
-    void process(LogInnerBO logInnerBO);
+    void process(NiceLogInnerBO logInnerBO);
 }

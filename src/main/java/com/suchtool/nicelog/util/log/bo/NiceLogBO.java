@@ -3,9 +3,9 @@ package com.suchtool.nicelog.util.log.bo;
 import lombok.Data;
 
 @Data
-public class LogBO {
-    public static LogBOBuilder createBuilder() {
-        return new LogBOBuilder();
+public class NiceLogBO {
+    public static NiceLogBOBuilder createBuilder() {
+        return new NiceLogBOBuilder();
     }
 
     /**

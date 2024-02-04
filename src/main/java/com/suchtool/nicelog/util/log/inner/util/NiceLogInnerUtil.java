@@ -2,9 +2,9 @@ package com.suchtool.nicelog.util.log.inner.util;
 
 import com.suchtool.nicelog.constant.AspectTypeEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
-import com.suchtool.nicelog.util.log.context.LogContext;
-import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
-import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
+import com.suchtool.nicelog.util.log.context.NiceLogContext;
+import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-public class LogInnerUtil {
-    public static void record(LogInnerBO logInnerBO) {
+public class NiceLogInnerUtil {
+    public static void record(NiceLogInnerBO logInnerBO) {
         logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
                 .getProperty("spring.application.name", ""));
 
@@ -27,13 +27,13 @@ public class LogInnerUtil {
     /**
      * 填充公共字段
      */
-    private static void fillCommonField(LogInnerBO logInnerBO) {
-        LogContext logContext = LogContextThreadLocal.read();
-        if (logContext != null) {
-            logInnerBO.setTraceId(logContext.getTraceId());
-            logInnerBO.setEntry(logContext.getEntry());
-            logInnerBO.setEntryClassTag(logContext.getEntryClassTag());
-            logInnerBO.setEntryMethodTag(logContext.getEntryMethodTag());
+    private static void fillCommonField(NiceLogInnerBO logInnerBO) {
+        NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
+        if (niceLogContext != null) {
+            logInnerBO.setTraceId(niceLogContext.getTraceId());
+            logInnerBO.setEntry(niceLogContext.getEntry());
+            logInnerBO.setEntryClassTag(niceLogContext.getEntryClassTag());
+            logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
