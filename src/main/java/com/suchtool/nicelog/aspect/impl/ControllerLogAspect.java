@@ -4,10 +4,8 @@ import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.AspectTypeEnum;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
-import com.suchtool.nicelog.util.log.context.LogContext;
-import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.suchtool.nicelog.util.log.context.NiceLogContext;
+import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
@@ -77,10 +75,10 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
         Assert.notNull(servletRequestAttributes, "RequestAttributes不能为null");
         HttpServletResponse response = servletRequestAttributes.getResponse();
 
-        LogContext logContext = LogContextThreadLocal.read();
-        if (logContext != null) {
+        NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
+        if (niceLogContext != null) {
             // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-            response.addHeader("traceId", logContext.getTraceId());
+            response.addHeader("traceId", niceLogContext.getTraceId());
         }
     }
 

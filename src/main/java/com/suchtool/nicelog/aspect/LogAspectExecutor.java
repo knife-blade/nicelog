@@ -2,12 +2,12 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
-import com.suchtool.nicelog.util.TraceIdUtil;
-import com.suchtool.nicelog.util.log.bo.LogBO;
-import com.suchtool.nicelog.util.log.context.LogContext;
-import com.suchtool.nicelog.util.log.context.LogContextThreadLocal;
-import com.suchtool.nicelog.util.log.inner.bo.LogInnerBO;
-import com.suchtool.nicelog.util.log.inner.util.LogInnerUtil;
+import com.suchtool.nicelog.util.NiceLogTraceIdUtil;
+import com.suchtool.nicelog.util.log.bo.NiceLogBO;
+import com.suchtool.nicelog.util.log.context.NiceLogContext;
+import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
+import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.web.ip.IpUtil;
@@ -38,13 +38,13 @@ public class LogAspectExecutor {
                 param = JsonUtil.toJsonString(provideParam);
             }
         } catch (Throwable t) {
-            LogBO.createBuilder()
+            NiceLogBO.createBuilder()
                     .errorInfo("参数转JSON字符串异常")
                     .throwable(t)
                     .error();
         }
 
-        LogInnerBO logInnerBO = new LogInnerBO();
+        NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         fillCommonField(logInnerBO, method);
 
         // 这里无法获得代码所在行
@@ -55,7 +55,7 @@ public class LogAspectExecutor {
 
         recordContext(logInnerBO);
 
-        LogInnerUtil.record(logInnerBO);
+        NiceLogInnerUtil.record(logInnerBO);
     }
 
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
@@ -66,7 +66,7 @@ public class LogAspectExecutor {
             return;
         }
 
-        LogInnerBO logInnerBO = new LogInnerBO();
+        NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         fillCommonField(logInnerBO, method);
         // 这里无法获得代码所在行
         // logInnerBO.setCodeLineNumber(null);
@@ -74,12 +74,12 @@ public class LogAspectExecutor {
         logInnerBO.setDirectionType(DirectionTypeEnum.OUT);
         logInnerBO.setReturnValue(JsonUtil.toJsonString(returnValue));
 
-        LogInnerUtil.record(logInnerBO);
+        NiceLogInnerUtil.record(logInnerBO);
 
         logAspectProcessor.returningOrThrowingProcess();
 
         // 清除，防止内存泄露
-        LogContextThreadLocal.clear();
+        NiceLogContextThreadLocal.clear();
     }
 
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
@@ -90,7 +90,7 @@ public class LogAspectExecutor {
             return;
         }
 
-        LogInnerBO logInnerBO = new LogInnerBO();
+        NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         fillCommonField(logInnerBO, method);
         // 这里无法获得代码所在行
         // logInnerBO.setCodeLineNumber(null);
@@ -98,27 +98,27 @@ public class LogAspectExecutor {
         logInnerBO.setAspectType(logAspectProcessor.provideType());
         logInnerBO.setThrowable(throwable);
 
-        LogInnerUtil.record(logInnerBO);
+        NiceLogInnerUtil.record(logInnerBO);
 
         logAspectProcessor.returningOrThrowingProcess();
 
         // 清除，防止内存泄露
-        LogContextThreadLocal.clear();
+        NiceLogContextThreadLocal.clear();
     }
 
     /**
      * 记录上下文信息
      */
-    private void recordContext(LogInnerBO logInnerBO) {
-        LogContext logContext = new LogContext();
-        logContext.setTraceId(TraceIdUtil.readTraceId());
-        logContext.setEntry(logInnerBO.getEntry());
-        logContext.setEntryClassTag(logInnerBO.getEntryClassTag());
-        logContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
-        LogContextThreadLocal.write(logContext);
+    private void recordContext(NiceLogInnerBO logInnerBO) {
+        NiceLogContext niceLogContext = new NiceLogContext();
+        niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
+        niceLogContext.setEntry(logInnerBO.getEntry());
+        niceLogContext.setEntryClassTag(logInnerBO.getEntryClassTag());
+        niceLogContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
+        NiceLogContextThreadLocal.write(niceLogContext);
     }
 
-    private void fillCommonField(LogInnerBO logInnerBO,
+    private void fillCommonField(NiceLogInnerBO logInnerBO,
                                  Method method) {
         logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
         logInnerBO.setEntryClassTag(logAspectProcessor.provideEntryClassTag(method));

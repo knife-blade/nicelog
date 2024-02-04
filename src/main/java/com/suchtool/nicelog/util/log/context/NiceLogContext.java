@@ -6,7 +6,7 @@ import lombok.Data;
  * 日志的上下文信息
  */
 @Data
-public class LogContext {
+public class NiceLogContext {
     /**
      * TraceId
      */
