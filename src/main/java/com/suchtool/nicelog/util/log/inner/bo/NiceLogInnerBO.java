@@ -3,7 +3,7 @@ package com.suchtool.nicelog.util.log.inner.bo;
 import com.suchtool.nicelog.constant.AspectTypeEnum;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
-import com.suchtool.nicelog.util.log.bo.LogBO;
+import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LogInnerBO extends LogBO {
+public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 应用名字
      */

@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * traceId工具类
  */
-public class TraceIdUtil {
+public class NiceLogTraceIdUtil {
     public static String readTraceId() {
         String traceId = null;
 

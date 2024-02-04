@@ -50,7 +50,7 @@ public class HelloController {
     @ApiOperation("测试1")
     @PostMapping("test1")
     public String test(User user, String email) {
-        LogBO.createBuilder()
+        NiceLogBO.createBuilder()
                 .mark("我的打印")
                 .info();
 
@@ -73,7 +73,7 @@ public class HelloController {
 
 默认情况下，会通过logback输出。
 
-支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(LogInnerBO logInnerBO)方法即可。
+支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(NiceLogInnerBO niceLogInnerBO)方法即可。
 
 **2. 自动收集日志**
 
@@ -83,7 +83,7 @@ public class HelloController {
 
 支持手动打印日志：
 ```
-LogBO.createBuilder()
+NiceLogBO.createBuilder()
         .mark("创建订单")
         .info();
 ```
