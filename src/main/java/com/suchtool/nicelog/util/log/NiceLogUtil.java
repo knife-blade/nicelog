@@ -3,6 +3,7 @@ package com.suchtool.nicelog.util.log;
 import com.suchtool.nicelog.constant.AspectTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
+import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.niceutil.util.lib.datetime.DateTimeUtil;
@@ -12,6 +13,10 @@ import org.springframework.beans.BeanUtils;
 import java.time.LocalDateTime;
 
 public class NiceLogUtil {
+    public static NiceLogBOBuilder createBuilder() {
+        return new NiceLogBOBuilder();
+    }
+
     public static void info(NiceLogBO niceLogBO) {
         convertAndRecord(niceLogBO, LogLevelEnum.INFO);
     }

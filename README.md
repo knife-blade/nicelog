@@ -50,10 +50,9 @@ public class HelloController {
     @ApiOperation("测试1")
     @PostMapping("test1")
     public String test(User user, String email) {
-        NiceLogBO.createBuilder()
+        NiceLogUtil.createBuilder()
                 .mark("我的打印")
                 .info();
-
         return "success";
     }
 }
@@ -83,7 +82,7 @@ public class HelloController {
 
 支持手动打印日志：
 ```
-NiceLogBO.createBuilder()
+NiceLogUtil.createBuilder()
         .mark("创建订单")
         .info();
 ```
