@@ -4,10 +4,6 @@ import lombok.Data;
 
 @Data
 public class NiceLogBO {
-    public static NiceLogBOBuilder createBuilder() {
-        return new NiceLogBOBuilder();
-    }
-
     /**
      * 参数
      */
@@ -30,7 +26,7 @@ public class NiceLogBO {
 
     /**
      * 异常信息
-     * 可通过工具类获得异常堆栈：{@link com.suchtool.niceutil.util.ThrowableUtil}
+     * 可通过工具类获得异常堆栈：{@link com.suchtool.niceutil.util.base.ThrowableUtil}
      */
     private Throwable throwable;
 

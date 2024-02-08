@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.NiceLogTraceIdUtil;
+import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
@@ -38,7 +39,7 @@ public class LogAspectExecutor {
                 param = JsonUtil.toJsonString(provideParam);
             }
         } catch (Throwable t) {
-            NiceLogBO.createBuilder()
+            NiceLogUtil.createBuilder()
                     .errorInfo("参数转JSON字符串异常")
                     .throwable(t)
                     .error();
