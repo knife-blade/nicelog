@@ -78,6 +78,10 @@ public class HelloController {
 
 自动收集相关组件的日志。
 
+原理：除了Feign，都使用AOP。
+Feign：实现RequestInterceptor接口收集请求日志，继承SpringDecoder收集响应日志。（若Feign用AOP，有些日志收集不到，比如：因响应格式不对导致的失败）
+
+
 **3. 手动打印日志**
 
 支持手动打印日志：
