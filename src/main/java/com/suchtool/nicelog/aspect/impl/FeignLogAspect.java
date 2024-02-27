@@ -6,16 +6,23 @@ import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.niceutil.util.web.http.url.HttpUrlUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Feign的日志
@@ -25,6 +32,9 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
     private final LogCommonAspectExecutor logCommonAspectExecutor;
 
     private final int order;
+
+    @Autowired
+    private StandardEnvironment standardEnvironment;
 
     public FeignLogAspect(int order) {
         this.logCommonAspectExecutor = new LogCommonAspectExecutor(this);
@@ -55,48 +65,35 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
         logCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
-    @Override
-    public boolean requireProcess(Method method) {
-        String url = provideEntry(method);
-        if (ProcessIgnoreUrl.isInWrapperIgnoreUrl(url)) {
-            return false;
-        }
-
-        return super.requireProcess(method);
-    }
-
     /**
      * 正常返回或者抛异常的处理
      */
     @Override
     public void returningOrThrowingProcess() {
-        ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
-        Assert.notNull(servletRequestAttributes, "RequestAttributes不能为null");
-        HttpServletResponse response = servletRequestAttributes.getResponse();
 
-        NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
-        if (niceLogContext != null) {
-            // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-            response.addHeader("traceId", niceLogContext.getTraceId());
-        }
     }
 
     @Override
     public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.CONTROLLER;
+        return EntryTypeEnum.FEIGN;
     }
 
     @Override
     public String provideEntry(Method method) {
-        String url = null;
-        ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
-        if (servletRequestAttributes != null) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            url = request.getRequestURI();
-        }
+        String finalUrl = null;
 
-        return url;
+        Class<?> cls = method.getDeclaringClass();
+        FeignClient feignClient = cls.getAnnotation(FeignClient.class);
+        String url = standardEnvironment.resolvePlaceholders(feignClient.url());
+        String path = standardEnvironment.resolvePlaceholders(feignClient.path());
+
+        RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+        String[] value = requestMapping.value();
+        String urlPrefix = value[0];
+
+        List<String> urlList = Arrays.asList(url, path, urlPrefix);
+        finalUrl = HttpUrlUtil.joinUrl(urlList);
+
+        return finalUrl;
     }
 }

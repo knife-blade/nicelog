@@ -10,7 +10,7 @@ import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
-import com.suchtool.niceutil.util.web.ip.IpUtil;
+import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -131,7 +131,7 @@ public class LogCommonAspectExecutor {
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
         logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
-        logInnerBO.setIp(IpUtil.parseIP());
-        logInnerBO.setClientIp(IpUtil.parseClientIP());
+        logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
+        logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
     }
 }
