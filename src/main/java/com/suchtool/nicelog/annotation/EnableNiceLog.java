@@ -25,4 +25,19 @@ public @interface EnableNiceLog {
      * RabbitMQ日志的顺序
      */
     int rabbitMQLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
+     * NiceLog注解日志的顺序
+     */
+    int niceLogAnnotationLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
+     * Feign请求日志的顺序
+     */
+    int feignRequestLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
+     * Feign响应日志的顺序
+     */
+    int feignResponseLogOrder() default Ordered.LOWEST_PRECEDENCE;
 }

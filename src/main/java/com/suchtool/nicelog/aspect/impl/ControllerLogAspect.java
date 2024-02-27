@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect.impl;
 
 import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
@@ -83,8 +83,8 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
     }
 
     @Override
-    public AspectTypeEnum provideType() {
-        return AspectTypeEnum.CONTROLLER;
+    public EntryTypeEnum provideEntryType() {
+        return EntryTypeEnum.CONTROLLER;
     }
 
     @Override

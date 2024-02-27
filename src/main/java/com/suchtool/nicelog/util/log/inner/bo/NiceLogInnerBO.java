@@ -1,6 +1,6 @@
 package com.suchtool.nicelog.util.log.inner.bo;
 
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
@@ -17,6 +17,11 @@ public class NiceLogInnerBO extends NiceLogBO {
      * 应用名字
      */
     private String appName;
+
+    /**
+     * 入口类型
+     */
+    private EntryTypeEnum entryType;
 
     /**
      * 入口
@@ -72,11 +77,6 @@ public class NiceLogInnerBO extends NiceLogBO {
      * 日志级别
      */
     private LogLevelEnum level;
-
-    /**
-     * 切面类型
-     */
-    private AspectTypeEnum aspectType;
 
     /**
      * 方向

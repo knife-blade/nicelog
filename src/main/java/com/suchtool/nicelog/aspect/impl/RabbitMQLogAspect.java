@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect.impl;
 
 import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.amqp.core.Message;
@@ -62,8 +62,8 @@ public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
     }
 
     @Override
-    public AspectTypeEnum provideType() {
-        return AspectTypeEnum.RABBIT_MQ;
+    public EntryTypeEnum provideEntryType() {
+        return EntryTypeEnum.RABBIT_MQ;
     }
 
     @Override

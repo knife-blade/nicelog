@@ -4,7 +4,6 @@ import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.NiceLogTraceIdUtil;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
-import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
@@ -96,7 +95,7 @@ public class LogAspectExecutor {
         // 这里无法获得代码所在行
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.ERROR);
-        logInnerBO.setAspectType(logAspectProcessor.provideType());
+        logInnerBO.setEntryType(logAspectProcessor.provideEntryType());
         logInnerBO.setThrowable(throwable);
 
         NiceLogInnerUtil.record(logInnerBO);
@@ -129,7 +128,7 @@ public class LogAspectExecutor {
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
         logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
-        logInnerBO.setAspectType(logAspectProcessor.provideType());
+        logInnerBO.setEntryType(logAspectProcessor.provideEntryType());
         logInnerBO.setIp(IpUtil.parseIP());
         logInnerBO.setClientIp(IpUtil.parseClientIP());
     }

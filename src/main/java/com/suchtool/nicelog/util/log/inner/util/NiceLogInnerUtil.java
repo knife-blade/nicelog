@@ -1,6 +1,6 @@
 package com.suchtool.nicelog.util.log.inner.util;
 
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
@@ -40,7 +40,7 @@ public class NiceLogInnerUtil {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         StackTraceElement stackTraceElement = stackTrace[6];
 
-        if (AspectTypeEnum.MANUAL.equals(logInnerBO.getAspectType())) {
+        if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
             logInnerBO.setCodeLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
