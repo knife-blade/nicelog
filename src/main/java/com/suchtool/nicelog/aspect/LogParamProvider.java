@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * 日志参数提供者
  */
 public interface LogParamProvider {
-    AspectTypeEnum provideType();
+    EntryTypeEnum provideEntryType();
 
     default String provideEntry(Method method) {
         return provideClassTag(method);
@@ -39,7 +39,7 @@ public interface LogParamProvider {
             NiceLog niceLog = declaringClass.getAnnotation(NiceLog.class);
             classTag = niceLog.value();
         } else {
-            if (AspectTypeEnum.CONTROLLER.equals(provideType())
+            if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
                     && declaringClass.isAnnotationPresent(Api.class)) {
                 Api api = declaringClass.getAnnotation(Api.class);
                 String[] tags = api.tags();
@@ -65,7 +65,7 @@ public interface LogParamProvider {
 
         if (method.isAnnotationPresent(NiceLog.class)) {
             methodTag = method.getAnnotation(NiceLog.class).value();
-        } else if (AspectTypeEnum.CONTROLLER.equals(provideType())
+        } else if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
                 && method.isAnnotationPresent(ApiOperation.class)) {
             methodTag = method.getAnnotation(ApiOperation.class).value();
         }

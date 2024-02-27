@@ -57,10 +57,26 @@ public class NiceLogConfiguration {
     @ConditionalOnClass(RabbitListener.class)
     @Configuration(proxyBeanMethods = false)
     protected static class RabbitMQAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.rabbitMQLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
         public RabbitMQLogAspect rabbitMQLogAspect() {
             int order = Ordered.LOWEST_PRECEDENCE;
             if (enableNiceLog != null) {
                 order = enableNiceLog.<Integer>getNumber("rabbitMQLogOrder");
+            }
+
+            return new RabbitMQLogAspect(order);
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    protected static class NiceLogAnnotationAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableNiceLogAnnotationLog", havingValue = "true", matchIfMissing = true)
+        public RabbitMQLogAspect niceLogAnnotationLog() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableNiceLog != null) {
+                order = enableNiceLog.<Integer>getNumber("niceLogAnnotationLogOrder");
             }
 
             return new RabbitMQLogAspect(order);

@@ -30,4 +30,14 @@ public class NiceLogProperty {
      * 启用RabbitMQ日志
      */
     private Boolean enableRabbitMQLog = true;
+
+    /**
+     * 启用NiceLog注解日志
+     */
+    private Boolean enableNiceLogAnnotationLog = true;
+
+    /**
+     * 启用Feign日志
+     */
+    private Boolean enableFeignLog = true;
 }

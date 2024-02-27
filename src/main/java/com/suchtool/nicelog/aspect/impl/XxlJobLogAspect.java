@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect.impl;
 
 import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -57,8 +57,8 @@ public class XxlJobLogAspect  extends LogAspectProcessor implements Ordered {
     }
 
     @Override
-    public AspectTypeEnum provideType() {
-        return AspectTypeEnum.XXL_JOB;
+    public EntryTypeEnum provideEntryType() {
+        return EntryTypeEnum.XXL_JOB;
     }
 
     @Override
