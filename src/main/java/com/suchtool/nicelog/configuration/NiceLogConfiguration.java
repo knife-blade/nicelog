@@ -1,9 +1,6 @@
 package com.suchtool.nicelog.configuration;
 
-import com.suchtool.nicelog.aspect.impl.ControllerLogAspect;
-import com.suchtool.nicelog.aspect.impl.FeignLogAspect;
-import com.suchtool.nicelog.aspect.impl.RabbitMQLogAspect;
-import com.suchtool.nicelog.aspect.impl.XxlJobLogAspect;
+import com.suchtool.nicelog.aspect.impl.*;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogRequestInterceptor;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogResponseDecoder;
 import com.suchtool.nicelog.process.NiceLogProcess;
@@ -79,19 +76,19 @@ public class NiceLogConfiguration {
     protected static class NiceLogAnnotationAspectConfiguration extends AbstractNiceLogAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableNiceLogAnnotationLog", havingValue = "true", matchIfMissing = true)
-        public RabbitMQLogAspect niceLogAnnotationLog() {
+        public NiceLogAnnotationAspect niceLogAnnotationLog() {
             int order = Ordered.LOWEST_PRECEDENCE;
             if (enableNiceLog != null) {
                 order = enableNiceLog.<Integer>getNumber("niceLogAnnotationLogOrder");
             }
 
-            return new RabbitMQLogAspect(order);
+            return new NiceLogAnnotationAspect(order);
         }
     }
 
     @ConditionalOnClass(FeignClient.class)
     @Configuration(proxyBeanMethods = false)
-    protected static    class FeignLogAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class FeignLogAspectConfiguration extends AbstractNiceLogAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.feignLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
         public FeignLogAspect niceLogAnnotationLog() {
