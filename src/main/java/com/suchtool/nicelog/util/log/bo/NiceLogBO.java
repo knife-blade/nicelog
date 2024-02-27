@@ -15,6 +15,11 @@ public class NiceLogBO {
     private String returnValue;
 
     /**
+     * 原始返回值
+     */
+    private String originReturnValue;
+
+    /**
      * 标记
      */
     private String mark;

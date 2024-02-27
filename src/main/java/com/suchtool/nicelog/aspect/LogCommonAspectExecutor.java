@@ -29,20 +29,15 @@ public class LogCommonAspectExecutor {
 
         Object[] args = joinPoint.getArgs();
 
-        before(method, args, null);
-    }
-
-    public void before(Method method, Object[] args, String param) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }
 
-        // 如果param不为空就取它，否则根据method和args拼接
-        String finalParam = null;
+        String param = null;
         try {
-            Object provideParam = logAspectProcessor.provideParam(param, method, args);
+            Object provideParam = logAspectProcessor.provideParam(null, method, args);
             if (provideParam != null) {
-                finalParam = JsonUtil.toJsonString(provideParam);
+                param = JsonUtil.toJsonString(provideParam);
             }
         } catch (Throwable t) {
             NiceLogUtil.createBuilder()
@@ -58,7 +53,7 @@ public class LogCommonAspectExecutor {
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.INFO);
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
-        logInnerBO.setParam(finalParam);
+        logInnerBO.setParam(param);
 
         recordContext(logInnerBO);
 
@@ -69,11 +64,6 @@ public class LogCommonAspectExecutor {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
-        afterReturning(method, returnValue);
-    }
-
-    public void afterReturning(Method method,
-                               Object returnValue) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }
@@ -97,10 +87,7 @@ public class LogCommonAspectExecutor {
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
-        afterThrowing(method, throwable);
-    }
 
-    public void afterThrowing(Method method, Throwable throwable) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }

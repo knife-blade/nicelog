@@ -32,12 +32,13 @@ public @interface EnableNiceLog {
     int niceLogAnnotationLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
     /**
-     * Feign请求日志的顺序
+     * Feign日志的顺序
      */
-    int feignRequestLogOrder() default Ordered.LOWEST_PRECEDENCE;
+    int feignLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
     /**
-     * Feign响应日志的顺序
+     * Feign响应解码器的顺序
      */
-    int feignResponseLogOrder() default Ordered.LOWEST_PRECEDENCE;
+    int feignDecoderOrder() default Ordered.HIGHEST_PRECEDENCE;
+
 }
