@@ -28,8 +28,8 @@ public class NiceLogAnnotationAspect extends LogAspectProcessor implements Order
         return order;
     }
 
-    @Pointcut("@annotation(com.suchtool.nicelog.annotation.NiceLog) ||" +
-            "@within(com.suchtool.nicelog.annotation.NiceLog)")
+    @Pointcut("@annotation(com.suchtool.nicelog.annotation.NiceLog)" +
+            "|| @within(com.suchtool.nicelog.annotation.NiceLog)")
     public void pointcut() {
     }
 

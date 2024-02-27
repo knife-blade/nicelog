@@ -1,17 +1,23 @@
 package com.suchtool.nicelog.configuration;
 
 import com.suchtool.nicelog.aspect.impl.ControllerLogAspect;
+import com.suchtool.nicelog.aspect.impl.FeignLogAspect;
 import com.suchtool.nicelog.aspect.impl.RabbitMQLogAspect;
 import com.suchtool.nicelog.aspect.impl.XxlJobLogAspect;
+import com.suchtool.nicelog.aspect.impl.feign.FeignLogRequestInterceptor;
+import com.suchtool.nicelog.aspect.impl.feign.FeignLogResponseDecoder;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.process.impl.NiceLogProcessDefaultImpl;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -80,6 +86,33 @@ public class NiceLogConfiguration {
             }
 
             return new RabbitMQLogAspect(order);
+        }
+    }
+
+    @ConditionalOnClass(FeignClient.class)
+    @Configuration(proxyBeanMethods = false)
+    protected static    class FeignLogAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.feignLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
+        public FeignLogAspect niceLogAnnotationLog() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableNiceLog != null) {
+                order = enableNiceLog.<Integer>getNumber("feignLogOrder");
+            }
+
+            return new FeignLogAspect(order);
+        }
+
+        @Bean(name = "com.suchtool.nicelog.feignLogRequestInterceptor")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
+        public FeignLogRequestInterceptor feignLogRequestInterceptor() {
+            return new FeignLogRequestInterceptor();
+        }
+
+        @Bean(name = "com.suchtool.nicelog.feignLogResponseDecoder")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
+        public FeignLogResponseDecoder feignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+            return new FeignLogResponseDecoder(messageConverters);
         }
     }
 
