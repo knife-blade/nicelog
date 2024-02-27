@@ -27,4 +27,9 @@ public class NiceLogContext {
      */
     private String entryMethodTag;
 
+    /**
+     * feign原始body
+     */
+    private String feignOriginResponseBody;
+
 }

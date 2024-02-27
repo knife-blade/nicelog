@@ -22,10 +22,11 @@
 2. RabbitMQ日志
 3. XXL-JOB日志
 4. Bean的方法或者类上加@NiceLog注解
+5. Feign日志
 
 **3. 更多功能**
 
-准备支持：Feign日志、RocketMQ、Kafka等
+准备支持：RocketMQ、Kafka等
 
 ## 3.快速开始
 
@@ -77,10 +78,7 @@ public class HelloController {
 **2. 自动收集日志**
 
 自动收集相关组件的日志。
-
-原理：除了Feign，都使用AOP。
-Feign：实现RequestInterceptor接口收集请求日志，继承SpringDecoder收集响应日志。（若Feign用AOP，有些日志收集不到，比如：因响应格式不对导致的失败）
-
+原理：使用AOP。
 
 **3. 手动打印日志**
 
@@ -116,8 +114,7 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.enableFeignLog  | 启用Feign日志  |  true |
 
 ### 5.2 设置优先级
-日志自动收集功能是通过AOP实现的（Feign不是用的AOP）。
-你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
+日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
 @EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, niceLogAnnotationLogOrder = 4, feignRequestLogOrder = 5, feignResponseLogOrder = 6)
 ```
