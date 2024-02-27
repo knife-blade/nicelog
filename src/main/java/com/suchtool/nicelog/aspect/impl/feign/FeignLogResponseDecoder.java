@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
-public class FeignLogResponseInterceptor extends SpringDecoder {
+public class FeignLogResponseDecoder extends SpringDecoder {
 
-    public FeignLogResponseInterceptor(ObjectFactory<HttpMessageConverters> messageConverters) {
+    public FeignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         super(messageConverters);
     }
 
