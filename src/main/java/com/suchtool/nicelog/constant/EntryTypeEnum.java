@@ -3,7 +3,7 @@ package com.suchtool.nicelog.constant;
 import lombok.Getter;
 
 @Getter
-public enum AspectTypeEnum {
+public enum EntryTypeEnum {
     MANUAL("手动"),
     CONTROLLER("接口"),
     RABBIT_MQ("RabbitMQ"),
@@ -14,7 +14,7 @@ public enum AspectTypeEnum {
 
     private final String name;
 
-    AspectTypeEnum(String name) {
+    EntryTypeEnum(String name) {
         this.name = name;
     }
 }

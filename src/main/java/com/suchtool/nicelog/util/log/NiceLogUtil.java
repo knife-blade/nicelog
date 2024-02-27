@@ -1,6 +1,6 @@
 package com.suchtool.nicelog.util.log;
 
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
@@ -37,7 +37,7 @@ public class NiceLogUtil {
         BeanUtils.copyProperties(niceLogBO, logInnerBO);
         logInnerBO.setLogTime(DateTimeUtil.format(LocalDateTime.now(),
                 DateTimeFormatConstant.DATE_TIME_FORMAT_NORMAL));
-        logInnerBO.setAspectType(AspectTypeEnum.MANUAL);
+        logInnerBO.setEntryType(EntryTypeEnum.MANUAL);
         logInnerBO.setLevel(level);
 
         NiceLogInnerUtil.record(logInnerBO);

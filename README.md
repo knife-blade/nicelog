@@ -111,12 +111,15 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.collectAll  | 收集所有  | true  |
 | suchtool.nicelog.enableControllerLog  | 启用Controller日志  |  true |
 | suchtool.nicelog.enableXxlJobLog  | 启用XXL-JOB日志  |  true |
-| suchtool.nicelog.enableXxlJobLog  | 启用RabbitMQ日志  |  true |
+| suchtool.nicelog.enableRabbitMQLog  | 启用RabbitMQ日志  |  true |
+| suchtool.nicelog.enableNiceLogAnnotationLog  | 启用RabbitMQ日志  |  true |
+| suchtool.nicelog.enableFeignLog  | 启用Feign日志  |  true |
 
 ### 5.2 设置优先级
-日志自动收集功能是通过AOP实现的，你可以手动指定AOP的优先级：在SpringBoot的启动类上加如下注解即可：
+日志自动收集功能是通过AOP实现的（Feign不是用的AOP）。
+你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
-@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3)
+@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, niceLogAnnotationLogOrder = 4, feignRequestLogOrder = 5, feignResponseLogOrder = 6)
 ```
 比如：
 ```
@@ -137,33 +140,33 @@ public class DemoApplication {
 }
 ```
 ## 6. 字段的含义
-| Key | 含义 | 备注 |
-| --- | --- | --- |
-| param | 入参 | 手动时可自定义 |
-| returnValue | 返回值 | 手动时可自定义 |
-| mark | 标记 | 手动时可自定义 |
-| errorInfo | 错误信息 | 手动时可自定义  |
-| throwable | Throwable异常类 | 手动时可自定义 |
-| appName | 应用名字 | 取的是spring.application.name配置 |
-| entry | 入口 | 对于Controller，是URL；对于RabbitMQ，是@RabbitMQ的queues；对于XXL-JOB，是@XxlJob的value。作为上下文传递。 |
-| entryClassTag | 入口类的tag | 取值优先级为：@NiceLog的value > Controller类上的@Api的tags > Controller类上的@Api的value。作为上下文传递。 |
-| entryMethodTag | 入口方法的tag |  取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。 |
-| className | 类名 |  |
-| classTag | 当前类的tag | 取值同entryClassTag，但不作为上下文传递。 |
-| methodName | 方法名 |  |
-| methodTag | 当前方法的tag | 取值同entryMethodTag，但不作为上下文传递。 |
-| methodDetail | 方法详情 | 全限定类名+方法名+全限定参数 |
-| codeLineNumber | 代码所在的行数 | 只在手动输出时有值。 |
-| level | 级别 | INFO、WARNING、ERROR |
-| aspectType | 切面类型 | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解 |
-| directionType | 方向 | IN：方法进入；OUT：方法退出；INNER：方法内部执行 |
-| traceId | 链路id | 作为上下文传递 |
-| logTime | 日志时间 |  |
-| clientIp | 客户端IP |  |
-| ip | 调用方IP |  |
-| other1 | 备用字段1 | 手动时可自定义 |
-| other2 | 备用字段2 | 手动时可自定义 |
-| other3 | 备用字段3 | 手动时可自定义 |
-| other4 | 备用字段4 | 手动时可自定义 |
-| other5 | 备用字段5 | 手动时可自定义 |
+| Key            | 含义           | 备注                                                                                                   |
+|----------------|--------------|------------------------------------------------------------------------------------------------------|
+| param          | 入参           | 手动时可自定义                                                                                              |
+| returnValue    | 返回值          | 手动时可自定义                                                                                              |
+| mark           | 标记           | 手动时可自定义                                                                                              |
+| errorInfo      | 错误信息         | 手动时可自定义                                                                                              |
+| throwable      | Throwable异常类 | 手动时可自定义                                                                                              |
+| appName        | 应用名字         | 取的是spring.application.name配置                                                                         |
+| entryType      | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；Feign：Feign |
+| entry          | 入口           | 对于Controller，是URL；对于RabbitMQ，是@RabbitMQ的queues；对于XXL-JOB，是@XxlJob的value。作为上下文传递。                     |
+| entryClassTag  | 入口类的tag      | 取值优先级为：@NiceLog的value > Controller类上的@Api的tags > Controller类上的@Api的value。作为上下文传递。                    |
+| entryMethodTag | 入口方法的tag     | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                   |
+| className      | 类名           |                                                                                                      |
+| classTag       | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。|
+| methodName     | 方法名          |  |
+| methodTag      | 当前方法的tag     | 取值同entryMethodTag，但不作为上下文传递。                                                                         |
+| methodDetail   | 方法详情         | 全限定类名+方法名+全限定参数                                                                                      |
+| codeLineNumber | 代码所在的行数      | 只在手动输出时有值。                                                                                           |
+| level          | 级别           | INFO、WARNING、ERROR                                                                                   |
+| directionType  | 方向           | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                        |
+| traceId        | 链路id         | 作为上下文传递                                                                                              |
+| logTime        | 日志时间         |                                                                                                      |
+| clientIp       | 客户端IP        |                                                                                                      |
+| ip             | 调用方IP        |                                                                                                      |
+| other1         | 备用字段1        | 手动时可自定义                                                                                              |
+| other2         | 备用字段2        | 手动时可自定义                                                                                              |
+| other3         | 备用字段3        | 手动时可自定义                                                                                              |
+| other4         | 备用字段4        | 手动时可自定义                                                                                              |
+| other5         | 备用字段5        | 手动时可自定义                                                                                              |
 

@@ -2,15 +2,12 @@ package com.suchtool.nicelog.aspect.impl;
 
 import com.suchtool.nicelog.aspect.LogAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
-import com.suchtool.nicelog.constant.AspectTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @NiceLog注解日志
@@ -57,8 +54,8 @@ public class NiceLogAnnotationAspect extends LogAspectProcessor implements Order
     }
 
     @Override
-    public AspectTypeEnum provideType() {
-        return AspectTypeEnum.NICE_LOG_ANNOTATION;
+    public EntryTypeEnum provideEntryType() {
+        return EntryTypeEnum.NICE_LOG_ANNOTATION;
     }
 
     @Override
