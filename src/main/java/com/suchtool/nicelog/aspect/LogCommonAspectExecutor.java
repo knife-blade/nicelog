@@ -16,10 +16,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import java.lang.reflect.Method;
 
-public class LogAspectExecutor {
+public class LogCommonAspectExecutor {
     private final LogAspectProcessor logAspectProcessor;
 
-    public LogAspectExecutor(LogAspectProcessor logAspectProcessor) {
+    public LogCommonAspectExecutor(LogAspectProcessor logAspectProcessor) {
         this.logAspectProcessor = logAspectProcessor;
     }
 
@@ -27,15 +27,22 @@ public class LogAspectExecutor {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
+        Object[] args = joinPoint.getArgs();
+
+        before(method, args, null);
+    }
+
+    public void before(Method method, Object[] args, String param) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }
 
-        String param = null;
+        // 如果param不为空就取它，否则根据method和args拼接
+        String finalParam = null;
         try {
-            Object provideParam = logAspectProcessor.provideParam(joinPoint.getArgs(), method);
+            Object provideParam = logAspectProcessor.provideParam(param, method, args);
             if (provideParam != null) {
-                param = JsonUtil.toJsonString(provideParam);
+                finalParam = JsonUtil.toJsonString(provideParam);
             }
         } catch (Throwable t) {
             NiceLogUtil.createBuilder()
@@ -51,7 +58,7 @@ public class LogAspectExecutor {
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.INFO);
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
-        logInnerBO.setParam(param);
+        logInnerBO.setParam(finalParam);
 
         recordContext(logInnerBO);
 
@@ -62,6 +69,11 @@ public class LogAspectExecutor {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
+        afterReturning(method, returnValue);
+    }
+
+    public void afterReturning(Method method,
+                               Object returnValue) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }
@@ -85,7 +97,10 @@ public class LogAspectExecutor {
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
+        afterThrowing(method, throwable);
+    }
 
+    public void afterThrowing(Method method, Throwable throwable) {
         if (!logAspectProcessor.requireProcess(method)) {
             return;
         }
@@ -120,6 +135,7 @@ public class LogAspectExecutor {
 
     private void fillCommonField(NiceLogInnerBO logInnerBO,
                                  Method method) {
+        logInnerBO.setEntryType(logAspectProcessor.provideEntryType());
         logInnerBO.setEntry(logAspectProcessor.provideEntry(method));
         logInnerBO.setEntryClassTag(logAspectProcessor.provideEntryClassTag(method));
         logInnerBO.setEntryMethodTag(logAspectProcessor.provideEntryMethodTag(method));
@@ -128,7 +144,6 @@ public class LogAspectExecutor {
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
         logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
-        logInnerBO.setEntryType(logAspectProcessor.provideEntryType());
         logInnerBO.setIp(IpUtil.parseIP());
         logInnerBO.setClientIp(IpUtil.parseClientIP());
     }

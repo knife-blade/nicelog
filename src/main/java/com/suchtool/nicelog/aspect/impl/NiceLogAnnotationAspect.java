@@ -1,6 +1,6 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.LogAspectExecutor;
+import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import org.aspectj.lang.JoinPoint;
@@ -14,12 +14,12 @@ import java.lang.reflect.Method;
  */
 @Aspect
 public class NiceLogAnnotationAspect extends LogAspectProcessor implements Ordered {
-    private final LogAspectExecutor logAspectExecutor;
+    private final LogCommonAspectExecutor logCommonAspectExecutor;
 
     private final int order;
 
     public NiceLogAnnotationAspect(int order) {
-        this.logAspectExecutor = new LogAspectExecutor(this);
+        this.logCommonAspectExecutor = new LogCommonAspectExecutor(this);
         this.order = order;
     }
 
@@ -35,17 +35,17 @@ public class NiceLogAnnotationAspect extends LogAspectProcessor implements Order
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        logAspectExecutor.before(joinPoint);
+        logCommonAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        logAspectExecutor.afterReturning(joinPoint, returnValue);
+        logCommonAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        logAspectExecutor.afterThrowing(joinPoint, throwingValue);
+        logCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
     @Override
