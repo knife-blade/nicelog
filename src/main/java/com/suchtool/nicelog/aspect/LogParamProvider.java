@@ -2,11 +2,14 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * 日志参数提供者
@@ -73,7 +76,17 @@ public interface LogParamProvider {
         return methodTag;
     }
 
-    default Object provideParam(Object[] args, Method method) {
-        return MethodUtil.parseParam(method, args);
+    /**
+     * 如果param不为空则取它；否则根据method和args去解析
+     */
+    default String provideParam(String param, Method method, Object[] args) {
+        String finalParam = null;
+        if (StringUtils.hasText(param)) {
+            finalParam = param;
+        } else {
+            Map<String, Object> map = MethodUtil.parseParam(method, args);
+            finalParam = JsonUtil.toJsonString(map);
+        }
+        return finalParam;
     }
 }

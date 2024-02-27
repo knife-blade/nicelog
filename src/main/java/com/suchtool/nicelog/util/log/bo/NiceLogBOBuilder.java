@@ -70,4 +70,29 @@ public final class NiceLogBOBuilder {
         niceLogBO.setOther5(other5);
         return this;
     }
+
+    public NiceLogBOBuilder other6(String other6) {
+        niceLogBO.setOther6(other6);
+        return this;
+    }
+
+    public NiceLogBOBuilder other7(String other7) {
+        niceLogBO.setOther7(other7);
+        return this;
+    }
+
+    public NiceLogBOBuilder other8(String other8) {
+        niceLogBO.setOther8(other8);
+        return this;
+    }
+
+    public NiceLogBOBuilder other9(String other9) {
+        niceLogBO.setOther9(other9);
+        return this;
+    }
+
+    public NiceLogBOBuilder other10(String other10) {
+        niceLogBO.setOther10(other10);
+        return this;
+    }
 }

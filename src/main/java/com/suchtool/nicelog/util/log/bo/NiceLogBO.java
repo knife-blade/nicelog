@@ -55,4 +55,29 @@ public class NiceLogBO {
      */
     private String other5;
 
+    /**
+     * 其他6
+     */
+    private String other6;
+
+    /**
+     * 其他7
+     */
+    private String other7;
+
+    /**
+     * 其他8
+     */
+    private String other8;
+
+    /**
+     * 其他9
+     */
+    private String other9;
+
+    /**
+     * 其他10
+     */
+    private String other10;
+
 }
