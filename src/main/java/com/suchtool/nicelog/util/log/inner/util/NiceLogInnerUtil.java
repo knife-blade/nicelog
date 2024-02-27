@@ -14,9 +14,6 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class NiceLogInnerUtil {
     public static void record(NiceLogInnerBO logInnerBO) {
-        logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
-                .getProperty("spring.application.name", ""));
-
         fillCommonField(logInnerBO);
 
         NiceLogProcess niceLogProcess = ApplicationContextHolder.getContext()
@@ -28,6 +25,9 @@ public class NiceLogInnerUtil {
      * 填充公共字段
      */
     private static void fillCommonField(NiceLogInnerBO logInnerBO) {
+        logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
+                .getProperty("spring.application.name", ""));
+
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             logInnerBO.setTraceId(niceLogContext.getTraceId());
