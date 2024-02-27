@@ -34,6 +34,7 @@ public class NiceLogInnerUtil {
             logInnerBO.setEntry(niceLogContext.getEntry());
             logInnerBO.setEntryClassTag(niceLogContext.getEntryClassTag());
             logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
+            logInnerBO.setOriginReturnValue(niceLogContext.getFeignOriginResponseBody());
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
