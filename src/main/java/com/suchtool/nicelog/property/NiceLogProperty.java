@@ -40,4 +40,9 @@ public class NiceLogProperty {
      * 启用Feign日志
      */
     private Boolean enableFeignLog = true;
+
+    // /**
+    //  * 不收集Feign日志的包名
+    //  */
+    // private String ignoreFeignLogPackageName;
 }
