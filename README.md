@@ -18,15 +18,17 @@
 
 当前支持的组件有：
 
-1. Controller日志
-2. RabbitMQ日志
-3. XXL-JOB日志
+1. Controller
+2. RabbitMQ
+3. XXL-JOB
 4. Bean的方法或者类上加@NiceLog注解
-5. Feign日志
+5. Feign
+6. RocketMQ
+7. Kafka
 
 **3. 更多功能**
 
-准备支持：RocketMQ、Kafka等
+准备支持：我自己暂时想不到了。如果有需求请提issue
 
 ## 3.快速开始
 
@@ -77,8 +79,7 @@ public class HelloController {
 
 **2. 自动收集日志**
 
-自动收集相关组件的日志。
-原理：使用AOP。
+自动收集相关组件的日志。原理：使用AOP。
 
 **3. 手动打印日志**
 
@@ -103,22 +104,26 @@ NiceLogUtil.createBuilder()
 
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
-| 配置  | 描述  | 默认值  |
-| ------------ | ------------ |------|
-| suchtool.nicelog.enabled  | 启用日志  | true |
-| suchtool.nicelog.collectAll  | 收集所有  | true |
-| suchtool.nicelog.enableControllerLog  | 启用Controller日志  | true |
-| suchtool.nicelog.enableXxlJobLog  | 启用XXL-JOB日志  | true |
-| suchtool.nicelog.enableRabbitMQLog  | 启用RabbitMQ日志  | true |
-| suchtool.nicelog.enableNiceLogAnnotationLog  | 启用RabbitMQ日志  | true |
-| suchtool.nicelog.enableFeignLog  | 启用Feign日志  | true |
-| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
-| suchtool.nicelog.feignTraceIdHeader  | feign的traceId的header名字  | nice-log-trace-id |
+| 配置                                          | 描述                     | 默认值  |
+|---------------------------------------------|------------------------|------|
+| suchtool.nicelog.enabled                    | 启用日志                   | true |
+| suchtool.nicelog.collectAll                 | 收集所有                   | true |
+| suchtool.nicelog.enableControllerLog        | 启用Controller日志         | true |
+| suchtool.nicelog.enableXxlJobLog            | 启用XXL-JOB日志            | true |
+| suchtool.nicelog.enableRabbitMQLog          | 启用RabbitMQ日志           | true |
+| suchtool.nicelog.enableRocketMQLog          | 启用RocketMQ日志           | true |
+| suchtool.nicelog.enableKafkaLog             | 启用KafkaMQ日志            | true |
+| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志           | true |
+| suchtool.nicelog.enableFeignLog             | 启用Feign日志              | true |
+| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开  | 空  |
+| suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
 
 ### 5.2 设置优先级
 日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
-@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, niceLogAnnotationLogOrder = 4, feignLogOrder = 5)
+@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, 
+  niceLogAnnotationLogOrder = 4, rocketMQLogOrder = 6, kafkaLogOrder,
+  feignLogOrder = 5, feignRequestInterceptorOrder = 6)
 ```
 比如：
 ```
@@ -139,38 +144,38 @@ public class DemoApplication {
 }
 ```
 ## 6. 字段的含义
-| Key            | 含义           | 备注                                                                                                   |
-|----------------|--------------|------------------------------------------------------------------------------------------------------|
-| param          | 入参           | 手动时可自定义                                                                                              |
-| returnValue    | 返回值          | 手动时可自定义                                                                                              |
-| mark           | 标记           | 手动时可自定义                                                                                              |
-| errorInfo      | 错误信息         | 手动时可自定义                                                                                              |
-| throwable      | Throwable异常类 | 手动时可自定义                                                                                              |
-| appName        | 应用名字         | 取的是spring.application.name配置                                                                         |
-| entryType      | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；Feign：Feign |
-| entry          | 入口           | 对于Controller，是URL；对于RabbitMQ，是@RabbitMQ的queues；对于XXL-JOB，是@XxlJob的value。作为上下文传递。                     |
-| entryClassTag  | 入口类的tag      | 取值优先级为：@NiceLog的value > Controller类上的@Api的tags > Controller类上的@Api的value。作为上下文传递。                    |
-| entryMethodTag | 入口方法的tag     | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                   |
-| className      | 类名           |                                                                                                      |
-| classTag       | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。|
-| methodName     | 方法名          |  |
-| methodTag      | 当前方法的tag     | 取值同entryMethodTag，但不作为上下文传递。                                                                         |
-| methodDetail   | 方法详情         | 全限定类名+方法名+全限定参数                                                                                      |
-| codeLineNumber | 代码所在的行数      | 只在手动输出时有值。                                                                                           |
-| level          | 级别           | INFO、WARNING、ERROR                                                                                   |
-| directionType  | 方向           | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                        |
-| traceId        | 链路id         | 作为上下文传递                                                                                              |
-| logTime        | 日志时间         |                                                                                                      |
-| clientIp       | 客户端IP        |                                                                                                      |
-| ip             | 调用方IP        |                                                                                                      |
-| other1         | 备用字段1        | 手动时可自定义                                                                                              |
-| other2         | 备用字段2        | 手动时可自定义                                                                                              |
-| other3         | 备用字段3        | 手动时可自定义                                                                                              |
-| other4         | 备用字段4        | 手动时可自定义                                                                                              |
-| other5         | 备用字段5        | 手动时可自定义                                                                                              |
-| other6         | 备用字段6        | 手动时可自定义                                                                                              |
-| other7         | 备用字段7        | 手动时可自定义                                                                                              |
-| other8         | 备用字段8        | 手动时可自定义                                                                                              |
-| other9         | 备用字段9        | 手动时可自定义                                                                                              |
-| other10        | 备用字段10       | 手动时可自定义                                                                                              |
+| Key            | 含义           | 备注                                                                                                                                                                                |
+|----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| param          | 入参           | 手动时可自定义                                                                                                                                                                           |
+| returnValue    | 返回值          | 手动时可自定义                                                                                                                                                                           |
+| mark           | 标记           | 手动时可自定义                                                                                                                                                                           |
+| errorInfo      | 错误信息         | 手动时可自定义                                                                                                                                                                           |
+| throwable      | Throwable异常类 | 手动时可自定义                                                                                                                                                                           |
+| appName        | 应用名字         | 取的是spring.application.name配置                                                                                                                                                      |
+| entryType      | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka                                  |
+| entry          | 入口           | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
+| entryClassTag  | 入口类的tag      | 取值优先级为：@NiceLog的value > Controller类上的@Api的tags > Controller类上的@Api的value。作为上下文传递。                                                                                                 |
+| entryMethodTag | 入口方法的tag     | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                |
+| className      | 类名           |                                                                                                                                                                                   |
+| classTag       | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。                                                                                                                                                       |
+| methodName     | 方法名          |                                                                                                                                                                                   |
+| methodTag      | 当前方法的tag     | 取值同entryMethodTag，但不作为上下文传递。                                                                                                                                                      |
+| methodDetail   | 方法详情         | 全限定类名+方法名+全限定参数                                                                                                                                                                   |
+| codeLineNumber | 代码所在的行数      | 只在手动输出时有值。                                                                                                                                                                        |
+| level          | 级别           | INFO、WARNING、ERROR                                                                                                                                                                |
+| directionType  | 方向           | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                                                                                                     |
+| traceId        | 链路id         | 作为上下文传递                                                                                                                                                                           |
+| logTime        | 日志时间         |                                                                                                                                                                                   |
+| clientIp       | 客户端IP        |                                                                                                                                                                                   |
+| ip             | 调用方IP        |                                                                                                                                                                                   |
+| other1         | 备用字段1        | 手动时可自定义                                                                                                                                                                           |
+| other2         | 备用字段2        | 手动时可自定义                                                                                                                                                                           |
+| other3         | 备用字段3        | 手动时可自定义                                                                                                                                                                           |
+| other4         | 备用字段4        | 手动时可自定义                                                                                                                                                                           |
+| other5         | 备用字段5        | 手动时可自定义                                                                                                                                                                           |
+| other6         | 备用字段6        | 手动时可自定义                                                                                                                                                                           |
+| other7         | 备用字段7        | 手动时可自定义                                                                                                                                                                           |
+| other8         | 备用字段8        | 手动时可自定义                                                                                                                                                                           |
+| other9         | 备用字段9        | 手动时可自定义                                                                                                                                                                           |
+| other10        | 备用字段10       | 手动时可自定义                                                                                                                                                                           |
 

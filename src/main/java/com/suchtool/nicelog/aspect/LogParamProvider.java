@@ -2,6 +2,7 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
@@ -84,8 +85,15 @@ public interface LogParamProvider {
         if (StringUtils.hasText(param)) {
             finalParam = param;
         } else {
-            Map<String, Object> map = MethodUtil.parseParam(method, args);
-            finalParam = JsonUtil.toJsonString(map);
+            try {
+                Map<String, Object> map = MethodUtil.parseParam(method, args);
+                finalParam = JsonUtil.toJsonString(map);
+            } catch (Exception e) {
+                NiceLogUtil.createBuilder()
+                        .mark("解析参数失败")
+                        .throwable(e)
+                        .error();
+            }
         }
         return finalParam;
     }

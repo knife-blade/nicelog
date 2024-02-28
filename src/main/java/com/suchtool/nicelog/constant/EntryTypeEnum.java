@@ -9,7 +9,9 @@ public enum EntryTypeEnum {
     RABBIT_MQ("RabbitMQ"),
     XXL_JOB("XXL-JOB"),
     NICE_LOG_ANNOTATION("NiceLog注解"),
-    FEIGN("Feign")
+    FEIGN("Feign"),
+    ROCKETMQ("RocketMQ"),
+    KAFKA("Kafka"),
     ;
 
     private final String name;

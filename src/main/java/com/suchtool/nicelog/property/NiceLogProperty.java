@@ -50,4 +50,9 @@ public class NiceLogProperty {
      * feign的traceId的header名字
      */
     private String feignTraceIdHeader = "nice-log-trace-id";
+
+    /**
+     * 启用RocketMQ日志
+     */
+    private Boolean enableRocketMQLog = true;
 }
