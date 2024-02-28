@@ -55,7 +55,9 @@ public class LogCommonAspectExecutor {
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
         logInnerBO.setParam(param);
 
-        recordContext(logInnerBO);
+        if (logAspectProcessor.requireRecordContext()) {
+            recordContext(logInnerBO);
+        }
 
         NiceLogInnerUtil.record(logInnerBO);
     }
@@ -80,8 +82,10 @@ public class LogCommonAspectExecutor {
 
         logAspectProcessor.returningOrThrowingProcess();
 
-        // 清除，防止内存泄露
-        NiceLogContextThreadLocal.clear();
+        if (logAspectProcessor.requireRecordContext()) {
+            // 清除，防止内存泄露
+            NiceLogContextThreadLocal.clear();
+        }
     }
 
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
@@ -104,8 +108,11 @@ public class LogCommonAspectExecutor {
 
         logAspectProcessor.returningOrThrowingProcess();
 
-        // 清除，防止内存泄露
-        NiceLogContextThreadLocal.clear();
+        if (logAspectProcessor.requireRecordContext()) {
+
+            // 清除，防止内存泄露
+            NiceLogContextThreadLocal.clear();
+        }
     }
 
     /**

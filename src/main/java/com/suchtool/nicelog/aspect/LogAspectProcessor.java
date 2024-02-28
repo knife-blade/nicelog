@@ -27,4 +27,11 @@ public abstract class LogAspectProcessor implements LogParamProvider{
      * 正常返回或者抛异常的处理
      */
      public abstract void returningOrThrowingProcess();
+
+    /**
+     * 判断是否需要记录上下文
+     */
+    public boolean requireRecordContext() {
+        return true;
+    }
 }

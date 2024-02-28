@@ -75,6 +75,11 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
     }
 
     @Override
+    public boolean requireRecordContext() {
+        return false;
+    }
+
+    @Override
     public EntryTypeEnum provideEntryType() {
         return EntryTypeEnum.FEIGN;
     }

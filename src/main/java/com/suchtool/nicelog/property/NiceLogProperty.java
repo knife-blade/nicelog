@@ -41,8 +41,13 @@ public class NiceLogProperty {
      */
     private Boolean enableFeignLog = true;
 
-    // /**
-    //  * 不收集Feign日志的包名
-    //  */
-    // private String ignoreFeignLogPackageName;
+    /**
+     * 不收集Feign日志的包名，多个用逗号隔开
+     */
+    private String ignoreFeignLogPackageName;
+
+    /**
+     * feign的traceId的header名字
+     */
+    private String feignTraceIdHeader = "nice-log-trace-id";
 }

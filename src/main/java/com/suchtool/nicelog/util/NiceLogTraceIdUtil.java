@@ -1,14 +1,15 @@
 package com.suchtool.nicelog.util;
 
-import com.suchtool.nicelog.constant.TraceIdConstant;
+import com.suchtool.nicelog.property.NiceLogProperty;
+import com.suchtool.nicelog.util.log.context.NiceLogContext;
+import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -18,28 +19,52 @@ public class NiceLogTraceIdUtil {
     public static String readTraceId() {
         String traceId = null;
 
+        NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
+        if (niceLogContext != null) {
+            traceId = niceLogContext.getTraceId();
+            if (!StringUtils.hasText(traceId)) {
+                traceId = readOrCreateTraceId();
+                niceLogContext.setTraceId(traceId);
+            }
+        }
+
+        if (!StringUtils.hasText(traceId)) {
+            traceId = readOrCreateTraceId();
+        }
+
+        return traceId;
+    }
+
+    private static String readOrCreateTraceId() {
+        String traceId = null;
+
         // 如果header里有traceId，则取出
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes != null) {
             HttpServletRequest request = servletRequestAttributes.getRequest();
-            String traceIdOfHeader = request.getHeader(TraceIdConstant.TRACE_ID_HEADER);
+            NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
+            String traceIdOfHeader = request.getHeader(niceLogProperty.getFeignTraceIdHeader());
             if (StringUtils.hasText(traceIdOfHeader)) {
                 traceId = traceIdOfHeader;
             }
         }
 
-        // 如果使用了skywalking，则使用它的traceId
-        String skywalkingTraceId = TraceContext.traceId();
-        if (StringUtils.hasText(skywalkingTraceId)) {
-            int length = skywalkingTraceId.length();
-            if (length > 25) {
-                traceId = skywalkingTraceId;
+        if (!StringUtils.hasText(traceId)) {
+            // 如果使用了skywalking，则使用它的traceId
+            String skywalkingTraceId = TraceContext.traceId();
+            if (StringUtils.hasText(skywalkingTraceId)) {
+                int length = skywalkingTraceId.length();
+
+                // 如果太短，说明有问题。正常traceId超过25
+                if (length > 25) {
+                    traceId = skywalkingTraceId;
+                }
             }
         }
 
-        // 通过uuid创建一个traceId
         if (!StringUtils.hasText(traceId)) {
+            // 通过uuid创建一个traceId
             traceId = UUID.randomUUID().toString().replace("-", "");
         }
 
