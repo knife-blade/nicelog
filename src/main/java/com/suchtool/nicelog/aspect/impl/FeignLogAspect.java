@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,9 +88,12 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
         String url = standardEnvironment.resolvePlaceholders(feignClient.url());
         String path = standardEnvironment.resolvePlaceholders(feignClient.path());
 
-        RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-        String[] value = requestMapping.value();
-        String urlPrefix = value[0];
+        String urlPrefix = null;
+        RequestMapping requestMapping = AnnotatedElementUtils.getMergedAnnotation(method, RequestMapping.class);
+        if (requestMapping != null) {
+            String[] value = requestMapping.value();
+            urlPrefix = value[0];
+        }
 
         List<String> urlList = Arrays.asList(url, path, urlPrefix);
         finalUrl = HttpUrlUtil.joinUrl(urlList);
