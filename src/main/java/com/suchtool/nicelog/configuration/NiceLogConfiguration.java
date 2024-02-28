@@ -2,17 +2,14 @@ package com.suchtool.nicelog.configuration;
 
 import com.suchtool.nicelog.aspect.impl.*;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogRequestInterceptor;
-import com.suchtool.nicelog.aspect.impl.feign.FeignLogResponseDecoder;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.process.impl.NiceLogProcessDefaultImpl;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
@@ -104,12 +101,6 @@ public class NiceLogConfiguration {
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
         public FeignLogRequestInterceptor feignLogRequestInterceptor() {
             return new FeignLogRequestInterceptor();
-        }
-
-        @Bean(name = "com.suchtool.nicelog.feignLogResponseDecoder")
-        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
-        public FeignLogResponseDecoder feignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
-            return new FeignLogResponseDecoder(messageConverters);
         }
     }
 
