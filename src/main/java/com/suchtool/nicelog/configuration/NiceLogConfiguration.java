@@ -6,6 +6,7 @@ import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.process.impl.NiceLogProcessDefaultImpl;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
+import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,6 +16,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.kafka.annotation.KafkaListener;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "suchtool.nicelog.enabled", havingValue = "true", matchIfMissing = true)
@@ -100,7 +102,41 @@ public class NiceLogConfiguration {
         @Bean(name = "com.suchtool.nicelog.feignLogRequestInterceptor")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
         public FeignLogRequestInterceptor feignLogRequestInterceptor() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableNiceLog != null) {
+                order = enableNiceLog.<Integer>getNumber("feignRequestInterceptorOrder");
+            }
             return new FeignLogRequestInterceptor();
+        }
+    }
+
+    @ConditionalOnClass(RocketMQMessageListener.class)
+    @Configuration(proxyBeanMethods = false)
+    protected static class RocketMQAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.rocketMQLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRocketMQLog", havingValue = "true", matchIfMissing = true)
+        public RocketMQLogAspect rocketMQLogAspect() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableNiceLog != null) {
+                order = enableNiceLog.<Integer>getNumber("rocketMQLogOrder");
+            }
+
+            return new RocketMQLogAspect(order);
+        }
+    }
+
+    @ConditionalOnClass(KafkaListener.class)
+    @Configuration(proxyBeanMethods = false)
+    protected static class KafkaAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.kafkaMQLogAspect")
+        @ConditionalOnProperty(name = "com.suchtool.nicelog.enableKafkaLog", havingValue = "true", matchIfMissing = true)
+        public KafkaLogAspect kafkaMQLogAspect() {
+            int order = Ordered.LOWEST_PRECEDENCE;
+            if (enableNiceLog != null) {
+                order = enableNiceLog.<Integer>getNumber("kafkaLogOrder");
+            }
+
+            return new KafkaLogAspect(order);
         }
     }
 

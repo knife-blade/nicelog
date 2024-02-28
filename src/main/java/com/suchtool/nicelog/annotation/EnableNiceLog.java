@@ -37,8 +37,18 @@ public @interface EnableNiceLog {
     int feignLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
     /**
-     * Feign响应解码器的顺序
+     * Feign请求拦截器的顺序
      */
-    int feignDecoderOrder() default Ordered.HIGHEST_PRECEDENCE;
+    int feignRequestInterceptorOrder() default Ordered.HIGHEST_PRECEDENCE;
+
+    /**
+     * RocketMQ日志的顺序
+     */
+    int rocketMQLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
+     * Kafka日志的顺序
+     */
+    int kafkaLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
 }
