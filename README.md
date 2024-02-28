@@ -104,19 +104,21 @@ NiceLogUtil.createBuilder()
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
 | 配置  | 描述  | 默认值  |
-| ------------ | ------------ | ------------ |
-| suchtool.nicelog.enabled  | 启用日志  | true  |
-| suchtool.nicelog.collectAll  | 收集所有  | true  |
-| suchtool.nicelog.enableControllerLog  | 启用Controller日志  |  true |
-| suchtool.nicelog.enableXxlJobLog  | 启用XXL-JOB日志  |  true |
-| suchtool.nicelog.enableRabbitMQLog  | 启用RabbitMQ日志  |  true |
-| suchtool.nicelog.enableNiceLogAnnotationLog  | 启用RabbitMQ日志  |  true |
-| suchtool.nicelog.enableFeignLog  | 启用Feign日志  |  true |
+| ------------ | ------------ |------|
+| suchtool.nicelog.enabled  | 启用日志  | true |
+| suchtool.nicelog.collectAll  | 收集所有  | true |
+| suchtool.nicelog.enableControllerLog  | 启用Controller日志  | true |
+| suchtool.nicelog.enableXxlJobLog  | 启用XXL-JOB日志  | true |
+| suchtool.nicelog.enableRabbitMQLog  | 启用RabbitMQ日志  | true |
+| suchtool.nicelog.enableNiceLogAnnotationLog  | 启用RabbitMQ日志  | true |
+| suchtool.nicelog.enableFeignLog  | 启用Feign日志  | true |
+| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
+| suchtool.nicelog.feignTraceIdHeader  | feign的traceId的header名字  | nice-log-trace-id |
 
 ### 5.2 设置优先级
 日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
-@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, niceLogAnnotationLogOrder = 4, feignRequestLogOrder = 5, feignResponseLogOrder = 6)
+@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, niceLogAnnotationLogOrder = 4, feignLogOrder = 5)
 ```
 比如：
 ```
