@@ -7,6 +7,7 @@ import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -54,6 +55,9 @@ public interface LogParamProvider {
                 } else {
                     classTag = value;
                 }
+            } else if (EntryTypeEnum.FEIGN.equals(provideEntryType())) {
+                FeignClient feignClient = declaringClass.getAnnotation(FeignClient.class);
+                classTag = feignClient.value();
             }
         }
 

@@ -101,7 +101,7 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
         }
 
         List<String> urlList = Arrays.asList(url, path, urlPrefix);
-        finalUrl = HttpUrlUtil.joinUrl(urlList);
+        finalUrl = HttpUrlUtil.joinUrl(urlList, false);
 
         return finalUrl;
     }

@@ -35,8 +35,6 @@ public class NiceLogUtil {
     private static void convertAndRecord(NiceLogBO niceLogBO, LogLevelEnum level) {
         NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         BeanUtils.copyProperties(niceLogBO, logInnerBO);
-        logInnerBO.setLogTime(DateTimeUtil.format(LocalDateTime.now(),
-                DateTimeFormatConstant.DATE_TIME_FORMAT_NORMAL));
         logInnerBO.setEntryType(EntryTypeEnum.MANUAL);
         logInnerBO.setLevel(level);
 

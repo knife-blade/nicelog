@@ -1,11 +1,14 @@
 package com.suchtool.nicelog.util.log.inner.util;
 
+import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
+import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
+import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -28,6 +31,9 @@ public class NiceLogInnerUtil {
         logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
                 .getProperty("spring.application.name", ""));
 
+        logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
+        logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
+
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             logInnerBO.setTraceId(niceLogContext.getTraceId());
@@ -44,9 +50,10 @@ public class NiceLogInnerUtil {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
             logInnerBO.setCodeLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
+            logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
         logInnerBO.setLogTime(LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
     }
 }
