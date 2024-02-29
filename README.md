@@ -63,9 +63,9 @@ public class HelloController {
 
 日志输出结果：
 ```
-2024-02-29 19:15:20.607  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":"{\"userName\":\"Tony\"}","returnValue":null,"mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"IN","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.591","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-2024-02-29 19:15:20.619  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":null,"mark":"我的打印","errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"MANUAL","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":null,"methodName":"test","methodTag":null,"methodDetail":null,"codeLineNumber":"23","level":"INFO","directionType":"INNER","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.619","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-2024-02-29 19:15:20.620  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":"\"success\"","mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"OUT","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.620","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-02-29 19:15:20.607  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":"{\"userName\":\"Tony\"}","returnValue":null,"mark":null,"businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"IN","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.591","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-02-29 19:15:20.619  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":null,"mark":"我的打印","businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"MANUAL","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":null,"methodName":"test","methodTag":null,"methodDetail":null,"codeLineNumber":"23","level":"INFO","directionType":"INNER","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.619","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-02-29 19:15:20.620  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":"\"success\"","mark":null,"businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"OUT","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.620","clientIp":"10.0.10.110","ip":"10.0.10.110"}
 ```
 
 ## 4 使用说明
@@ -115,21 +115,33 @@ NiceLogUtil.createBuilder()
 
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
-| 配置                                          | 描述                     | 默认值  |
-|---------------------------------------------|------------------------|------|
-| suchtool.nicelog.enabled                    | 启用日志                   | true |
-| suchtool.nicelog.collectAll                 | 收集所有                   | true |
-| suchtool.nicelog.enableControllerLog        | 启用Controller日志         | true |
-| suchtool.nicelog.enableXxlJobLog            | 启用XXL-JOB日志            | true |
-| suchtool.nicelog.enableRabbitMQLog          | 启用RabbitMQ日志           | true |
-| suchtool.nicelog.enableRocketMQLog          | 启用RocketMQ日志           | true |
-| suchtool.nicelog.enableKafkaLog             | 启用KafkaMQ日志            | true |
-| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志           | true |
-| suchtool.nicelog.enableFeignLog             | 启用Feign日志              | true |
-| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开  | 空  |
+| 配置                                          | 描述                   | 默认值  |
+|---------------------------------------------|----------------------|------|
+| suchtool.nicelog.enabled                    | 启用日志                 | true |
+| suchtool.nicelog.collectAll                 | 收集所有                 | true |
+| suchtool.nicelog.enableControllerLog        | 启用Controller日志       | true |
+| suchtool.nicelog.enableXxlJobLog            | 启用XXL-JOB日志          | true |
+| suchtool.nicelog.enableRabbitMQLog          | 启用RabbitMQ日志         | true |
+| suchtool.nicelog.enableRocketMQLog          | 启用RocketMQ日志         | true |
+| suchtool.nicelog.enableKafkaLog             | 启用Kafka日志            | true |
+| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志         | true |
+| suchtool.nicelog.enableFeignLog             | 启用Feign日志            | true |
+| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
 | suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
 
-### 5.2 设置优先级
+### 5.2 日志开关
+默认会自动收集所有支持组件的日志。可以自由的开关：
+
+**场景1：不收集某个组件**
+假如不收集Kafka的日志，就这样配置yml：suchtool.nicelog.enableKafkaLog=false
+
+**场景2：关闭所有组件，只收集标有@NiceLog的类或方法**
+配置yml：suchtool.nicelog.collectAll=false
+
+**场景3：不收集某个类或方法**
+在类或者方法上加注解：@NiceLogIgnore
+
+### 5.3 设置优先级
 日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
 @EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, 
@@ -160,6 +172,7 @@ public class DemoApplication {
 | param          | 入参           | 手动时可自定义                                                                                                                                                                           |
 | returnValue    | 返回值          | 手动时可自定义                                                                                                                                                                           |
 | mark           | 标记           | 手动时可自定义                                                                                                                                                                           |
+| businessNo     | 业务单号         | 手动时可自定义                                                                                                                                                                           |
 | errorInfo      | 错误信息         | 手动时可自定义                                                                                                                                                                           |
 | throwable      | Throwable异常类 | 手动时可自定义                                                                                                                                                                           |
 | appName        | 应用名字         | 取的是spring.application.name配置                                                                                                                                                      |
