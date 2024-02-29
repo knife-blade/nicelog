@@ -5,6 +5,8 @@ import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
+import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
@@ -37,9 +39,21 @@ public class NiceLogInnerUtil {
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             logInnerBO.setTraceId(niceLogContext.getTraceId());
-            logInnerBO.setEntry(niceLogContext.getEntry());
-            logInnerBO.setEntryClassTag(niceLogContext.getEntryClassTag());
-            logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
+        }
+
+        if (EntryTypeEnum.FEIGN.equals(logInnerBO.getEntryType())) {
+            NiceLogFeignContext niceLogFeignContext = NiceLogFeignContextThreadLocal.read();
+            if (niceLogFeignContext != null) {
+                logInnerBO.setEntry(niceLogFeignContext.getEntry());
+                logInnerBO.setEntryClassTag(niceLogFeignContext.getEntryClassTag());
+                logInnerBO.setEntryMethodTag(niceLogFeignContext.getEntryMethodTag());
+            }
+        } else {
+            if (niceLogContext != null) {
+                logInnerBO.setEntry(niceLogContext.getEntry());
+                logInnerBO.setEntryClassTag(niceLogContext.getEntryClassTag());
+                logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
+            }
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
