@@ -36,6 +36,11 @@ public final class NiceLogBOBuilder {
         return this;
     }
 
+    public NiceLogBOBuilder businessNo(String businessNo) {
+        niceLogBO.setBusinessNo(businessNo);
+        return this;
+    }
+
     public NiceLogBOBuilder errorInfo(String errorInfo) {
         niceLogBO.setErrorInfo(errorInfo);
         return this;

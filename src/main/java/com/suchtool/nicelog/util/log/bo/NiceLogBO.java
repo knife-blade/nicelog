@@ -20,6 +20,11 @@ public class NiceLogBO {
     private String mark;
 
     /**
+     * 业务单号
+     */
+    private String businessNo;
+
+    /**
      * 错误信息
      */
     private String errorInfo;
