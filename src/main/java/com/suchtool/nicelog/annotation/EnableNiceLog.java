@@ -34,12 +34,12 @@ public @interface EnableNiceLog {
     /**
      * Feign日志的顺序
      */
-    int feignLogOrder() default Ordered.LOWEST_PRECEDENCE;
+    int feignLogOrder() default Ordered.LOWEST_PRECEDENCE - 100;
 
     /**
      * Feign请求拦截器的顺序
      */
-    int feignRequestInterceptorOrder() default Ordered.HIGHEST_PRECEDENCE;
+    int feignRequestInterceptorOrder() default Ordered.HIGHEST_PRECEDENCE + 100;
 
     /**
      * RocketMQ日志的顺序
