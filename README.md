@@ -63,10 +63,9 @@ public class HelloController {
 
 日志输出结果：
 ```
-2024-01-31 21:43:07.230  INFO 25272 --- [nio-8080-exec-4] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":"{\"user\":{\"id\":\"123\",\"loginCount\":null},\"email\":\"aa@qq.com\"}","returnValue":null,"mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"appName":"","entry":"/test/test1","entryClassTag":"测试类","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试类","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(com.knife.example.entity.User,java.lang.String)","codeLineNumber":null,"level":"INFO","aspectType":"CONTROLLER","directionType":"IN","traceId":"15a44a630dac4147993a0d1df44ae04e","logTime":"2024-01-31 21:43:07","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-2024-01-31 21:43:07.241  INFO 25272 --- [nio-8080-exec-4] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":null,"mark":"我的打印","errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"appName":"","entry":"/test/test1","entryClassTag":"测试类","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":null,"methodName":"test","methodTag":null,"methodDetail":null,"codeLineNumber":"23","level":"INFO","aspectType":"MANUAL","directionType":null,"traceId":"15a44a630dac4147993a0d1df44ae04e","logTime":"2024-01-31 21:43:07","clientIp":null,"ip":null}
-2024-01-31 21:43:07.242  INFO 25272 --- [nio-8080-exec-4] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":"\"success\"","mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"appName":"","entry":"/test/test1","entryClassTag":"测试类","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试类","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(com.knife.example.entity.User,java.lang.String)","codeLineNumber":null,"level":"INFO","aspectType":"CONTROLLER","directionType":"OUT","traceId":"15a44a630dac4147993a0d1df44ae04e","logTime":"2024-01-31 21:43:07","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-
+2024-02-29 19:15:20.607  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":"{\"userName\":\"Tony\"}","returnValue":null,"mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"IN","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.591","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-02-29 19:15:20.619  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":null,"mark":"我的打印","errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"MANUAL","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":null,"methodName":"test","methodTag":null,"methodDetail":null,"codeLineNumber":"23","level":"INFO","directionType":"INNER","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.619","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-02-29 19:15:20.620  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":"\"success\"","mark":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"OUT","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.620","clientIp":"10.0.10.110","ip":"10.0.10.110"}
 ```
 
 ## 4 使用说明
@@ -76,6 +75,18 @@ public class HelloController {
 默认情况下，会通过logback输出。
 
 支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(NiceLogInnerBO niceLogInnerBO)方法即可。
+例如：
+```
+@Component
+public class CustomLogProcessor implements NiceLogProcess {
+    @Override
+    public void process(NiceLogInnerBO logInnerBO) {
+        // 这里可以这么做：
+        // 1.取出logInnerBO的字段值，赋值到项目本身的日志实体类
+        // 2.打印到控制台或者上传到ES等
+    }
+}
+```
 
 **2. 自动收集日志**
 
@@ -152,9 +163,9 @@ public class DemoApplication {
 | errorInfo      | 错误信息         | 手动时可自定义                                                                                                                                                                           |
 | throwable      | Throwable异常类 | 手动时可自定义                                                                                                                                                                           |
 | appName        | 应用名字         | 取的是spring.application.name配置                                                                                                                                                      |
-| entryType      | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka                                  |
+| entryType      | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka                                               |
 | entry          | 入口           | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
-| entryClassTag  | 入口类的tag      | 取值优先级为：@NiceLog的value > Controller类上的@Api的tags > Controller类上的@Api的value。作为上下文传递。                                                                                                 |
+| entryClassTag  | 入口类的tag      | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。                                                 |
 | entryMethodTag | 入口方法的tag     | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                |
 | className      | 类名           |                                                                                                                                                                                   |
 | classTag       | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。                                                                                                                                                       |

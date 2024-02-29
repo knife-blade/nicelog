@@ -35,10 +35,7 @@ public class LogCommonAspectExecutor {
 
         String param = null;
         try {
-            Object provideParam = logAspectProcessor.provideParam(null, method, args);
-            if (provideParam != null) {
-                param = JsonUtil.toJsonString(provideParam);
-            }
+            param = logAspectProcessor.provideParam(null, method, args);
         } catch (Throwable t) {
             NiceLogUtil.createBuilder()
                     .errorInfo("参数转JSON字符串异常")
@@ -109,7 +106,6 @@ public class LogCommonAspectExecutor {
         logAspectProcessor.returningOrThrowingProcess();
 
         if (logAspectProcessor.requireRecordContext()) {
-
             // 清除，防止内存泄露
             NiceLogContextThreadLocal.clear();
         }
@@ -138,7 +134,5 @@ public class LogCommonAspectExecutor {
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
         logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
-        logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
-        logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
     }
 }
