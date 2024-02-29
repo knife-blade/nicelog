@@ -1,11 +1,14 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
+import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.NiceLogTraceIdUtil;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
+import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.niceutil.util.base.JsonUtil;
@@ -52,9 +55,7 @@ public class LogCommonAspectExecutor {
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
         logInnerBO.setParam(param);
 
-        if (logAspectProcessor.requireRecordContext()) {
-            recordContext(logInnerBO);
-        }
+        recordContext(logInnerBO);
 
         NiceLogInnerUtil.record(logInnerBO);
     }
@@ -79,10 +80,8 @@ public class LogCommonAspectExecutor {
 
         logAspectProcessor.returningOrThrowingProcess();
 
-        if (logAspectProcessor.requireRecordContext()) {
-            // 清除，防止内存泄露
-            NiceLogContextThreadLocal.clear();
-        }
+        // 清除，防止内存泄露
+        clearContext();
     }
 
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
@@ -105,8 +104,14 @@ public class LogCommonAspectExecutor {
 
         logAspectProcessor.returningOrThrowingProcess();
 
-        if (logAspectProcessor.requireRecordContext()) {
-            // 清除，防止内存泄露
+        // 清除，防止内存泄露
+        clearContext();
+    }
+
+    private void clearContext() {
+        if (EntryTypeEnum.FEIGN.equals(logAspectProcessor.provideEntryType())) {
+            NiceLogFeignContextThreadLocal.clear();
+        } else {
             NiceLogContextThreadLocal.clear();
         }
     }
@@ -115,12 +120,20 @@ public class LogCommonAspectExecutor {
      * 记录上下文信息
      */
     private void recordContext(NiceLogInnerBO logInnerBO) {
-        NiceLogContext niceLogContext = new NiceLogContext();
-        niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
-        niceLogContext.setEntry(logInnerBO.getEntry());
-        niceLogContext.setEntryClassTag(logInnerBO.getEntryClassTag());
-        niceLogContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
-        NiceLogContextThreadLocal.write(niceLogContext);
+        if (EntryTypeEnum.FEIGN.equals(logAspectProcessor.provideEntryType())) {
+            NiceLogFeignContext niceLogFeignContext = new NiceLogFeignContext();
+            niceLogFeignContext.setEntry(logInnerBO.getEntry());
+            niceLogFeignContext.setEntryClassTag(logInnerBO.getEntryClassTag());
+            niceLogFeignContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
+            NiceLogFeignContextThreadLocal.write(niceLogFeignContext);
+        } else {
+            NiceLogContext niceLogContext = new NiceLogContext();
+            niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
+            niceLogContext.setEntry(logInnerBO.getEntry());
+            niceLogContext.setEntryClassTag(logInnerBO.getEntryClassTag());
+            niceLogContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
+            NiceLogContextThreadLocal.write(niceLogContext);
+        }
     }
 
     private void fillCommonField(NiceLogInnerBO logInnerBO,
