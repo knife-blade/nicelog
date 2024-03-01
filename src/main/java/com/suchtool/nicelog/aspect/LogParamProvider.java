@@ -8,6 +8,7 @@ import com.suchtool.niceutil.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -91,10 +92,12 @@ public interface LogParamProvider {
         } else {
             try {
                 Map<String, Object> map = MethodUtil.parseParam(method, args);
-                finalParam = JsonUtil.toJsonString(map);
-            } catch (Exception e) {
+                if (!CollectionUtils.isEmpty(map)) {
+                    finalParam = JsonUtil.toJsonString(map);
+                }
+            } catch (Throwable e) {
                 NiceLogUtil.createBuilder()
-                        .mark("解析参数失败")
+                        .mark("nicelog解析参数失败")
                         .throwable(e)
                         .error();
             }
