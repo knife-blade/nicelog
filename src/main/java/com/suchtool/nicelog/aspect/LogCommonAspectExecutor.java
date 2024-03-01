@@ -14,6 +14,7 @@ import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.niceutil.util.base.JsonUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
+import org.apache.kafka.common.protocol.types.Field;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -74,7 +75,19 @@ public class LogCommonAspectExecutor {
         // logInnerBO.setCodeLineNumber(null);
         logInnerBO.setLevel(LogLevelEnum.INFO);
         logInnerBO.setDirectionType(DirectionTypeEnum.OUT);
-        logInnerBO.setReturnValue(JsonUtil.toJsonString(returnValue));
+
+        String returnValueString = null;
+        if (returnValue != null) {
+            try {
+                returnValueString = JsonUtil.toJsonString(returnValue);
+            } catch (Throwable e) {
+                NiceLogUtil.createBuilder()
+                        .mark("nicelog将返回值序列化为json失败")
+                        .throwable(e)
+                        .error();
+            }
+        }
+        logInnerBO.setReturnValue(returnValueString);
 
         NiceLogInnerUtil.record(logInnerBO);
 
