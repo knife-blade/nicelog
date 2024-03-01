@@ -166,6 +166,30 @@ public class DemoApplication {
 
 }
 ```
+### 5.4 收集Feign原始响应body
+如果你没有自定义Feign的Decoder，是能够收集到原始响应body的。
+如果你自定义了Feign的Decoder，则需要手动保存一下body，这样后边就能打印出来，例如：
+```
+@Configuration
+public class FeignLogResponseDecoder extends SpringDecoder {
+    public FeignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+        super(messageConverters);
+    }
+
+    @Override
+    public Object decode(final Response response, Type type) throws IOException, FeignException {
+        Response.Body body = response.body();
+        String bodyString = StreamUtils.copyToString(body.asInputStream(), StandardCharsets.UTF_8);
+        // 这里将body保存下来
+        NiceLogFeignContextThreadLocal.saveOriginFeignResponseBody(bodyString);
+
+        // body流只能读一次，必须重新封装一下
+        Response newResponse = response.toBuilder().body(bodyString, StandardCharsets.UTF_8).build();
+        return super.decode(newResponse, type);
+    }
+}
+```
+
 ## 6. 字段的含义
 | Key            | 含义           | 备注                                                                                                                                                                                |
 |----------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

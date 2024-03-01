@@ -15,23 +15,33 @@ public class NiceLogFeignContextThreadLocal {
             LOG_CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
-     * 清除日志上下文信息
+     * 清除数据
      */
     public static void clear() {
         LOG_CONTEXT_THREAD_LOCAL.remove();
     }
 
     /**
-     * 存储日志上下文信息
+     * 存储数据
      */
     public static void write(NiceLogFeignContext niceLogFeignContext) {
         LOG_CONTEXT_THREAD_LOCAL.set(niceLogFeignContext);
     }
 
     /**
-     * 获取当前日志上下文信息
+     * 获取数据
      */
     public static NiceLogFeignContext read() {
         return LOG_CONTEXT_THREAD_LOCAL.get();
+    }
+
+    /**
+     * 存储feign原始响应体
+     */
+    public static void saveOriginFeignResponseBody(String body) {
+        NiceLogFeignContext niceLogFeignContext = LOG_CONTEXT_THREAD_LOCAL.get();
+        if (niceLogFeignContext != null) {
+            niceLogFeignContext.setFeignOriginResponseBody(body);
+        }
     }
 }

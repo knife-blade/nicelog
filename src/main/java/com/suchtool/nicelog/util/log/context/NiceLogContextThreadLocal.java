@@ -15,21 +15,21 @@ public class NiceLogContextThreadLocal {
             LOG_CONTEXT_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
-     * 清除日志上下文信息
+     * 清除数据
      */
     public static void clear() {
         LOG_CONTEXT_THREAD_LOCAL.remove();
     }
 
     /**
-     * 存储日志上下文信息
+     * 存储数据
      */
     public static void write(NiceLogContext niceLogContext) {
         LOG_CONTEXT_THREAD_LOCAL.set(niceLogContext);
     }
 
     /**
-     * 获取当前日志上下文信息
+     * 获取当前数据
      */
     public static NiceLogContext read() {
         return LOG_CONTEXT_THREAD_LOCAL.get();
