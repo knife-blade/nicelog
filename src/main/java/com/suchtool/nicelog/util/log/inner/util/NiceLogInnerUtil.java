@@ -8,6 +8,7 @@ import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
+import com.suchtool.niceutil.util.base.ThrowableUtil;
 import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
@@ -36,6 +37,29 @@ public class NiceLogInnerUtil {
         logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
         logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
 
+        // 填充上下文
+        fillContext(logInnerBO);
+
+        // 填充栈信息
+        if (logInnerBO.getThrowable() != null) {
+            logInnerBO.setStack(ThrowableUtil.getStackTrace(logInnerBO.getThrowable()));
+        }
+
+        // 通过堆栈获得调用方的类名、方法名、代码行号
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement stackTraceElement = stackTrace[6];
+        if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
+            logInnerBO.setClassName(stackTraceElement.getClassName());
+            logInnerBO.setMethodName(stackTraceElement.getMethodName());
+            logInnerBO.setCodeLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
+            logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
+        }
+
+        logInnerBO.setLogTime(LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
+    }
+
+    private static void fillContext(NiceLogInnerBO logInnerBO) {
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             logInnerBO.setTraceId(niceLogContext.getTraceId());
@@ -56,19 +80,5 @@ public class NiceLogInnerUtil {
                 logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
             }
         }
-
-        // 通过堆栈获得调用方的类名、方法名、代码行号
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement stackTraceElement = stackTrace[6];
-
-        if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
-            logInnerBO.setClassName(stackTraceElement.getClassName());
-            logInnerBO.setMethodName(stackTraceElement.getMethodName());
-            logInnerBO.setCodeLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
-            logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
-        }
-
-        logInnerBO.setLogTime(LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
     }
 }

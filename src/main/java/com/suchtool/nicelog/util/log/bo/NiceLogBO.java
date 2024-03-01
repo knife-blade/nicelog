@@ -1,5 +1,6 @@
 package com.suchtool.nicelog.util.log.bo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
@@ -35,9 +36,15 @@ public class NiceLogBO {
     private String errorInfo;
 
     /**
+     * 错误详细信息
+     */
+    private String errorDetailInfo;
+
+    /**
      * 异常信息
      * 可通过工具类获得异常堆栈：{@link com.suchtool.niceutil.util.base.ThrowableUtil}
      */
+    @JsonIgnore
     private Throwable throwable;
 
     /**
