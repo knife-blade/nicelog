@@ -47,6 +47,7 @@ public class NiceLogInnerUtil {
                 logInnerBO.setEntry(niceLogFeignContext.getEntry());
                 logInnerBO.setEntryClassTag(niceLogFeignContext.getEntryClassTag());
                 logInnerBO.setEntryMethodTag(niceLogFeignContext.getEntryMethodTag());
+                logInnerBO.setOriginReturnValue(niceLogFeignContext.getFeignOriginResponseBody());
             }
         } else {
             if (niceLogContext != null) {

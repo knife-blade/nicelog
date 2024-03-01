@@ -22,4 +22,8 @@ public class NiceLogFeignContext {
      */
     private String entryMethodTag;
 
+    /**
+     * 原始响应体
+     */
+    private String feignOriginResponseBody;
 }
