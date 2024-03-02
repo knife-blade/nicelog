@@ -215,6 +215,7 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | level             | 级别           | INFO、WARNING、ERROR                                                                                                                                                                |
 | directionType     | 方向           | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                                                                                                     |
 | traceId           | 链路id         | 作为上下文传递                                                                                                                                                                           |
+| stackTrace        | 栈追踪          |                                                                                                                                                                            |
 | logTime           | 日志时间         |                                                                                                                                                                                   |
 | clientIp          | 客户端IP        |                                                                                                                                                                                   |
 | ip                | 调用方IP        |                                                                                                                                                                                   |
