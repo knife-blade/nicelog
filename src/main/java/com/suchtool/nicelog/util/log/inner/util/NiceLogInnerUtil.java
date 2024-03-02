@@ -8,6 +8,7 @@ import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
+import com.suchtool.niceutil.util.base.StackTraceUtil;
 import com.suchtool.niceutil.util.base.ThrowableUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
@@ -39,9 +40,24 @@ public class NiceLogInnerUtil {
         // 填充上下文
         fillContext(logInnerBO);
 
-        // 填充栈信息
+        // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
-            logInnerBO.setStackTrace(ThrowableUtil.getStackTrace(logInnerBO.getThrowable()));
+            logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(logInnerBO.getThrowable()));
+        } else {
+            if (logInnerBO.getPrintStackTrace() != null
+                    && logInnerBO.getPrintStackTrace()) {
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                // 移除nicelog内的调用链路
+                int removeLineCount = 6;
+                StackTraceElement[] newStackTrace = new StackTraceElement[stackTrace.length - removeLineCount];
+                for (int i = 0; i < stackTrace.length; i++) {
+                    if (i < removeLineCount) {
+                        continue;
+                    }
+                    newStackTrace[i - removeLineCount] = stackTrace[i];
+                }
+                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace));
+            }
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号

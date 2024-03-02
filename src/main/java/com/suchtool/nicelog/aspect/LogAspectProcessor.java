@@ -3,12 +3,9 @@ package com.suchtool.nicelog.aspect;
 import com.suchtool.nicelog.annotation.NiceLogIgnore;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.suchtool.niceutil.util.spring.AopUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public abstract class LogAspectProcessor implements LogParamProvider{

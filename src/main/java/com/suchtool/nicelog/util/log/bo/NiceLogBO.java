@@ -1,6 +1,7 @@
 package com.suchtool.nicelog.util.log.bo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import lombok.Data;
 
 @Data
@@ -41,11 +42,15 @@ public class NiceLogBO {
     private String errorDetailInfo;
 
     /**
-     * 异常信息
-     * 可通过工具类获得异常堆栈：{@link com.suchtool.niceutil.util.base.ThrowableUtil}
+     * 异常信息。栈追踪字符串会自动保存到{@link NiceLogInnerBO#getStackTrace()}
      */
     @JsonIgnore
     private Throwable throwable;
+
+    /**
+     * 打印栈追踪(用于非异常时主动获得栈追踪）
+     */
+    private Boolean printStackTrace;
 
     /**
      * 其他1
