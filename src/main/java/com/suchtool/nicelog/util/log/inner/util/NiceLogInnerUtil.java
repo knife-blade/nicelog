@@ -9,7 +9,6 @@ import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.niceutil.util.base.ThrowableUtil;
-import com.suchtool.niceutil.util.reflect.MethodUtil;
 import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
 import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class NiceLogInnerUtil {
 
         // 填充栈信息
         if (logInnerBO.getThrowable() != null) {
-            logInnerBO.setStack(ThrowableUtil.getStackTrace(logInnerBO.getThrowable()));
+            logInnerBO.setStackTrace(ThrowableUtil.getStackTrace(logInnerBO.getThrowable()));
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号

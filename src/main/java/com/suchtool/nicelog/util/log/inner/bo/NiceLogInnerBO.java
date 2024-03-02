@@ -89,9 +89,9 @@ public class NiceLogInnerBO extends NiceLogBO {
     private String traceId;
 
     /**
-     * 栈信息
+     * 栈追踪
      */
-    private String stack;
+    private String stackTrace;
 
     /**
      * 时间
