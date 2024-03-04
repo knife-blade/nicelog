@@ -2,7 +2,7 @@ package com.suchtool.nicelog.process.impl;
 
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
-import com.suchtool.niceutil.util.base.JsonUtil;
+import com.suchtool.nicetool.util.base.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -11,10 +11,8 @@ import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
-import com.suchtool.niceutil.util.base.JsonUtil;
-import com.suchtool.niceutil.util.reflect.MethodUtil;
-import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
-import org.apache.kafka.common.protocol.types.Field;
+import com.suchtool.nicetool.util.base.JsonUtil;
+import com.suchtool.nicetool.util.reflect.MethodUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 

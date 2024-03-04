@@ -3,7 +3,7 @@ package com.suchtool.nicelog.aspect;
 import com.suchtool.nicelog.annotation.NiceLogIgnore;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
+import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;

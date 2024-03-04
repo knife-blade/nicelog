@@ -3,7 +3,7 @@ package com.suchtool.nicelog.util;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
-import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
+import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
