@@ -8,10 +8,10 @@ import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContextThreadLocal;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
-import com.suchtool.niceutil.util.base.StackTraceUtil;
-import com.suchtool.niceutil.util.base.ThrowableUtil;
-import com.suchtool.niceutil.util.spring.ApplicationContextHolder;
-import com.suchtool.niceutil.util.web.ip.ClientIpUtil;
+import com.suchtool.nicetool.util.base.StackTraceUtil;
+import com.suchtool.nicetool.util.base.ThrowableUtil;
+import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
+import com.suchtool.nicetool.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
