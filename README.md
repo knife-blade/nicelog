@@ -37,7 +37,7 @@
 ```xml
 <dependency>
     <groupId>com.suchtool</groupId>
-    <artifactId>nice-log-spring-boot-starter</artifactId>
+    <artifactId>nicelog-spring-boot-starter</artifactId>
     <version>{newest-version}</version>
 </dependency>
 ```
