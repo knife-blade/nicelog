@@ -1,8 +1,8 @@
-# nice-log
+# nicelog
 
 ## 1.介绍
 
-功能强大的Java日志组件。
+nicelog：功能强大的Java日志组件。
 
 ## 2.功能
 
