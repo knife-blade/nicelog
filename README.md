@@ -19,12 +19,13 @@ nicelog：功能强大的Java日志组件。
 当前支持的组件有：
 
 1. Controller
-2. RabbitMQ
-3. XXL-JOB
-4. Bean的方法或者类上加@NiceLog注解
-5. Feign
+2. XXL-JOB
+3. Bean的方法或者类上加@NiceLog注解
+4. Feign
+5. RabbitMQ
 6. RocketMQ
 7. Kafka
+8. Scheduled
 
 **3. 更多功能**
 
@@ -126,6 +127,7 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.enableKafkaLog             | 启用Kafka日志            | true |
 | suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志         | true |
 | suchtool.nicelog.enableFeignLog             | 启用Feign日志            | true |
+| suchtool.nicelog.enableScheduledLog         | 启用@Scheduled日志       | true |
 | suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
 | suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
 
@@ -145,8 +147,8 @@ NiceLogUtil.createBuilder()
 日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
 ```
 @EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, 
-  niceLogAnnotationLogOrder = 4, rocketMQLogOrder = 6, kafkaLogOrder,
-  feignLogOrder = 5, feignRequestInterceptorOrder = 6)
+  niceLogAnnotationLogOrder = 4, rocketMQLogOrder = 6, kafkaLogOrder = 3,
+  feignLogOrder = 5, feignRequestInterceptorOrder = 6, scheduledLogOrder = 5)
 ```
 比如：
 ```
