@@ -7,11 +7,12 @@ public enum EntryTypeEnum {
     MANUAL("手动"),
     CONTROLLER("接口"),
     RABBIT_MQ("RabbitMQ"),
+    ROCKETMQ("RocketMQ"),
+    KAFKA("Kafka"),
     XXL_JOB("XXL-JOB"),
     NICE_LOG_ANNOTATION("NiceLog注解"),
     FEIGN("Feign"),
-    ROCKETMQ("RocketMQ"),
-    KAFKA("Kafka"),
+    SCHEDULED("Scheduled注解")
     ;
 
     private final String name;

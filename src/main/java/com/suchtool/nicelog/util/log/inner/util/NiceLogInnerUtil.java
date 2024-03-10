@@ -34,8 +34,10 @@ public class NiceLogInnerUtil {
         logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
                 .getProperty("spring.application.name", ""));
 
-        logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
-        logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
+        if (EntryTypeEnum.CONTROLLER.equals(logInnerBO.getEntryType())) {
+            logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
+            logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
+        }
 
         // 填充上下文
         fillContext(logInnerBO);

@@ -27,6 +27,16 @@ public @interface EnableNiceLog {
     int rabbitMQLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
     /**
+     * RocketMQ日志的顺序
+     */
+    int rocketMQLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
+     * Kafka日志的顺序
+     */
+    int kafkaLogOrder() default Ordered.LOWEST_PRECEDENCE;
+
+    /**
      * NiceLog注解日志的顺序
      */
     int niceLogAnnotationLogOrder() default Ordered.LOWEST_PRECEDENCE;
@@ -42,13 +52,8 @@ public @interface EnableNiceLog {
     int feignRequestInterceptorOrder() default Ordered.HIGHEST_PRECEDENCE + 100;
 
     /**
-     * RocketMQ日志的顺序
+     * Scheduled日志的顺序
      */
-    int rocketMQLogOrder() default Ordered.LOWEST_PRECEDENCE;
-
-    /**
-     * Kafka日志的顺序
-     */
-    int kafkaLogOrder() default Ordered.LOWEST_PRECEDENCE;
+    int scheduledLogOrder() default Ordered.LOWEST_PRECEDENCE;
 
 }
