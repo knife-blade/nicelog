@@ -5,6 +5,7 @@ import com.suchtool.nicelog.aspect.impl.feign.FeignLogRequestInterceptor;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogResponseDecoder;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.process.impl.NiceLogProcessDefaultImpl;
+import com.suchtool.nicelog.property.NiceLogAspectOrderProperty;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import feign.codec.Decoder;
@@ -31,71 +32,58 @@ public class NiceLogConfiguration {
         return new NiceLogProperty();
     }
 
+    @Bean(name = "com.suchtool.nicelog.niceLogAspectOrderProperty")
+    @ConfigurationProperties(prefix = "suchtool.nicelog.order")
+    public NiceLogAspectOrderProperty niceLogAspectOrderProperty() {
+        return new NiceLogAspectOrderProperty();
+    }
+
     @Configuration(proxyBeanMethods = false)
-    protected static class ControllerAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class ControllerAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.controllerLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableControllerLog", havingValue = "true", matchIfMissing = true)
-        public ControllerLogAspect controllerLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("controllerLogOrder");
-            }
-
+        public ControllerLogAspect controllerLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getControllerLogOrder();
             return new ControllerLogAspect(order);
         }
     }
 
     @ConditionalOnClass(XxlJob.class)
     @Configuration(proxyBeanMethods = false)
-    protected static class XxlJobAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class XxlJobAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.xxlJobLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableControllerLog", havingValue = "true", matchIfMissing = true)
-        public XxlJobLogAspect xxlJobLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("xxlJobLogOrder");
-            }
-
+        public XxlJobLogAspect xxlJobLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getXxlJobLogOrder();
             return new XxlJobLogAspect(order);
         }
     }
 
     @Configuration(proxyBeanMethods = false)
-    protected static class NiceLogAnnotationAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class NiceLogAnnotationAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableNiceLogAnnotationLog", havingValue = "true", matchIfMissing = true)
-        public NiceLogAnnotationAspect niceLogAnnotationLog() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("niceLogAnnotationLogOrder");
-            }
-
+        public NiceLogAnnotationAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getNiceLogAnnotationLogOrder();
             return new NiceLogAnnotationAspect(order);
         }
     }
 
     @ConditionalOnClass(FeignClient.class)
     @Configuration(proxyBeanMethods = false)
-    protected static class FeignLogAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class FeignLogAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.feignLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
-        public FeignLogAspect niceLogAnnotationLog() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("feignLogOrder");
-            }
-
+        public FeignLogAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getFeignLogOrder();
             return new FeignLogAspect(order);
         }
 
         @Bean(name = "com.suchtool.nicelog.feignLogRequestInterceptor")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
-        public FeignLogRequestInterceptor feignLogRequestInterceptor() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("feignRequestInterceptorOrder");
-            }
-            return new FeignLogRequestInterceptor();
+        public FeignLogRequestInterceptor feignLogRequestInterceptor(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getFeignRequestInterceptorOrder();
+            return new FeignLogRequestInterceptor(order);
         }
 
         @Bean(name = "com.suchtool.nicelog.feignLogResponseDecoder")
@@ -108,59 +96,43 @@ public class NiceLogConfiguration {
 
     @ConditionalOnClass(RabbitListener.class)
     @Configuration(proxyBeanMethods = false)
-    protected static class RabbitMQAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class RabbitMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.rabbitMQLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
-        public RabbitMQLogAspect rabbitMQLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("rabbitMQLogOrder");
-            }
-
+        public RabbitMQLogAspect rabbitMQLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getRabbitMQLogOrder();
             return new RabbitMQLogAspect(order);
         }
     }
 
     @ConditionalOnClass(RocketMQMessageListener.class)
     @Configuration(proxyBeanMethods = false)
-    protected static class RocketMQAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class RocketMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.rocketMQLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRocketMQLog", havingValue = "true", matchIfMissing = true)
-        public RocketMQLogAspect rocketMQLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("rocketMQLogOrder");
-            }
-
+        public RocketMQLogAspect rocketMQLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getRocketMQLogOrder();
             return new RocketMQLogAspect(order);
         }
     }
 
     @ConditionalOnClass(KafkaListener.class)
     @Configuration(proxyBeanMethods = false)
-    protected static class KafkaAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class KafkaAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.kafkaMQLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableKafkaLog", havingValue = "true", matchIfMissing = true)
-        public KafkaLogAspect kafkaMQLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("kafkaLogOrder");
-            }
-
+        public KafkaLogAspect kafkaMQLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getKafkaLogOrder();
             return new KafkaLogAspect(order);
         }
     }
 
     @Configuration(proxyBeanMethods = false)
-    protected static class ScheduledAspectConfiguration extends AbstractNiceLogAspectConfiguration {
+    protected static class ScheduledAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.scheduledLogAspect")
         @ConditionalOnProperty(name = "com.suchtool.nicelog.enableScheduledLog", havingValue = "true", matchIfMissing = true)
-        public ScheduledLogAspect scheduledLogAspect() {
-            int order = Ordered.LOWEST_PRECEDENCE;
-            if (enableNiceLog != null) {
-                order = enableNiceLog.<Integer>getNumber("scheduledLogOrder");
-            }
-
+        public ScheduledLogAspect scheduledLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getScheduledLogOrder();
             return new ScheduledLogAspect(order);
         }
     }

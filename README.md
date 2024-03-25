@@ -131,7 +131,22 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
 | suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
 
-### 5.2 日志开关
+### 5.2 设置优先级
+日志自动收集功能是通过AOP实现的，你可以用SpringBoot的配置文件指定它们的优先级：
+
+| 配置                                        | 描述                   | 默认值  |
+|---------------------------------------------|----------------------|------|
+| suchtool.nicelog.controller-log-order         | Controller接口日志的顺序 | 20000 |
+| suchtool.nicelog.xxl-job-log-order            | XxlJob日志的顺序         | 20000 |
+| suchtool.nicelog.rabbit-mq-log-order          | RabbitMQ日志的顺序       | 20000 |
+| suchtool.nicelog.rocket-mq-log-order          | RocketMQ日志的顺序      | 20000 |
+| suchtool.nicelog.kafka-log-order             | Kafka日志的顺序         | 20000 |
+| suchtool.nicelog.nice-log-annotation-log-order | NiceLog注解日志的顺序    | 20000 |
+| suchtool.nicelog.feign-log-order             | Feign日志的顺序（此值必须比其他的要小）| 19000 |
+| suchtool.nicelog.feign-request-interceptorOrder | Feign请求拦截器的顺序  | 20000 |
+| suchtool.nicelog.scheduled-log-order             | Scheduled日志的顺序  | 20000 |
+
+### 5.3 日志开关
 默认会自动收集所有支持组件的日志。可以自由的开关：
 
 **场景1：不收集某个组件**
@@ -143,31 +158,6 @@ NiceLogUtil.createBuilder()
 **场景3：不收集某个类或方法**
 在类或者方法上加注解：@NiceLogIgnore
 
-### 5.3 设置优先级
-日志自动收集功能是通过AOP实现的。你可以手动指定它们的优先级：在SpringBoot的启动类上加如下注解即可：
-```
-@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3, 
-  niceLogAnnotationLogOrder = 4, rocketMQLogOrder = 6, kafkaLogOrder = 3,
-  feignLogOrder = 5, feignRequestInterceptorOrder = 6, scheduledLogOrder = 5)
-```
-比如：
-```
-package com.knife.example;
-
-import com.suchtool.nicelog.annotation.EnableNiceLog;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-@EnableNiceLog(controllerLogOrder = 1, rabbitMQLogOrder = 2, xxlJobLogOrder = 3)
-public class DemoApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
-
-}
-```
 ### 5.4 收集Feign原始响应body
 如果你没有自定义Feign的Decoder，是能够收集到原始响应body的。
 如果你自定义了Feign的Decoder，则需要手动保存一下body，这样后边就能打印出来，例如：
@@ -193,43 +183,43 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 ```
 
 ## 6. 字段的含义
-| Key               | 含义         | 备注                                                                                                                                                                                |
-|-------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| param             | 入参         | 手动时可自定义                                                                                                                                                                           |
-| returnValue       | 返回值        | 手动时可自定义                                                                                                                                                                           |
-| originReturnValue | 原始返回值      | 手动时可自定义                                                                                                                                                                           |
-| mark              | 标记         | 手动时可自定义                                                                                                                                                                           |
-| businessNo        | 业务单号       | 手动时可自定义                                                                                                                                                                           |
-| errorInfo         | 错误信息       | 手动时可自定义                                                                                                                                                                           |
-| errorDetailInfo   | 错误详细信息     | 手动时可自定义                                                                                                                                                                           |
-| throwable         | Throwable异常类 | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace                                                                                                                                     |
-| printStackTrace   | 打印栈追踪      | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据                                                                                  |
-| appName           | 应用名字       | 取的是spring.application.name配置                                                                                                                                                      |
-| entryType         | 入口类型       | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka                                               |
-| entry             | 入口         | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
-| entryClassTag     | 入口类的tag    | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。                                                 |
-| entryMethodTag    | 入口方法的tag   | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                |
-| className         | 类名         |                                                                                                                                                                                   |
-| classTag          | 当前类的tag    | 取值同entryClassTag，但不作为上下文传递。                                                                                                                                                       |
-| methodName        | 方法名        |                                                                                                                                                                                   |
-| methodTag         | 当前方法的tag   | 取值同entryMethodTag，但不作为上下文传递。                                                                                                                                                      |
-| methodDetail      | 方法详情       | 全限定类名+方法名+全限定参数                                                                                                                                                                   |
-| codeLineNumber    | 代码所在的行数    | 只在手动输出时有值。                                                                                                                                                                        |
-| level             | 级别         | INFO、WARNING、ERROR                                                                                                                                                                |
-| directionType     | 方向         | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                                                                                                     |
-| traceId           | 链路id       | 作为上下文传递                                                                                                                                                                           |
-| stackTrace        | 栈追踪字符串     |                                                                                                                                                                                   |
-| logTime           | 日志时间       |                                                                                                                                                                                   |
-| clientIp          | 客户端IP      |                                                                                                                                                                                   |
-| ip                | 调用方IP      |                                                                                                                                                                                   |
-| other1            | 备用字段1      | 手动时可自定义                                                                                                                                                                           |
-| other2            | 备用字段2      | 手动时可自定义                                                                                                                                                                           |
-| other3            | 备用字段3      | 手动时可自定义                                                                                                                                                                           |
-| other4            | 备用字段4      | 手动时可自定义                                                                                                                                                                           |
-| other5            | 备用字段5      | 手动时可自定义                                                                                                                                                                           |
-| other6            | 备用字段6      | 手动时可自定义                                                                                                                                                                           |
-| other7            | 备用字段7      | 手动时可自定义                                                                                                                                                                           |
-| other8            | 备用字段8      | 手动时可自定义                                                                                                                                                                           |
-| other9            | 备用字段9      | 手动时可自定义                                                                                                                                                                           |
-| other10           | 备用字段10     | 手动时可自定义                                                                                                                                                                           |
+| Key | 含义 | 备注 |
+|-|-|--|
+| param | 入参 | 手动时可自定义 |
+| returnValue | 返回值 | 手动时可自定义 |
+| originReturnValue | 原始返回值 | 手动时可自定义 |
+| mark | 标记 | 手动时可自定义 |
+| businessNo | 业务单号 | 手动时可自定义 |
+| errorInfo | 错误信息 | 手动时可自定义 |
+| errorDetailInfo | 错误详细信息 | 手动时可自定义 |
+| throwable | Throwable异常类 | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace |
+| printStackTrace | 打印栈追踪 | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据 |
+| appName | 应用名字 | 取的是spring.application.name配置 |
+| entryType | 入口类型 | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
+| entry | 入口 | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
+| entryClassTag | 入口类的tag | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。 |
+| entryMethodTag | 入口方法的tag | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。 |
+| className | 类名 | |
+| classTag | 当前类的tag | 取值同entryClassTag，但不作为上下文传递。 |
+| methodName | 方法名 | |
+| methodTag | 当前方法的tag | 取值同entryMethodTag，但不作为上下文传递。 |
+| methodDetail | 方法详情 | 全限定类名+方法名+全限定参数 |
+| codeLineNumber | 代码所在的行数 | 只在手动输出时有值。 |
+| level | 级别 | INFO、WARNING、ERROR |
+| directionType | 方向 | IN：方法进入；OUT：方法退出；INNER：方法内部执行 |
+| traceId | 链路id | 作为上下文传递 |
+| stackTrace | 栈追踪字符串 | |
+| logTime | 日志时间 | |
+| clientIp | 客户端IP | |
+| ip | 调用方IP | |
+| other1 | 备用字段1 | 手动时可自定义 |
+| other2 | 备用字段2 | 手动时可自定义 |
+| other3 | 备用字段3 | 手动时可自定义 |
+| other4 | 备用字段4 | 手动时可自定义 |
+| other5 | 备用字段5 | 手动时可自定义 |
+| other6 | 备用字段6 | 手动时可自定义 |
+| other7 | 备用字段7 | 手动时可自定义 |
+| other8 | 备用字段8 | 手动时可自定义 |
+| other9 | 备用字段9 | 手动时可自定义 |
+| other10 | 备用字段10 | 手动时可自定义 |
 
