@@ -73,7 +73,7 @@ public class HelloController {
 
 **1. 打印日志**
 
-默认情况下，会通过logback输出。
+默认情况下，会通过logback输出（默认实现为：NiceLogProcessDefaultImpl）。
 
 支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(NiceLogInnerBO niceLogInnerBO)方法即可。
 例如：
