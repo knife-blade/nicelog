@@ -32,6 +32,11 @@ public class NiceLogBO {
     private String businessNo;
 
     /**
+     * 信息
+     */
+    private String message;
+
+    /**
      * 错误信息
      */
     private String errorInfo;
