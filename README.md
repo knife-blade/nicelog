@@ -190,6 +190,7 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | originReturnValue | 原始返回值 | 手动时可自定义 |
 | mark | 标记 | 手动时可自定义 |
 | businessNo | 业务单号 | 手动时可自定义 |
+| message | 信息 | 手动时可自定义 |
 | errorInfo | 错误信息 | 手动时可自定义 |
 | errorDetailInfo | 错误详细信息 | 手动时可自定义 |
 | throwable | Throwable异常类 | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace |

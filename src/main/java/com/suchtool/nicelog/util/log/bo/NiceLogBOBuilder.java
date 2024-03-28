@@ -41,6 +41,11 @@ public final class NiceLogBOBuilder {
         return this;
     }
 
+    public NiceLogBOBuilder message(String message) {
+        niceLogBO.setMessage(message);
+        return this;
+    }
+
     public NiceLogBOBuilder errorInfo(String errorInfo) {
         niceLogBO.setErrorInfo(errorInfo);
         return this;
