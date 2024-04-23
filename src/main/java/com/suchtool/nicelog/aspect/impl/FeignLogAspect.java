@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicetool.util.web.http.url.HttpUrlUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -39,7 +40,12 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@within(org.springframework.cloud.openfeign.FeignClient)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.FEIGN_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.FEIGN_LOG_ASPECT)
     public void pointcut() {
     }
 

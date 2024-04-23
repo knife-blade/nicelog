@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
@@ -37,7 +38,13 @@ public class RocketMQLogAspect extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@within(org.apache.rocketmq.spring.annotation.RocketMQMessageListener)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT + " && "
+            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
     public void pointcut() {
     }
 

@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -29,7 +30,13 @@ public class XxlJobLogAspect  extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@annotation(com.xxl.job.core.handler.annotation.XxlJob)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT + " && "
+            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
     public void pointcut() {
     }
 

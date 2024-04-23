@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
@@ -36,7 +37,13 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT + " && "
+     + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
     public void pointcut() {
     }
 
