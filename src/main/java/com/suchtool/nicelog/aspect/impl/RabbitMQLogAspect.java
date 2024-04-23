@@ -3,6 +3,7 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.amqp.core.Message;
@@ -31,7 +32,13 @@ public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT + " && "
+            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
     public void pointcut() {
     }
 

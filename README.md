@@ -142,7 +142,7 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.rocket-mq-log-order          | RocketMQ日志的顺序      | 20000 |
 | suchtool.nicelog.kafka-log-order             | Kafka日志的顺序         | 20000 |
 | suchtool.nicelog.nice-log-annotation-log-order | NiceLog注解日志的顺序    | 20000 |
-| suchtool.nicelog.feign-log-order             | Feign日志的顺序（此值必须比其他的要小）| 19000 |
+| suchtool.nicelog.feign-log-order             | Feign日志的顺序          | 20000 |
 | suchtool.nicelog.feign-request-interceptorOrder | Feign请求拦截器的顺序  | 20000 |
 | suchtool.nicelog.scheduled-log-order             | Scheduled日志的顺序  | 20000 |
 

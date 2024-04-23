@@ -3,15 +3,13 @@ package com.suchtool.nicelog.aspect.impl;
 import com.suchtool.nicelog.aspect.LogAspectProcessor;
 import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.Ordered;
 import org.springframework.kafka.annotation.KafkaListener;
 
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Kafka日志
@@ -32,7 +30,13 @@ public class KafkaLogAspect extends LogAspectProcessor implements Ordered {
         return order;
     }
 
-    @Pointcut("@annotation(org.springframework.kafka.annotation.KafkaListener)")
+    @Override
+    public String pointcutExpression() {
+        return NiceLogPointcutExpression.KAFKA_LOG_ASPECT;
+    }
+
+    @Pointcut(NiceLogPointcutExpression.KAFKA_LOG_ASPECT + " && "
+            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
     public void pointcut() {
     }
 

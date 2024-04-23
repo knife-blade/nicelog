@@ -1,5 +1,6 @@
 package com.suchtool.nicelog.configuration;
 
+import com.suchtool.nicelog.aspect.NiceLogAspectDispatcher;
 import com.suchtool.nicelog.aspect.impl.*;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogRequestInterceptor;
 import com.suchtool.nicelog.aspect.impl.feign.FeignLogResponseDecoder;
@@ -38,6 +39,11 @@ public class NiceLogConfiguration {
     @ConfigurationProperties(prefix = "suchtool.nicelog.order")
     public NiceLogAspectOrderProperty niceLogAspectOrderProperty() {
         return new NiceLogAspectOrderProperty();
+    }
+
+    @Bean(name = "com.suchtool.nicelog.niceLogAspectDispatcher")
+    public NiceLogAspectDispatcher niceLogAspectDispatcher() {
+        return new NiceLogAspectDispatcher();
     }
 
     @ConditionalOnProperty(name = "com.suchtool.nicelog.enableControllerLog", havingValue = "true", matchIfMissing = true)

@@ -37,7 +37,7 @@ public class NiceLogAspectOrderProperty {
     /**
      * Feign日志的顺序
      */
-    Integer feignLogOrder = 19000;
+    Integer feignLogOrder = 20000;
 
     /**
      * Feign请求拦截器的顺序
