@@ -27,14 +27,29 @@ public class NiceLogProperty {
     private Boolean enableXxlJobLog = true;
 
     /**
-     * 启用RabbitMQ日志
+     * 启用Scheduled日志
      */
-    private Boolean enableRabbitMQLog = true;
+    private Boolean enableScheduledLog = true;
 
     /**
      * 启用NiceLog注解日志
      */
     private Boolean enableNiceLogAnnotationLog = true;
+
+    /**
+     * 启用RabbitMQ日志
+     */
+    private Boolean enableRabbitMQLog = true;
+
+    /**
+     * 启用RocketMQ日志
+     */
+    private Boolean enableRocketMQLog = true;
+
+    /**
+     * 启用Kafka日志
+     */
+    private Boolean enableKafkaLog = true;
 
     /**
      * 启用Feign日志
@@ -51,8 +66,5 @@ public class NiceLogProperty {
      */
     private String feignTraceIdHeader = "nice-log-trace-id";
 
-    /**
-     * 启用RocketMQ日志
-     */
-    private Boolean enableRocketMQLog = true;
+
 }
