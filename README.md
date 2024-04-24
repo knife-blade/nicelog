@@ -122,15 +122,14 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.collectAll                 | 收集所有                 | true |
 | suchtool.nicelog.enableControllerLog        | 启用Controller日志       | true |
 | suchtool.nicelog.enableXxlJobLog            | 启用XXL-JOB日志          | true |
+| suchtool.nicelog.enableScheduledLog         | 启用@Scheduled日志       | true |
+| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志         | true |
 | suchtool.nicelog.enableRabbitMQLog          | 启用RabbitMQ日志         | true |
 | suchtool.nicelog.enableRocketMQLog          | 启用RocketMQ日志         | true |
 | suchtool.nicelog.enableKafkaLog             | 启用Kafka日志            | true |
-| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志         | true |
 | suchtool.nicelog.enableFeignLog             | 启用Feign日志            | true |
-| suchtool.nicelog.enableScheduledLog         | 启用@Scheduled日志       | true |
 | suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
 | suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
-
 ### 5.2 设置优先级
 日志自动收集功能是通过AOP实现的，你可以用SpringBoot的配置文件指定它们的优先级：
 

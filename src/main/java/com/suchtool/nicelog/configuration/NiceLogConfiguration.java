@@ -67,6 +67,17 @@ public class NiceLogConfiguration {
         }
     }
 
+    @ConditionalOnBean(ScheduledAnnotationBeanPostProcessor.class)
+    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableScheduledLog", havingValue = "true", matchIfMissing = true)
+    @Configuration(value = "com.suchtool.nicelog.niceLog.scheduledAspectConfiguration", proxyBeanMethods = false)
+    protected static class ScheduledAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.scheduledLogAspect")
+        public ScheduledLogAspect scheduledLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getScheduledLogOrder();
+            return new ScheduledLogAspect(order);
+        }
+    }
+
     @ConditionalOnProperty(name = "com.suchtool.nicelog.enableNiceLogAnnotationLog", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.niceLogAnnotationAspectConfiguration", proxyBeanMethods = false)
     protected static class NiceLogAnnotationAspectConfiguration {
@@ -74,29 +85,6 @@ public class NiceLogConfiguration {
         public NiceLogAnnotationAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
             int order = niceLogAspectOrderProperty.getNiceLogAnnotationLogOrder();
             return new NiceLogAnnotationAspect(order);
-        }
-    }
-
-    @ConditionalOnClass(FeignClient.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
-    @Configuration(value = "com.suchtool.nicelog.niceLog.feignLogAspectConfiguration", proxyBeanMethods = false)
-    protected static class FeignLogAspectConfiguration {
-        @Bean(name = "com.suchtool.nicelog.feignLogAspect")
-        public FeignLogAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
-            int order = niceLogAspectOrderProperty.getFeignLogOrder();
-            return new FeignLogAspect(order);
-        }
-
-        @Bean(name = "com.suchtool.nicelog.feignLogRequestInterceptor")
-        public FeignLogRequestInterceptor feignLogRequestInterceptor(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
-            int order = niceLogAspectOrderProperty.getFeignRequestInterceptorOrder();
-            return new FeignLogRequestInterceptor(order);
-        }
-
-        @Bean(name = "com.suchtool.nicelog.feignLogResponseDecoder")
-        @ConditionalOnMissingBean(Decoder.class)
-        public FeignLogResponseDecoder feignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
-            return new FeignLogResponseDecoder(messageConverters);
         }
     }
 
@@ -133,14 +121,26 @@ public class NiceLogConfiguration {
         }
     }
 
-    @ConditionalOnBean(ScheduledAnnotationBeanPostProcessor.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableScheduledLog", havingValue = "true", matchIfMissing = true)
-    @Configuration(value = "com.suchtool.nicelog.niceLog.scheduledAspectConfiguration", proxyBeanMethods = false)
-    protected static class ScheduledAspectConfiguration {
-        @Bean(name = "com.suchtool.nicelog.scheduledLogAspect")
-        public ScheduledLogAspect scheduledLogAspect(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
-            int order = niceLogAspectOrderProperty.getScheduledLogOrder();
-            return new ScheduledLogAspect(order);
+    @ConditionalOnClass(FeignClient.class)
+    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
+    @Configuration(value = "com.suchtool.nicelog.niceLog.feignLogAspectConfiguration", proxyBeanMethods = false)
+    protected static class FeignLogAspectConfiguration {
+        @Bean(name = "com.suchtool.nicelog.feignLogAspect")
+        public FeignLogAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getFeignLogOrder();
+            return new FeignLogAspect(order);
+        }
+
+        @Bean(name = "com.suchtool.nicelog.feignLogRequestInterceptor")
+        public FeignLogRequestInterceptor feignLogRequestInterceptor(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+            int order = niceLogAspectOrderProperty.getFeignRequestInterceptorOrder();
+            return new FeignLogRequestInterceptor(order);
+        }
+
+        @Bean(name = "com.suchtool.nicelog.feignLogResponseDecoder")
+        @ConditionalOnMissingBean(Decoder.class)
+        public FeignLogResponseDecoder feignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+            return new FeignLogResponseDecoder(messageConverters);
         }
     }
 
