@@ -119,17 +119,17 @@ NiceLogUtil.createBuilder()
 | 配置                                          | 描述                   | 默认值  |
 |---------------------------------------------|----------------------|------|
 | suchtool.nicelog.enabled                    | 启用日志                 | true |
-| suchtool.nicelog.collectAll                 | 收集所有                 | true |
-| suchtool.nicelog.enableControllerLog        | 启用Controller日志       | true |
-| suchtool.nicelog.enableXxlJobLog            | 启用XXL-JOB日志          | true |
-| suchtool.nicelog.enableScheduledLog         | 启用@Scheduled日志       | true |
-| suchtool.nicelog.enableNiceLogAnnotationLog | 启用@NiceLog日志         | true |
-| suchtool.nicelog.enableRabbitMQLog          | 启用RabbitMQ日志         | true |
-| suchtool.nicelog.enableRocketMQLog          | 启用RocketMQ日志         | true |
-| suchtool.nicelog.enableKafkaLog             | 启用Kafka日志            | true |
-| suchtool.nicelog.enableFeignLog             | 启用Feign日志            | true |
-| suchtool.nicelog.ignoreFeignLogPackageName  | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
-| suchtool.nicelog.feignTraceIdHeader         | feign的traceId的header名字 | nice-log-trace-id |
+| suchtool.nicelog.collect-all                | 收集所有                 | true |
+| suchtool.nicelog.enable-controller-log      | 启用Controller日志       | true |
+| suchtool.nicelog.enable-xxl-job-log         | 启用XXL-JOB日志          | true |
+| suchtool.nicelog.enable-scheduled-log       | 启用@Scheduled日志       | true |
+| suchtool.nicelog.enable-nice-log-annotation-log | 启用@NiceLog日志        | true |
+| suchtool.nicelog.enable-rabbit-mq-log          | 启用RabbitMQ日志         | true |
+| suchtool.nicelog.enable-rocket-mq-log          | 启用RocketMQ日志         | true |
+| suchtool.nicelog.enable-kafka-log              | 启用Kafka日志            | true |
+| suchtool.nicelog.enable-feign-log              | 启用Feign日志            | true |
+| suchtool.nicelog.ignore-feign-log-package-name | 不收集Feign日志的包名，多个用逗号隔开 | 空  |
+| suchtool.nicelog.feign-trace-id-header         | feign的traceId的header名字 | nice-log-trace-id |
 ### 5.2 设置优先级
 日志自动收集功能是通过AOP实现的，你可以用SpringBoot的配置文件指定它们的优先级：
 
@@ -149,10 +149,10 @@ NiceLogUtil.createBuilder()
 默认会自动收集所有支持组件的日志。可以自由的开关：
 
 **场景1：不收集某个组件**
-假如不收集Kafka的日志，就这样配置yml：suchtool.nicelog.enableKafkaLog=false
+假如不收集Kafka的日志，就这样配置yml：suchtool.nicelog.enable-kafka-log=false
 
 **场景2：关闭所有组件，只收集标有@NiceLog的类或方法**
-配置yml：suchtool.nicelog.collectAll=false
+配置yml：suchtool.nicelog.collect-all=false
 
 **场景3：不收集某个类或方法**
 在类或者方法上加注解：@NiceLogIgnore
