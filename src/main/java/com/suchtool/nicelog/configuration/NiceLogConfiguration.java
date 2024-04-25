@@ -26,7 +26,7 @@ import org.springframework.core.Ordered;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 
-@Configuration(value = "com.suchtool.nicelog.niceLogConfiguratio", proxyBeanMethods = false)
+@Configuration(value = "com.suchtool.nicelog.niceLogConfiguration", proxyBeanMethods = false)
 @ConditionalOnProperty(name = "suchtool.nicelog.enabled", havingValue = "true", matchIfMissing = true)
 public class NiceLogConfiguration {
     @Bean(name = "com.suchtool.nicelog.niceLogProperty")
@@ -46,7 +46,7 @@ public class NiceLogConfiguration {
         return new NiceLogAspectDispatcher();
     }
 
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableControllerLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.controllerAspectConfiguration", proxyBeanMethods = false)
     protected static class ControllerAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.controllerLogAspect")
@@ -57,7 +57,7 @@ public class NiceLogConfiguration {
     }
 
     @ConditionalOnClass(XxlJob.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableControllerLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-xxl-job-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.xxlJobAspectConfiguration", proxyBeanMethods = false)
     protected static class XxlJobAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.xxlJobLogAspect")
@@ -68,7 +68,7 @@ public class NiceLogConfiguration {
     }
 
     @ConditionalOnBean(ScheduledAnnotationBeanPostProcessor.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableScheduledLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-scheduled-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.scheduledAspectConfiguration", proxyBeanMethods = false)
     protected static class ScheduledAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.scheduledLogAspect")
@@ -78,7 +78,7 @@ public class NiceLogConfiguration {
         }
     }
 
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableNiceLogAnnotationLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-nice-log-annotation-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.niceLogAnnotationAspectConfiguration", proxyBeanMethods = false)
     protected static class NiceLogAnnotationAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
@@ -88,7 +88,7 @@ public class NiceLogConfiguration {
         }
     }
 
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRabbitMQLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-rabbit-mq-log", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(RabbitListener.class)
     @Configuration(value = "com.suchtool.nicelog.niceLog.rabbitMQAspectConfiguration", proxyBeanMethods = false)
     protected static class RabbitMQAspectConfiguration {
@@ -100,7 +100,7 @@ public class NiceLogConfiguration {
     }
 
     @ConditionalOnClass(RocketMQMessageListener.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableRocketMQLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-rocket-mq-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.rocketMQAspectConfiguration", proxyBeanMethods = false)
     protected static class RocketMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.rocketMQLogAspect")
@@ -111,7 +111,7 @@ public class NiceLogConfiguration {
     }
 
     @ConditionalOnClass(KafkaListener.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableKafkaLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-kafka-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.kafkaAspectConfiguration", proxyBeanMethods = false)
     protected static class KafkaAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.kafkaMQLogAspect")
@@ -122,7 +122,7 @@ public class NiceLogConfiguration {
     }
 
     @ConditionalOnClass(FeignClient.class)
-    @ConditionalOnProperty(name = "com.suchtool.nicelog.enableFeignLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-feign-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLog.feignLogAspectConfiguration", proxyBeanMethods = false)
     protected static class FeignLogAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.feignLogAspect")
