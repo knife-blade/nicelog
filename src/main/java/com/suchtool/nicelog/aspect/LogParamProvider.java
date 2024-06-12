@@ -10,8 +10,13 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,7 +96,9 @@ public interface LogParamProvider {
             finalParam = param;
         } else {
             try {
-                Map<String, Object> map = MethodUtil.parseParam(method, args);
+                Collection<Class<?>> ignoreLogClassList = Arrays.asList(
+                        BindingResult.class, MultipartFile.class);
+                Map<String, Object> map = MethodUtil.parseParam(method, args, ignoreLogClassList);
                 if (!CollectionUtils.isEmpty(map)) {
                     finalParam = JsonUtil.toJsonString(map);
                 }
