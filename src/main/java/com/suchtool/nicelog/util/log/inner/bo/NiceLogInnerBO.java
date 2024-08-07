@@ -71,7 +71,12 @@ public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 代码行号
      */
-    private String codeLineNumber;
+    private String lineNumber;
+
+    /**
+     * 类名及代码行号，中间用:隔开
+     */
+    private String classNameAndLineNumber;
 
     /**
      * 日志级别

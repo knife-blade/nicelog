@@ -68,7 +68,8 @@ public class NiceLogInnerUtil {
         if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
-            logInnerBO.setCodeLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
+            logInnerBO.setLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
+            logInnerBO.setClassNameAndLineNumber(logInnerBO.getClassName() + ":" + logInnerBO.getLineNumber());
             logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
