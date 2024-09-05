@@ -92,7 +92,7 @@ public class LogCommonAspectExecutor {
         logAspectProcessor.returningOrThrowingProcess();
 
         // 清除，防止内存泄露
-        clearContext();
+        checkAndClearContext();
     }
 
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
@@ -116,14 +116,21 @@ public class LogCommonAspectExecutor {
         logAspectProcessor.returningOrThrowingProcess();
 
         // 清除，防止内存泄露
-        clearContext();
+        checkAndClearContext();
     }
 
-    private void clearContext() {
-        if (EntryTypeEnum.FEIGN.equals(logAspectProcessor.provideEntryType())) {
-            NiceLogFeignContextThreadLocal.clear();
-        } else {
+    private void checkAndClearContext() {
+        NiceLogContext context = NiceLogContextThreadLocal.read();
+        if (context == null) {
+            return;
+        }
+
+        int entryCount = context.getEntryCount();
+        entryCount--;
+        if (entryCount <= 0) {
             NiceLogContextThreadLocal.clear();
+        } else {
+            context.setEntryCount(entryCount);
         }
     }
 
@@ -133,17 +140,20 @@ public class LogCommonAspectExecutor {
     private void recordContext(NiceLogInnerBO logInnerBO) {
         if (EntryTypeEnum.FEIGN.equals(logAspectProcessor.provideEntryType())) {
             NiceLogFeignContext niceLogFeignContext = new NiceLogFeignContext();
-            niceLogFeignContext.setEntry(logInnerBO.getEntry());
-            niceLogFeignContext.setEntryClassTag(logInnerBO.getEntryClassTag());
-            niceLogFeignContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
             NiceLogFeignContextThreadLocal.write(niceLogFeignContext);
         } else {
-            NiceLogContext niceLogContext = new NiceLogContext();
-            niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
-            niceLogContext.setEntry(logInnerBO.getEntry());
-            niceLogContext.setEntryClassTag(logInnerBO.getEntryClassTag());
-            niceLogContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
-            NiceLogContextThreadLocal.write(niceLogContext);
+            NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
+            if (niceLogContext == null) {
+                niceLogContext = new NiceLogContext();
+                niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
+                niceLogContext.setEntryCount(1);
+                NiceLogContextThreadLocal.write(niceLogContext);
+            } else {
+                int entryCount = niceLogContext.getEntryCount();
+                entryCount++;
+                niceLogContext.setEntryCount(entryCount);
+            }
+
         }
     }
 

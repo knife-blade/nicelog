@@ -85,7 +85,7 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-            response.addHeader("traceId", niceLogContext.getTraceId());
+            response.addHeader("Trace-Id", niceLogContext.getTraceId());
         }
     }
 

@@ -86,16 +86,7 @@ public class NiceLogInnerUtil {
         if (EntryTypeEnum.FEIGN.equals(logInnerBO.getEntryType())) {
             NiceLogFeignContext niceLogFeignContext = NiceLogFeignContextThreadLocal.read();
             if (niceLogFeignContext != null) {
-                logInnerBO.setEntry(niceLogFeignContext.getEntry());
-                logInnerBO.setEntryClassTag(niceLogFeignContext.getEntryClassTag());
-                logInnerBO.setEntryMethodTag(niceLogFeignContext.getEntryMethodTag());
                 logInnerBO.setOriginReturnValue(niceLogFeignContext.getFeignOriginResponseBody());
-            }
-        } else {
-            if (niceLogContext != null) {
-                logInnerBO.setEntry(niceLogContext.getEntry());
-                logInnerBO.setEntryClassTag(niceLogContext.getEntryClassTag());
-                logInnerBO.setEntryMethodTag(niceLogContext.getEntryMethodTag());
             }
         }
     }
