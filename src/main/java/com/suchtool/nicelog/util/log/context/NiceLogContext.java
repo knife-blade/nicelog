@@ -13,18 +13,7 @@ public class NiceLogContext {
     private String traceId;
 
     /**
-     * 入口
+     * 入口个数。清零时把context删掉
      */
-    private String entry;
-
-    /**
-     * 入口类标记
-     */
-    private String entryClassTag;
-
-    /**
-     * 入口方法标记
-     */
-    private String entryMethodTag;
-
+    private int entryCount;
 }
