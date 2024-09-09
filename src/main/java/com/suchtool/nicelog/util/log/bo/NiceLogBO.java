@@ -55,7 +55,7 @@ public class NiceLogBO {
     /**
      * 打印栈追踪(用于非异常时主动获得栈追踪）
      */
-    private Boolean printStackTrace;
+    private Boolean recordStackTrace;
 
     /**
      * 其他1

@@ -46,8 +46,8 @@ public class NiceLogInnerUtil {
         if (logInnerBO.getThrowable() != null) {
             logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(logInnerBO.getThrowable()));
         } else {
-            if (logInnerBO.getPrintStackTrace() != null
-                    && logInnerBO.getPrintStackTrace()) {
+            if (logInnerBO.getRecordStackTrace() != null
+                    && logInnerBO.getRecordStackTrace()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 // 移除nicelog内的调用链路
                 int removeLineCount = 6;
