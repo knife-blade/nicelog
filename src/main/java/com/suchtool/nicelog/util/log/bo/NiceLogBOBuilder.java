@@ -57,7 +57,7 @@ public final class NiceLogBOBuilder {
     }
 
     public NiceLogBOBuilder printStackTrace(Boolean printStackTrace) {
-        niceLogBO.setPrintStackTrace(printStackTrace);
+        niceLogBO.setRecordStackTrace(printStackTrace);
         return this;
     }
 
