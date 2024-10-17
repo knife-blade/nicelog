@@ -13,6 +13,7 @@ import com.suchtool.nicetool.util.base.ThrowableUtil;
 import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import com.suchtool.nicetool.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +46,9 @@ public class NiceLogInnerUtil {
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
             logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(logInnerBO.getThrowable()));
+            if (!StringUtils.hasText(logInnerBO.getErrorInfo())) {
+                logInnerBO.setErrorInfo(logInnerBO.getThrowable().getMessage());
+            }
         } else {
             if (logInnerBO.getRecordStackTrace() != null
                     && logInnerBO.getRecordStackTrace()) {
