@@ -19,6 +19,11 @@ public class NiceLogInnerBO extends NiceLogBO {
     private String appName;
 
     /**
+     * 组名字
+     */
+    private String groupName;
+
+    /**
      * 入口类型
      */
     private EntryTypeEnum entryType;
