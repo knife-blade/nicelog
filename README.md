@@ -195,6 +195,7 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | throwable              | Throwable异常类   | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace |
 | recordStackTrace       | 记录栈追踪          | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据 |
 | appName                | 应用名字           | 取的是spring.application.name配置 |
+| groupName              | 组名字           | 用于区分应用所在的组，建议放到公共组件里指定 |
 | entryType              | 入口类型           | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
 | entry                  | 入口             | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
 | entryClassTag          | 入口类的tag        | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。 |
