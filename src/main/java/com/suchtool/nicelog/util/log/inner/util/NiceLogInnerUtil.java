@@ -15,6 +15,8 @@ import com.suchtool.nicetool.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,8 +38,14 @@ public class NiceLogInnerUtil {
                 .getProperty("spring.application.name", ""));
 
         if (EntryTypeEnum.CONTROLLER.equals(logInnerBO.getEntryType())) {
-            logInnerBO.setIp(ClientIpUtil.parseRemoteIP());
+            logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
             logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
+        }
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            logInnerBO.setHostIp(localHost.getHostAddress());
+        } catch (UnknownHostException e) {
         }
 
         // 填充上下文
