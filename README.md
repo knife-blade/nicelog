@@ -213,7 +213,8 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | stackTrace             | 栈追踪字符串         | |
 | logTime                | 日志时间           | |
 | clientIp               | 客户端IP          | |
-| ip                     | 调用方IP          | |
+| callerIp               | 调用方IP          | |
+| hostIp                 | 主机IP          | |
 | other1                 | 备用字段1          | 手动时可自定义 |
 | other2                 | 备用字段2          | 手动时可自定义 |
 | other3                 | 备用字段3          | 手动时可自定义 |

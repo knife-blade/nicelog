@@ -114,7 +114,12 @@ public class NiceLogInnerBO extends NiceLogBO {
     private String clientIp;
 
     /**
-     * ip
+     * 调用方ip
      */
-    private String ip;
+    private String callerIp;
+
+    /**
+     * 主机IP
+     */
+    private String hostIp;
 }
