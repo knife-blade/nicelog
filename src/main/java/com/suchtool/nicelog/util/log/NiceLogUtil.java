@@ -2,10 +2,12 @@ package com.suchtool.nicelog.util.log;
 
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
+import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import org.springframework.beans.BeanUtils;
 
 

@@ -2,7 +2,9 @@ package com.suchtool.nicelog.util.log.inner.util;
 
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
@@ -23,6 +25,12 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class NiceLogInnerUtil {
     public static void record(NiceLogInnerBO logInnerBO) {
+        NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
+        LogLevelEnum logLevel = niceLogProperty.getLogLevel();
+        if (logInnerBO.getLevel().compareTo(logLevel) < 0) {
+            return;
+        }
+
         fillCommonField(logInnerBO);
 
         NiceLogProcess niceLogProcess = ApplicationContextHolder.getContext()

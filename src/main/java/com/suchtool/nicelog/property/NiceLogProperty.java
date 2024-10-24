@@ -1,5 +1,6 @@
 package com.suchtool.nicelog.property;
 
+import com.suchtool.nicelog.constant.LogLevelEnum;
 import lombok.Data;
 
 @Data
@@ -8,6 +9,11 @@ public class NiceLogProperty {
      * 启用日志功能
      */
     private Boolean enabled = true;
+
+    /**
+     * 日志收集级别
+     */
+    private LogLevelEnum logLevel = LogLevelEnum.INFO;
 
     /**
      * 收集所有日志
