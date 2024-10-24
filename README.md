@@ -119,6 +119,7 @@ NiceLogUtil.createBuilder()
 | 配置                                          | 描述                   | 默认值  |
 |---------------------------------------------|----------------------|------|
 | suchtool.nicelog.enabled                    | 启用日志                 | true |
+| suchtool.nicelog.log-level                  | 日志收集级别。支持：info、warning、error | info |
 | suchtool.nicelog.collect-all                | 收集所有                 | true |
 | suchtool.nicelog.enable-controller-log      | 启用Controller日志       | true |
 | suchtool.nicelog.enable-xxl-job-log         | 启用XXL-JOB日志          | true |
