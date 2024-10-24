@@ -16,6 +16,11 @@ public class NiceLogProperty {
     private LogLevelEnum logLevel = LogLevelEnum.INFO;
 
     /**
+     * 收集栈日志的包名前缀，多个用逗号隔开。为空则全部收集
+     */
+    private String stackTracePackageName;
+
+    /**
      * 收集所有日志
      * <p>true：自动收集组件支持的所有日志</p>
      * <p>false：不自动收集日志，需要用{@link com.suchtool.nicelog.annotation.NiceLog}注解来启用类或者方法的日志</p>
@@ -63,7 +68,7 @@ public class NiceLogProperty {
     private Boolean enableFeignLog = true;
 
     /**
-     * 不收集Feign日志的包名，多个用逗号隔开
+     * 不收集Feign日志的包名前缀，多个用逗号隔开
      */
     private String ignoreFeignLogPackageName;
 
@@ -71,6 +76,5 @@ public class NiceLogProperty {
      * feign的traceId的header名字
      */
     private String feignTraceIdHeader = "nice-log-trace-id";
-
 
 }

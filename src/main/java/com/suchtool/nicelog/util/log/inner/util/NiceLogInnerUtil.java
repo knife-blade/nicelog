@@ -21,6 +21,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public class NiceLogInnerUtil {
@@ -59,9 +61,17 @@ public class NiceLogInnerUtil {
         // 填充上下文
         fillContext(logInnerBO);
 
+        NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
+        String stackTracePackageName = niceLogProperty.getStackTracePackageName();
+        List<String> stackTracePackageNameList = null;
+        if (StringUtils.hasText(stackTracePackageName)) {
+            stackTracePackageNameList = Arrays.asList(stackTracePackageName.split(","));
+        }
+
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
-            logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(logInnerBO.getThrowable()));
+            logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(
+                    logInnerBO.getThrowable(), stackTracePackageNameList));
             if (!StringUtils.hasText(logInnerBO.getErrorInfo())) {
                 logInnerBO.setErrorInfo(logInnerBO.getThrowable().getMessage());
             }
@@ -78,7 +88,7 @@ public class NiceLogInnerUtil {
                     }
                     newStackTrace[i - removeLineCount] = stackTrace[i];
                 }
-                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace));
+                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace, stackTracePackageNameList));
             }
         }
 
