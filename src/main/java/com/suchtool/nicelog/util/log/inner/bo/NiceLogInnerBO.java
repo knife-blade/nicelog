@@ -7,6 +7,8 @@ import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 /**
  * 日志内部BO
  */
@@ -106,7 +108,7 @@ public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 时间
      */
-    private String logTime;
+    private LocalDateTime logTime;
 
     /**
      * 客户端ip

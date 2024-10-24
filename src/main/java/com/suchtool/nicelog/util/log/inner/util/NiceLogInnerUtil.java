@@ -93,8 +93,7 @@ public class NiceLogInnerUtil {
             logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
-        logInnerBO.setLogTime(LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
+        logInnerBO.setLogTime(LocalDateTime.now());
     }
 
     private static void fillContext(NiceLogInnerBO logInnerBO) {
