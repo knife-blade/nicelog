@@ -61,6 +61,16 @@ public final class NiceLogBOBuilder {
         return this;
     }
 
+    public NiceLogBOBuilder operatorId(String operatorId) {
+        niceLogBO.setOperatorId(operatorId);
+        return this;
+    }
+
+    public NiceLogBOBuilder operatorName(String operatorName) {
+        niceLogBO.setOperatorName(operatorName);
+        return this;
+    }
+
     public NiceLogBOBuilder other1(String other1) {
         niceLogBO.setOther1(other1);
         return this;

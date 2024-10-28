@@ -58,6 +58,16 @@ public class NiceLogBO {
     private Boolean recordStackTrace;
 
     /**
+     * 操作人ID
+     */
+    private String operatorId;
+
+    /**
+     * 操作人名字
+     */
+    private String operatorName;
+
+    /**
      * 其他1
      */
     private String other1;
