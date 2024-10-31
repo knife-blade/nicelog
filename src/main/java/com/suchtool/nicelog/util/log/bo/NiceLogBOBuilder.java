@@ -9,6 +9,10 @@ public final class NiceLogBOBuilder {
         this.niceLogBO = new NiceLogBO();
     }
 
+    public void debug() {
+        NiceLogUtil.debug(niceLogBO);
+    }
+
     public void info() {
         NiceLogUtil.info(niceLogBO);
     }
