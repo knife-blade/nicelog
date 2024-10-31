@@ -28,8 +28,8 @@ import java.util.List;
 public class NiceLogInnerUtil {
     public static void record(NiceLogInnerBO logInnerBO) {
         NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
-        LogLevelEnum logLevel = niceLogProperty.getLogLevel();
-        if (logInnerBO.getLevel().compareTo(logLevel) < 0) {
+        LogLevelEnum logLevelConfig = niceLogProperty.getLogLevel();
+        if (logInnerBO.getLevel().compareTo(logLevelConfig) < 0) {
             return;
         }
 

@@ -16,6 +16,10 @@ public class NiceLogUtil {
         return new NiceLogBOBuilder();
     }
 
+    public static void debug(NiceLogBO niceLogBO) {
+        convertAndRecord(niceLogBO, LogLevelEnum.DEBUG);
+    }
+
     public static void info(NiceLogBO niceLogBO) {
         convertAndRecord(niceLogBO, LogLevelEnum.INFO);
     }
