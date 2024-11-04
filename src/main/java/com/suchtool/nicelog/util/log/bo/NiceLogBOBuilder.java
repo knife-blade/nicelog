@@ -17,8 +17,8 @@ public final class NiceLogBOBuilder {
         NiceLogUtil.info(niceLogBO);
     }
 
-    public void warning() {
-        NiceLogUtil.warning(niceLogBO);
+    public void warn() {
+        NiceLogUtil.warn(niceLogBO);
     }
 
     public void error() {
