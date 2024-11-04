@@ -2,12 +2,10 @@ package com.suchtool.nicelog.util.log;
 
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
-import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
-import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import org.springframework.beans.BeanUtils;
 
 
@@ -24,8 +22,8 @@ public class NiceLogUtil {
         convertAndRecord(niceLogBO, LogLevelEnum.INFO);
     }
 
-    public static void warning(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.WARNING);
+    public static void warn(NiceLogBO niceLogBO) {
+        convertAndRecord(niceLogBO, LogLevelEnum.WARN);
     }
 
     public static void error(NiceLogBO niceLogBO) {

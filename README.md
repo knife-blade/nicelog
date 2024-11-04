@@ -119,7 +119,7 @@ NiceLogUtil.createBuilder()
 | 配置                                        | 描述                                 | 默认值  |
 |---------------------------------------------|------------------------------------|------|
 | suchtool.nicelog.enabled                    | 启用日志                               | true |
-| suchtool.nicelog.log-level                  | 日志收集级别。支持：debug、info、warning、error | info |
+| suchtool.nicelog.log-level                  | 日志收集级别。支持：debug、info、warn、error | info |
 | suchtool.nicelog.stack-trace-package-name   | 收集栈日志的包名（前缀），多个用逗号隔开。为空则全部收集       | 空 |
 | suchtool.nicelog.collect-all                | 收集所有日志（Controller、XXL-JOB等所有）      | true |
 | suchtool.nicelog.enable-controller-log      | 启用Controller日志                     | true |
@@ -198,8 +198,8 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | errorDetailInfo        | 错误详细信息      | 手动时可自定义 |
 | throwable              | Throwable异常类   | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace |
 | recordStackTrace       | 记录栈追踪        | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据 |
-| operatorId                | 操作人ID        | 手动时可自定义 |
-| operatorName              | 操作人名字      | 手动时可自定义 |
+| operatorId             | 操作人ID        | 手动时可自定义 |
+| operatorName           | 操作人名字      | 手动时可自定义 |
 | appName                | 应用名字           | 取的是spring.application.name配置 |
 | groupName              | 组名字           | 用于区分应用所在的组，建议放到公共组件里指定 |
 | entryType              | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
@@ -213,7 +213,7 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | methodDetail           | 方法详情         | 全限定类名+方法名+全限定参数 |
 | lineNumber             | 代码行号         | 只在手动输出时有值。 |
 | classNameAndLineNumber | 类名及代码行号，中间用:隔开 | 只在手动输出时有值。 |
-| level                  | 级别             | DEBUG、INFO、WARNING、ERROR |
+| level                  | 级别             | DEBUG、INFO、WARN、ERROR |
 | directionType          | 方向             | IN：方法进入；OUT：方法退出；INNER：方法内部执行 |
 | traceId                | 链路id           | 作为上下文传递 |
 | stackTrace             | 栈追踪字符串      | |

@@ -17,7 +17,7 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
             case INFO:
                 log.info("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
                 break;
-            case WARNING:
+            case WARN:
                 log.warn("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
                 break;
             case ERROR:
