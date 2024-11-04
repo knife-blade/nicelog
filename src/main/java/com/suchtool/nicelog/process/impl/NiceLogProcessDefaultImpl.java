@@ -11,6 +11,9 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     public void process(NiceLogInnerBO logInnerBO) {
         // 本处只是将日志打印出来。实际项目可以将日志上传到ES。
         switch (logInnerBO.getLevel()) {
+            case DEBUG:
+                log.debug("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
+                break;
             case INFO:
                 log.info("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
                 break;
