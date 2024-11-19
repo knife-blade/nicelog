@@ -110,6 +110,18 @@ public class NiceLogInnerUtil {
         NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
         if (niceLogContext != null) {
             logInnerBO.setTraceId(niceLogContext.getTraceId());
+            logInnerBO.setEntry(StringUtils.hasText(logInnerBO.getEntry())
+                    ? logInnerBO.getEntry()
+                    : niceLogContext.getEntry()
+            );
+            logInnerBO.setEntryClassTag(StringUtils.hasText(logInnerBO.getEntryClassTag())
+                    ? logInnerBO.getEntryClassTag()
+                    : niceLogContext.getEntryClassTag()
+            );
+            logInnerBO.setEntryMethodTag(StringUtils.hasText(logInnerBO.getEntryMethodTag())
+                    ? logInnerBO.getEntryMethodTag()
+                    : niceLogContext.getEntryMethodTag()
+            );
         }
 
         if (EntryTypeEnum.FEIGN.equals(logInnerBO.getEntryType())) {
