@@ -146,6 +146,9 @@ public class LogCommonAspectExecutor {
             if (niceLogContext == null) {
                 niceLogContext = new NiceLogContext();
                 niceLogContext.setTraceId(NiceLogTraceIdUtil.readTraceId());
+                niceLogContext.setEntry(logInnerBO.getEntry());
+                niceLogContext.setEntryClassTag(logInnerBO.getEntryClassTag());
+                niceLogContext.setEntryMethodTag(logInnerBO.getEntryMethodTag());
                 niceLogContext.setEntryCount(1);
                 NiceLogContextThreadLocal.write(niceLogContext);
             } else {
@@ -153,7 +156,6 @@ public class LogCommonAspectExecutor {
                 entryCount++;
                 niceLogContext.setEntryCount(entryCount);
             }
-
         }
     }
 
