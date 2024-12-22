@@ -36,8 +36,10 @@ public class LogCommonAspectExecutor {
         }
 
         String param = null;
+        String businessNo = null;
         try {
             param = logAspectProcessor.provideParam(null, method, args);
+            businessNo = logAspectProcessor.provideBusinessNo(method, args);
         } catch (Throwable t) {
             NiceLogUtil.createBuilder()
                     .errorInfo("参数转JSON字符串异常")
@@ -53,6 +55,7 @@ public class LogCommonAspectExecutor {
         logInnerBO.setLevel(LogLevelEnum.INFO);
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
         logInnerBO.setParam(param);
+        logInnerBO.setBusinessNo(businessNo);
 
         recordContext(logInnerBO);
 

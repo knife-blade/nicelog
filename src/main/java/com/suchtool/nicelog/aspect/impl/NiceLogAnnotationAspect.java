@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 import java.lang.reflect.Method;
 
 /**
- * @NiceLog注解日志
+ * NiceLog注解日志
  */
 @Aspect
 public class NiceLogAnnotationAspect extends LogAspectProcessor implements Ordered {

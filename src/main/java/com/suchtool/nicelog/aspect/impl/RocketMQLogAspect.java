@@ -43,8 +43,8 @@ public class RocketMQLogAspect extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT + " && "
-            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT
+            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

@@ -1,29 +1,32 @@
 package com.suchtool.nicelog.aspect;
 
-import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-@Component
-public class NiceLogAspectDispatcher {
-    @Autowired
+public class NiceLogAspectDispatcher  {
+    @Autowired(required = false)
     private List<LogAspectProcessor> logAspectProcessors;
 
     public LogAspectProcessor findMatched(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
+        if (CollectionUtils.isEmpty(logAspectProcessors)) {
+            return null;
+        }
+
         LogAspectProcessor matchedProcessor = null;
         for (LogAspectProcessor logAspectProcessor : logAspectProcessors) {
             boolean match = match(logAspectProcessor.pointcutExpression(), method);
-            if (match && !logAspectProcessor.pointcutExpression().equals(
-                    NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)) {
+            if (match) {
                 matchedProcessor = logAspectProcessor;
                 return matchedProcessor;
             }

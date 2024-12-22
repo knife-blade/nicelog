@@ -6,5 +6,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface NiceLog {
+    /**
+     * 指定类的tag
+     */
     String value() default "";
 }

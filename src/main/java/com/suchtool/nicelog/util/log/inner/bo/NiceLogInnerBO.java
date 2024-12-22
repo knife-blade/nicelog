@@ -16,14 +16,24 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class NiceLogInnerBO extends NiceLogBO {
     /**
-     * 应用名字
+     * TraceId
      */
-    private String appName;
+    private String traceId;
 
     /**
-     * 组名字
+     * 时间
      */
-    private String groupName;
+    private LocalDateTime logTime;
+
+    /**
+     * 日志级别
+     */
+    private LogLevelEnum level;
+
+    /**
+     * 方向
+     */
+    private DirectionTypeEnum directionType;
 
     /**
      * 入口类型
@@ -86,29 +96,19 @@ public class NiceLogInnerBO extends NiceLogBO {
     private String classNameAndLineNumber;
 
     /**
-     * 日志级别
-     */
-    private LogLevelEnum level;
-
-    /**
-     * 方向
-     */
-    private DirectionTypeEnum directionType;
-
-    /**
-     * TraceId
-     */
-    private String traceId;
-
-    /**
      * 栈追踪
      */
     private String stackTrace;
 
     /**
-     * 时间
+     * 应用名字
      */
-    private LocalDateTime logTime;
+    private String appName;
+
+    /**
+     * 组名字
+     */
+    private String groupName;
 
     /**
      * 客户端ip

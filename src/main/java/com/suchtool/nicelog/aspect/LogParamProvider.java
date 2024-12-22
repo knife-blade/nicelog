@@ -1,6 +1,7 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
+import com.suchtool.nicelog.annotation.NiceLogOperation;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicetool.util.base.JsonUtil;
@@ -8,6 +9,12 @@ import com.suchtool.nicetool.util.reflect.MethodUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.expression.MethodBasedEvaluationContext;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -16,13 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
  * 日志参数提供者
  */
 public interface LogParamProvider {
+    ExpressionParser PARSER = new SpelExpressionParser();
+    ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+
     EntryTypeEnum provideEntryType();
 
     default String provideEntry(Method method) {
@@ -41,6 +50,9 @@ public interface LogParamProvider {
         return method.getDeclaringClass().getName();
     }
 
+    /**
+     * 先取@NiceLog的value，若没有再从原注解拼接tag
+     */
     default String provideClassTag(Method method) {
         String classTag = null;
 
@@ -49,7 +61,9 @@ public interface LogParamProvider {
         if (declaringClass.isAnnotationPresent(NiceLog.class)) {
             NiceLog niceLog = declaringClass.getAnnotation(NiceLog.class);
             classTag = niceLog.value();
-        } else {
+        }
+
+        if (!StringUtils.hasText(classTag)) {
             if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
                     && declaringClass.isAnnotationPresent(Api.class)) {
                 Api api = declaringClass.getAnnotation(Api.class);
@@ -74,14 +88,21 @@ public interface LogParamProvider {
         return method.getName();
     }
 
+    /**
+     * 先从原注解拼接tag，没有再取@NiceLog的value
+     */
     default String provideMethodTag(Method method) {
         String methodTag = null;
 
-        if (method.isAnnotationPresent(NiceLog.class)) {
-            methodTag = method.getAnnotation(NiceLog.class).value();
-        } else if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
-                && method.isAnnotationPresent(ApiOperation.class)) {
-            methodTag = method.getAnnotation(ApiOperation.class).value();
+        if (method.isAnnotationPresent(NiceLogOperation.class)) {
+            methodTag = method.getAnnotation(NiceLogOperation.class).value();
+        }
+
+        if (!StringUtils.hasText(methodTag)) {
+            if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
+                    && method.isAnnotationPresent(ApiOperation.class)) {
+                methodTag = method.getAnnotation(ApiOperation.class).value();
+            }
         }
 
         return methodTag;
@@ -110,5 +131,20 @@ public interface LogParamProvider {
             }
         }
         return finalParam;
+    }
+
+    default String provideBusinessNo(Method method, Object[] args) {
+        String businessNo = null;
+
+        if (method.isAnnotationPresent(NiceLogOperation.class)) {
+            NiceLogOperation niceLogOperation = method.getAnnotation(NiceLogOperation.class);
+            String businessNoSpEL = niceLogOperation.businessNoSpEL();
+
+            EvaluationContext context = new MethodBasedEvaluationContext(
+                    null, method, args, NAME_DISCOVERER);
+            businessNo = PARSER.parseExpression(businessNoSpEL).getValue(context, String.class);
+        }
+
+        return businessNo;
     }
 }

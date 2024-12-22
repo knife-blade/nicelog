@@ -37,8 +37,8 @@ public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT + " && "
-            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT
+            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
