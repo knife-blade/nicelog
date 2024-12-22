@@ -8,6 +8,6 @@ public interface NiceLogPointcutExpression {
     String ROCKET_MQ_LOG_ASPECT = "@within(org.apache.rocketmq.spring.annotation.RocketMQMessageListener)";
     String SCHEDULED_LOG_ASPECT = "@annotation(org.springframework.scheduling.annotation.Scheduled)";
     String XXL_JOB_LOG_ASPECT = "@annotation(com.xxl.job.core.handler.annotation.XxlJob)";
-    String NICE_LOG_ANNOTATION_ASPECT = "(@annotation(com.suchtool.nicelog.annotation.NiceLog)" +
-            " || @within(com.suchtool.nicelog.annotation.NiceLog))";
+    String NICE_LOG_ANNOTATION_ASPECT = "@within(com.suchtool.nicelog.annotation.NiceLog)"
+            + " || @annotation(com.suchtool.nicelog.annotation.NiceLog)";
 }

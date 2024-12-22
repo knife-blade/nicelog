@@ -35,8 +35,8 @@ public class ScheduledLogAspect extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.SCHEDULED_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.SCHEDULED_LOG_ASPECT + " && "
-            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.SCHEDULED_LOG_ASPECT
+            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

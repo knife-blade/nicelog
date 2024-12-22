@@ -42,8 +42,8 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT + " && "
-     + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT
+            + " && !" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
@@ -78,7 +78,7 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
     @Override
     public void returningOrThrowingProcess() {
         ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         Assert.notNull(servletRequestAttributes, "RequestAttributes不能为null");
         HttpServletResponse response = servletRequestAttributes.getResponse();
 
@@ -98,7 +98,7 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
     public String provideEntry(Method method) {
         String url = null;
         ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes != null) {
             HttpServletRequest request = servletRequestAttributes.getRequest();
             url = request.getRequestURI();

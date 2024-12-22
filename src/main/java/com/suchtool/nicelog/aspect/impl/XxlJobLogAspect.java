@@ -35,8 +35,8 @@ public class XxlJobLogAspect  extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT + " && "
-            + "!" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT
+            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

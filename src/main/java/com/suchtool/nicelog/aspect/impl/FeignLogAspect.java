@@ -45,7 +45,8 @@ public class FeignLogAspect extends LogAspectProcessor implements Ordered {
         return NiceLogPointcutExpression.FEIGN_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.FEIGN_LOG_ASPECT)
+    @Pointcut(NiceLogPointcutExpression.FEIGN_LOG_ASPECT
+            + " && !" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

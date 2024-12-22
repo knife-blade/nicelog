@@ -7,21 +7,6 @@ import lombok.Data;
 @Data
 public class NiceLogBO {
     /**
-     * 参数
-     */
-    private String param;
-
-    /**
-     * 返回值
-     */
-    private String returnValue;
-
-    /**
-     * 原始返回值
-     */
-    private String originReturnValue;
-
-    /**
      * 标记
      */
     private String mark;
@@ -56,6 +41,21 @@ public class NiceLogBO {
      * 打印栈追踪(用于非异常时主动获得栈追踪）
      */
     private Boolean recordStackTrace;
+
+    /**
+     * 参数
+     */
+    private String param;
+
+    /**
+     * 返回值
+     */
+    private String returnValue;
+
+    /**
+     * 原始返回值
+     */
+    private String originReturnValue;
 
     /**
      * 操作人ID

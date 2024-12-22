@@ -5,47 +5,48 @@ import lombok.Data;
 @Data
 public class NiceLogAspectOrderProperty {
     /**
-     * Controller接口日志的顺序
+     * Controller接口日志的优先级
      */
-    Integer controllerLogOrder = 20000;
+    Integer controllerLogOrder = 10000;
 
     /**
-     * XxlJob日志的顺序
+     * XxlJob日志的优先级
      */
-    Integer xxlJobLogOrder = 20000;
+    Integer xxlJobLogOrder = 10001;
 
     /**
-     * RabbitMQ日志的顺序
+     * RabbitMQ日志的优先级
      */
-    Integer rabbitMQLogOrder = 20000;
+    Integer rabbitMQLogOrder = 10002;
 
     /**
-     * RocketMQ日志的顺序
+     * RocketMQ日志的优先级
      */
-    Integer rocketMQLogOrder = 20000;
+    Integer rocketMQLogOrder = 10003;
 
     /**
-     * Kafka日志的顺序
+     * Kafka日志的优先级
      */
-    Integer kafkaLogOrder = 20000;
+    Integer kafkaLogOrder = 10004;
 
     /**
-     * NiceLog注解日志的顺序
+     * Feign日志的优先级
      */
-    Integer niceLogAnnotationLogOrder = 20000;
+    Integer feignLogOrder = 10005;
 
     /**
-     * Feign日志的顺序
+     * Feign请求拦截器的优先级
      */
-    Integer feignLogOrder = 20000;
+    Integer feignRequestInterceptorOrder = 10006;
 
     /**
-     * Feign请求拦截器的顺序
+     * Scheduled日志的优先级
      */
-    Integer feignRequestInterceptorOrder = 20000;
+    Integer scheduledLogOrder = 10007;
 
     /**
-     * Scheduled日志的顺序
+     * NiceLog注解日志的优先级
      */
-    Integer scheduledLogOrder = 20000;
+    Integer niceLogAnnotationLogOrder = 10008;
+
 }
