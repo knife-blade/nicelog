@@ -1,5 +1,6 @@
 package com.suchtool.nicelog.aspect;
 
+import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.annotation.NiceLogOperation;
 import com.suchtool.nicelog.annotation.NiceLogIgnore;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
@@ -23,8 +24,8 @@ public abstract class LogAspectProcessor implements LogParamProvider {
 
         // 如果不是收集所有，又不是@NiceLog注解的，则不处理
         if (!niceLogProperty.getCollectAll()) {
-            if (!method.isAnnotationPresent(NiceLogOperation.class)
-                    && !declaringClass.isAnnotationPresent(NiceLogOperation.class)) {
+            if (!method.isAnnotationPresent(NiceLog.class)
+                    && !declaringClass.isAnnotationPresent(NiceLog.class)) {
                 return false;
             }
         }

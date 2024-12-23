@@ -1,6 +1,6 @@
 package com.suchtool.nicelog.property;
 
-import com.suchtool.nicelog.annotation.NiceLogOperation;
+import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import lombok.Data;
 
@@ -24,7 +24,7 @@ public class NiceLogProperty {
     /**
      * 收集所有日志
      * <p>true：自动收集组件支持的所有日志</p>
-     * <p>false：不自动收集日志，需要用{@link NiceLogOperation}注解来启用类或者方法的日志</p>
+     * <p>false：不自动收集日志，需要用{@link NiceLog}注解来启用类或者方法的日志</p>
      */
     private Boolean collectAll = true;
 
