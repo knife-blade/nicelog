@@ -25,7 +25,7 @@ nicelog：功能强大的Java日志组件。
 5. RocketMQ
 6. Kafka
 7. Scheduled
-8. Bean的类或方法上加@NiceLogOperation注解
+8. Bean的类或方法上加@NiceLog注解
 
 **3. 更多功能**
 
@@ -46,27 +46,26 @@ nicelog：功能强大的Java日志组件。
 **2.使用示例**
 
 ```
-@Api(tags = "测试类")
-@RequestMapping("test")
+@Api(tags = "用户管理")
+@RequestMapping("user")
 @RestController
-public class HelloController {
-
-    @ApiOperation("测试1")
-    @PostMapping("test1")
-    public String test(User user, String email) {
+public class UserController {
+    @ApiOperation(value = "注册")
+    @PostMapping("register")
+    public String register(@RequestBody UserBO userBO) {
         NiceLogUtil.createBuilder()
                 .mark("我的打印")
                 .info();
-        return "success";
+        return "成功";
     }
 }
 ```
 
 日志输出结果：
 ```
-2024-02-29 19:15:20.607  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":"{\"userName\":\"Tony\"}","returnValue":null,"mark":null,"businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"IN","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.591","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-2024-02-29 19:15:20.619  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":null,"mark":"我的打印","businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"MANUAL","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":null,"methodName":"test","methodTag":null,"methodDetail":null,"codeLineNumber":"23","level":"INFO","directionType":"INNER","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.619","clientIp":"10.0.10.110","ip":"10.0.10.110"}
-2024-02-29 19:15:20.620  INFO 5840 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"param":null,"returnValue":"\"success\"","mark":null,"businessNo":null,"errorInfo":null,"throwable":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"appName":"","entryType":"CONTROLLER","entry":"/test/test1","entryClassTag":"测试","entryMethodTag":"测试1","className":"com.knife.example.controller.HelloController","classTag":"测试","methodName":"test","methodTag":"测试1","methodDetail":"com.knife.example.controller.HelloController.test(java.lang.String)","codeLineNumber":null,"level":"INFO","directionType":"OUT","traceId":"3d250d34d8914de5b847fea3ba93d7a7","logTime":"2024-02-29 19:15:20.620","clientIp":"10.0.10.110","ip":"10.0.10.110"}
+2024-12-23 19:08:41.100  INFO 111144 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"mark":null,"businessNo":null,"message":null,"errorInfo":null,"errorDetailInfo":null,"recordStackTrace":null,"param":"{\"userBO\":{\"id\":null,\"username\":\"Tony\",\"userContact\":null}}","returnValue":null,"originReturnValue":null,"operatorId":null,"operatorName":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"traceId":"a3be0cccb2fb469380e2047fa972ccf7","logTime":"2024-12-23T09:08:41.092","level":"INFO","directionType":"IN","entryType":"CONTROLLER","entry":"/user/register","entryClassTag":"用户管理","entryMethodTag":"注册","className":"com.knife.example.controller.UserController","classTag":"用户管理","methodName":"register","methodTag":"注册","methodDetail":"com.knife.example.controller.UserController.register(com.knife.example.bo.UserBO)","lineNumber":null,"classNameAndLineNumber":null,"stackTrace":null,"appName":"","groupName":null,"clientIp":"12.34.5.6","callerIp":"12.34.5.6","hostIp":"12.34.5.6"}
+2024-12-23 19:08:41.113  INFO 111144 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"mark":"执行注册","businessNo":null,"message":null,"errorInfo":null,"errorDetailInfo":null,"recordStackTrace":null,"param":null,"returnValue":null,"originReturnValue":null,"operatorId":null,"operatorName":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"traceId":"a3be0cccb2fb469380e2047fa972ccf7","logTime":"2024-12-23T09:08:41.113","level":"INFO","directionType":"INNER","entryType":"MANUAL","entry":"/user/register","entryClassTag":"用户管理","entryMethodTag":"注册","className":"com.knife.example.controller.UserController","classTag":null,"methodName":"register","methodTag":null,"methodDetail":null,"lineNumber":"23","classNameAndLineNumber":"com.knife.example.controller.UserController:23","stackTrace":null,"appName":"","groupName":null,"clientIp":null,"callerIp":null,"hostIp":"12.34.5.6"}
+2024-12-23 19:08:41.114  INFO 111144 --- [nio-8080-exec-1] c.s.n.p.impl.NiceLogProcessDefaultImpl   : nicelog日志：{"mark":null,"businessNo":null,"message":null,"errorInfo":null,"errorDetailInfo":null,"recordStackTrace":null,"param":null,"returnValue":"\"注册成功\"","originReturnValue":null,"operatorId":null,"operatorName":null,"other1":null,"other2":null,"other3":null,"other4":null,"other5":null,"other6":null,"other7":null,"other8":null,"other9":null,"other10":null,"traceId":"a3be0cccb2fb469380e2047fa972ccf7","logTime":"2024-12-23T09:08:41.114","level":"INFO","directionType":"OUT","entryType":"CONTROLLER","entry":"/user/register","entryClassTag":"用户管理","entryMethodTag":"注册","className":"com.knife.example.controller.UserController","classTag":"用户管理","methodName":"register","methodTag":"注册","methodDetail":"com.knife.example.controller.UserController.register(com.knife.example.bo.UserBO)","lineNumber":null,"classNameAndLineNumber":null,"stackTrace":null,"appName":"","groupName":null,"clientIp":"12.34.5.6","callerIp":"12.34.5.6","hostIp":"12.34.5.6"}
 ```
 
 ## 4 使用说明
@@ -102,20 +101,25 @@ NiceLogUtil.createBuilder()
         .info();
 ```
 
-此工具支持通过lambda的形式构造参数并打印，每次输入.都会有代码提示，类似于MyBatis-Plus的lambdaQuery。
+此工具支持通过链式构造参数并打印，每次输入.都会有代码提示y。
 
 **4. 手动收集日志**
 
-在类上加@NiceLog，即可收集出入参、返回值、异常信息。
-在方法上加@NiceLogOperation，即可收集出入参、返回值、异常信息。
+在类或者方法上加@NiceLog，即可收集出入参、返回值、异常信息。
 
-注意：此类必须注入Spring，方法必须是public。
+**5. 注解大全**
+
+| 注解  | 使用位置  | 作用  | 示例 |
+| ------------ | ------------ | ------------ | ------------ |
+| @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册") |
+| @NiceLogOperation  | 方法  | 指定方法的tag（methodTag）、businessNo的SpEL  | @NiceLogOperation(value = "用户注册", businessNoSpEL = "#userBO.username") |
+| @NiceLogIgnore  | 类/方法 | 不自动收集此类/方法的日志  | @NiceLogIgnore |
 
 @NiceLog字段含义：
 
-| 字段       | 描述    | 默认值  |
-|-----------|--------|------|
-| value | 代表当前类，用于classTag字段 | 空字符串 |
+| 字段       | 描述                  | 默认值  |
+|-----------|-----------------------|------|
+| value | 代表当前类或方法，用于classTag、methodTag字段。 | 空字符串 |
 
 @NiceLogOperation字段含义：
 
@@ -123,6 +127,10 @@ NiceLogUtil.createBuilder()
 |-----------|--------|------|
 | value | 代表当前方法，用于methodTag字段 | 空字符串 |
 | businessNoSpEL | 指定业务单号（SpEL），用于businessNo字段。如果参数是对象，这样写：#对象名.字段名，例如：#user.userName；如果参数不是对象，这样写：#字段名。例如：#orderNo | 空字符串 |
+
+@NiceLogOperation字段含义：
+
+此注解无字段。
 
 ## 5.详细配置
 
@@ -181,7 +189,7 @@ public class DemoApplication {
 
 比如：一个Controller上，同时有@NiceLog，@NiceLog数值大，则调用Controller的日志记录逻辑。
 
-默认情况下，Controller等原来的注解优先级最高，NiceLogOperation注解靠后，NiceLog注解优先级最低。
+默认情况下，Controller等原来的注解优先级最高，NiceLog注解优先级最低。
 
 | 配置                                                       | 描述                    | 默认值   |
 |----------------------------------------------------------|-----------------------|-------|
@@ -247,10 +255,10 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | throwable              | Throwable异常类   | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace                                                                                                                                        |
 | recordStackTrace       | 记录栈追踪        | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据                                                                                           |
 | stackTrace             | 栈追踪字符串      |                                                                                                                                                                                      |
-| entryType              | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；NICE_LOG_OPERATION_ANNOTATION：NiceLogOperation注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
+| entryType              | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
 | entry                  | 入口             | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。    |
 | entryClassTag          | 入口类的tag      | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。                                                    |
-| entryMethodTag         | 入口方法的tag    | 取值优先级为：@NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                   |
+| entryMethodTag         | 入口方法的tag    | 取值优先级为：@NiceLogOperation的value > @NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                   |
 | className              | 类名            |                                                                                                                                                                                      |
 | classTag               | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。                                                                                                                                                          |
 | methodName             | 方法名           |                                                                                                                                                                                      |
@@ -263,77 +271,77 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | originReturnValue      | 原始返回值       | 手动时可自定义                                                                                                                                                                              |
 | operatorId             | 操作人ID        | 手动时可自定义                                                                                                                                                                              |
 | operatorName           | 操作人名字      | 手动时可自定义                                                                                                                                                                              |
-| appName                | 应用名字          | 取的是spring.application.name配置                                                                                                                                                         |
+| appName                | 应用名字          | 取spring.application.name配置                                                                                                                                                         |
 | groupName              | 组名字           | 用于区分应用所在的组，建议放到公共组件里指定                                                                                                                                                               |
 | clientIp               | 客户端IP          |                                                                                                                                                                                      |
 | callerIp               | 调用方IP          |                                                                                                                                                                                      |
 | hostIp                 | 主机IP          |                                                                                                                                                                                      |
 
-## 7. 建表语句 
+## 7. 建表语句
 
-如果想将日志存储到数据库或者ES，以下是推荐使用的建表语句。 
+如果想将日志存储到数据库或者ES，以下是推荐使用的建表语句。
 
-### SQL 
+### SQL
 ```sql 
 DROP TABLE IF EXISTS `t_nice_log`;
 CREATE TABLE `t_nice_log`  (
-`id` bigint(0) NOT NULL COMMENT '主键',
-`trace_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追踪ID',
-`mark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '标记',
-`log_time` datetime(0) NULL DEFAULT NULL COMMENT '日志时间',
-`level` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日志级别',
-`direction_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方向类型',
-`business_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务编号',
-`message` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '消息',
-`error_info` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误信息',
-`error_detail_info` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误详细信息',
-`stack_trace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '堆栈跟踪',
-`entry_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类型',
-`entry` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口',
-`entry_class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类标签',
-`entry_method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口方法标签',
-`class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名称',
-`class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类标签',
-`method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名称',
-`method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法标签',
-`method_detail` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法详细信息',
-`line_number` int(0) NULL DEFAULT NULL COMMENT '行号',
-`class_name_and_line_number` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名和行号',
-`param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数',
-`return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回值',
-`origin_return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '原始返回值',
-`app_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
-`group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组名称',
-`operator_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人ID',
-`operator_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人名字',
-`client_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端IP',
-`caller_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '调用方IP',
-`host_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主机IP',
-`other1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息1',
-`other2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息2',
-`other3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息3',
-`other4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息4',
-`other5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息5',
-`other6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息6',
-`other7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息7',
-`other8` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息8',
-`other9` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息9',
-`other10` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息10',
-`create_time` datetime(0) NOT NULL COMMENT '创建时间',
-`update_time` datetime(0) NOT NULL COMMENT '修改时间',
-`create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人ID',
-`create_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人名字',
-`update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人ID',
-`update_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人名字',
-`delete_flag` bigint(0) NOT NULL DEFAULT 0 COMMENT '删除标记。0：未删除；其他：已删除',
-PRIMARY KEY (`id`) USING BTREE,
-INDEX `idx_create_time`(`create_time`) USING BTREE COMMENT '创建时间索引',
-INDEX `idx_trace_id`(`trace_id`) USING BTREE COMMENT 'traceId索引',
-INDEX `idx_entry_class_tag`(`entry_class_tag`) USING BTREE COMMENT '入口类标记',
-INDEX `idx_entry_method_tag`(`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
+   `id` bigint(0) NOT NULL COMMENT '主键',
+   `trace_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追踪ID',
+   `mark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '标记',
+   `log_time` datetime(0) NULL DEFAULT NULL COMMENT '日志时间',
+   `level` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日志级别',
+   `direction_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方向类型',
+   `business_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务编号',
+   `message` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '消息',
+   `error_info` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误信息',
+   `error_detail_info` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误详细信息',
+   `stack_trace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '堆栈跟踪',
+   `entry_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类型',
+   `entry` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口',
+   `entry_class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类标签',
+   `entry_method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口方法标签',
+   `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名称',
+   `class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类标签',
+   `method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名称',
+   `method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法标签',
+   `method_detail` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法详细信息',
+   `line_number` int(0) NULL DEFAULT NULL COMMENT '行号',
+   `class_name_and_line_number` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名和行号',
+   `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数',
+   `return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回值',
+   `origin_return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '原始返回值',
+   `app_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
+   `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组名称',
+   `operator_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人ID',
+   `operator_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人名字',
+   `client_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端IP',
+   `caller_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '调用方IP',
+   `host_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主机IP',
+   `other1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息1',
+   `other2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息2',
+   `other3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息3',
+   `other4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息4',
+   `other5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息5',
+   `other6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息6',
+   `other7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息7',
+   `other8` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息8',
+   `other9` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息9',
+   `other10` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息10',
+   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+   `update_time` datetime(0) NOT NULL COMMENT '修改时间',
+   `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人ID',
+   `create_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人名字',
+   `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人ID',
+   `update_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人名字',
+   `delete_flag` bigint(0) NOT NULL DEFAULT 0 COMMENT '删除标记。0：未删除；其他：已删除',
+   PRIMARY KEY (`id`) USING BTREE,
+   INDEX `idx_create_time`(`create_time`) USING BTREE COMMENT '创建时间索引',
+   INDEX `idx_trace_id`(`trace_id`) USING BTREE COMMENT 'traceId索引',
+   INDEX `idx_entry_class_tag`(`entry_class_tag`) USING BTREE COMMENT '入口类标记',
+   INDEX `idx_entry_method_tag`(`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 ``` 
 
-### ES 
+### ES
 
 待补充

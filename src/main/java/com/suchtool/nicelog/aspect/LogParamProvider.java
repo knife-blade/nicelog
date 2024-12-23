@@ -99,6 +99,14 @@ public interface LogParamProvider {
         }
 
         if (!StringUtils.hasText(methodTag)) {
+            Class<?> declaringClass = method.getDeclaringClass();
+            if (declaringClass.isAnnotationPresent(NiceLog.class)) {
+                NiceLog niceLog = declaringClass.getAnnotation(NiceLog.class);
+                methodTag = niceLog.value();
+            }
+        }
+
+        if (!StringUtils.hasText(methodTag)) {
             if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
                     && method.isAnnotationPresent(ApiOperation.class)) {
                 methodTag = method.getAnnotation(ApiOperation.class).value();
@@ -140,9 +148,11 @@ public interface LogParamProvider {
             NiceLogOperation niceLogOperation = method.getAnnotation(NiceLogOperation.class);
             String businessNoSpEL = niceLogOperation.businessNoSpEL();
 
-            EvaluationContext context = new MethodBasedEvaluationContext(
-                    null, method, args, NAME_DISCOVERER);
-            businessNo = PARSER.parseExpression(businessNoSpEL).getValue(context, String.class);
+            if (StringUtils.hasText(businessNoSpEL)) {
+                EvaluationContext context = new MethodBasedEvaluationContext(
+                        null, method, args, NAME_DISCOVERER);
+                businessNo = PARSER.parseExpression(businessNoSpEL).getValue(context, String.class);
+            }
         }
 
         return businessNo;
