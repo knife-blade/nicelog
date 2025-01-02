@@ -191,18 +191,19 @@ public class DemoApplication {
 
 默认情况下，Controller等原来的注解优先级最高，NiceLog注解优先级最低。
 
-| 配置                                                       | 描述                    | 默认值   |
-|----------------------------------------------------------|-----------------------|-------|
-| suchtool.nicelog.controller-log-order                    | Controller接口日志的顺序  | 10000 |
-| suchtool.nicelog.xxl-job-log-order                       | XxlJob日志的顺序           | 10001 |
-| suchtool.nicelog.rabbit-mq-log-order                     | RabbitMQ日志的顺序         | 10002 |
-| suchtool.nicelog.rocket-mq-log-order                     | RocketMQ日志的顺序         | 10003 |
-| suchtool.nicelog.kafka-log-order                         | Kafka日志的顺序            | 10004 |
-| suchtool.nicelog.feign-log-order                         | Feign日志的顺序            | 10005 |
-| suchtool.nicelog.feign-request-interceptorOrder          | Feign请求拦截器的顺序       | 10006 |
-| suchtool.nicelog.scheduled-log-order                     | Scheduled日志的顺序        | 10007 |
-| suchtool.nicelog.nice-log-annotation-log-order           | NiceLog注解日志的顺序        | 10008 |
-
+```yaml
+suchtool:
+  nicelog:
+    controller-log-order: 10000  # Controller接口日志的顺序。默认值: 10000
+    xxl-job-log-order: 10001  # XxlJob日志的顺序。默认值: 10001
+    rabbit-mq-log-order: 10002  # RabbitMQ日志的顺序。默认值: 10002
+    rocket-mq-log-order: 10003  # RocketMQ日志的顺序。默认值: 10003
+    kafka-log-order: 10004  # Kafka日志的顺序。默认值: 10004
+    feign-log-order: 10005  # Feign日志的顺序。默认值: 10005
+    feign-request-interceptor-order: 10006  # Feign请求拦截器的顺序。默认值: 10006
+    scheduled-log-order: 10007  # Scheduled日志的顺序。默认值: 10007
+    nice-log-annotation-log-order: 10008  # NiceLog注解日志的顺序。默认值: 10008
+```
 
 ### 5.3 日志开关
 默认会自动收集所有支持组件的日志。可以自由的开关：
@@ -283,63 +284,62 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 
 ### SQL
 ```sql 
-DROP TABLE IF EXISTS `t_nice_log`;
-CREATE TABLE `t_nice_log`  (
-   `id` bigint(0) NOT NULL COMMENT '主键',
-   `trace_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追踪ID',
-   `mark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '标记',
-   `log_time` datetime(0) NULL DEFAULT NULL COMMENT '日志时间',
-   `level` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日志级别',
-   `direction_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方向类型',
-   `business_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务编号',
-   `message` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '消息',
-   `error_info` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误信息',
-   `error_detail_info` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错误详细信息',
-   `stack_trace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '堆栈跟踪',
-   `entry_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类型',
-   `entry` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口',
-   `entry_class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口类标签',
-   `entry_method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '入口方法标签',
-   `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名称',
-   `class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类标签',
-   `method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名称',
-   `method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法标签',
-   `method_detail` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法详细信息',
-   `line_number` int(0) NULL DEFAULT NULL COMMENT '行号',
-   `class_name_and_line_number` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '类名和行号',
-   `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '参数',
-   `return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回值',
-   `origin_return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '原始返回值',
-   `app_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
-   `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组名称',
-   `operator_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人ID',
-   `operator_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人名字',
-   `client_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端IP',
-   `caller_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '调用方IP',
-   `host_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主机IP',
-   `other1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息1',
-   `other2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息2',
-   `other3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息3',
-   `other4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息4',
-   `other5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息5',
-   `other6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息6',
-   `other7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息7',
-   `other8` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息8',
-   `other9` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息9',
-   `other10` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他信息10',
-   `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-   `update_time` datetime(0) NOT NULL COMMENT '修改时间',
-   `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人ID',
-   `create_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人名字',
-   `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人ID',
-   `update_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '修改人名字',
-   `delete_flag` bigint(0) NOT NULL DEFAULT 0 COMMENT '删除标记。0：未删除；其他：已删除',
-   PRIMARY KEY (`id`) USING BTREE,
-   INDEX `idx_create_time`(`create_time`) USING BTREE COMMENT '创建时间索引',
-   INDEX `idx_trace_id`(`trace_id`) USING BTREE COMMENT 'traceId索引',
-   INDEX `idx_entry_class_tag`(`entry_class_tag`) USING BTREE COMMENT '入口类标记',
-   INDEX `idx_entry_method_tag`(`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+CREATE TABLE `t_website_alarm_log` (
+  `id` bigint NOT NULL COMMENT '主键',
+  `trace_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '追踪ID',
+  `mark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标记',
+  `log_time` datetime DEFAULT NULL COMMENT '日志时间',
+  `level` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志级别',
+  `direction_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方向类型',
+  `business_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '业务编号',
+  `message` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '消息',
+  `error_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误信息',
+  `error_detail_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误详细信息',
+  `stack_trace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '堆栈跟踪',
+  `entry_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口类型',
+  `entry` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口',
+  `entry_class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口类标签',
+  `entry_method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口方法标签',
+  `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类名称',
+  `class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类标签',
+  `method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法名称',
+  `method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法标签',
+  `method_detail` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法详细信息',
+  `line_number` int DEFAULT NULL COMMENT '行号',
+  `class_name_and_line_number` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类名和行号',
+  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '参数',
+  `return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '返回值',
+  `origin_return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '原始返回值',
+  `operator_id` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人ID',
+  `operator_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人名字',
+  `app_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '应用名称',
+  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '组名称',
+  `client_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客户端IP',
+  `caller_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '调用方IP',
+  `host_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '主机IP',
+  `other1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息1',
+  `other2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息2',
+  `other3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息3',
+  `other4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息4',
+  `other5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息5',
+  `other6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息6',
+  `other7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息7',
+  `other8` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息8',
+  `other9` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息9',
+  `other10` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息10',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '修改时间',
+  `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人ID',
+  `create_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人名字',
+  `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人ID',
+  `update_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人名字',
+  `delete_flag` bigint NOT NULL DEFAULT '0' COMMENT '删除标记。0：未删除；其他：已删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_create_time` (`create_time`) USING BTREE COMMENT '创建时间索引',
+  KEY `idx_trace_id` (`trace_id`) USING BTREE COMMENT 'traceId索引',
+  KEY `idx_entry_class_tag` (`entry_class_tag`) USING BTREE COMMENT '入口类标记',
+  KEY `idx_entry_method_tag` (`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 ``` 
 
 ### ES
