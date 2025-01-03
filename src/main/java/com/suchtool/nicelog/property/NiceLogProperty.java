@@ -78,4 +78,8 @@ public class NiceLogProperty {
      */
     private String feignTraceIdHeader = "nice-log-trace-id";
 
+    /**
+     * 字符串字段最大保留长度。默认null，不截断
+     */
+    private Integer stringMaxLength;
 }
