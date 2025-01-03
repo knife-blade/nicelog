@@ -27,7 +27,7 @@ import java.util.List;
 
 @Slf4j
 public class NiceLogInnerUtil {
-    private static String appName;
+    private static final String appName;
 
     private static NiceLogProperty niceLogProperty;
 
@@ -44,6 +44,8 @@ public class NiceLogInnerUtil {
         }
 
         fillCommonField(logInnerBO);
+
+        cutString(logInnerBO);
 
         NiceLogProcess niceLogProcess = ApplicationContextHolder.getContext()
                 .getBean(NiceLogProcess.class);
@@ -63,14 +65,15 @@ public class NiceLogInnerUtil {
 
         try {
             InetAddress localHost = InetAddress.getLocalHost();
-            logInnerBO.setHostIp(localHost.getHostAddress());
+            if (localHost != null) {
+                logInnerBO.setHostIp(localHost.getHostAddress());
+            }
         } catch (UnknownHostException e) {
         }
 
         // 填充上下文
         fillContext(logInnerBO);
 
-        NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
         String stackTracePackageName = niceLogProperty.getStackTracePackageName();
         List<String> stackTracePackageNameList = null;
         if (StringUtils.hasText(stackTracePackageName)) {
@@ -144,7 +147,7 @@ public class NiceLogInnerUtil {
     /**
      * 截断字符串字段
      */
-    private void cutString(Object obj) {
+    private static void cutString(Object obj) {
         // 获取该对象的所有字段
         Field[] fields = obj.getClass().getDeclaredFields();
 
