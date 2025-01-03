@@ -17,6 +17,7 @@ import com.suchtool.nicetool.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -26,8 +27,17 @@ import java.util.List;
 
 @Slf4j
 public class NiceLogInnerUtil {
+    private static String appName;
+
+    private static NiceLogProperty niceLogProperty;
+
+    static {
+        NiceLogInnerUtil.niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
+        appName = ApplicationContextHolder.getContext().getEnvironment()
+                .getProperty("spring.application.name", "");
+    }
+
     public static void record(NiceLogInnerBO logInnerBO) {
-        NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
         LogLevelEnum logLevelConfig = niceLogProperty.getLogLevel();
         if (logInnerBO.getLevel().compareTo(logLevelConfig) < 0) {
             return;
@@ -44,8 +54,7 @@ public class NiceLogInnerUtil {
      * 填充公共字段
      */
     private static void fillCommonField(NiceLogInnerBO logInnerBO) {
-        logInnerBO.setAppName(ApplicationContextHolder.getContext().getEnvironment()
-                .getProperty("spring.application.name", ""));
+        logInnerBO.setAppName(appName);
 
         if (EntryTypeEnum.CONTROLLER.equals(logInnerBO.getEntryType())) {
             logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
@@ -128,6 +137,37 @@ public class NiceLogInnerUtil {
             NiceLogFeignContext niceLogFeignContext = NiceLogFeignContextThreadLocal.read();
             if (niceLogFeignContext != null) {
                 logInnerBO.setOriginReturnValue(niceLogFeignContext.getFeignOriginResponseBody());
+            }
+        }
+    }
+
+    /**
+     * 截断字符串字段
+     */
+    private void cutString(Object obj) {
+        // 获取该对象的所有字段
+        Field[] fields = obj.getClass().getDeclaredFields();
+
+        // 遍历字段
+        for (Field field : fields) {
+            // 如果字段是String类型
+            if (field.getType().equals(String.class)) {
+                // 使字段可访问
+                field.setAccessible(true);
+                Integer stringMaxLength = niceLogProperty.getStringMaxLength();
+                if (stringMaxLength != null) {
+                    try {
+                        String value = (String) field.get(obj);
+                        if (value != null) {
+                            if (value.length() > stringMaxLength) {
+                                value = value.substring(0, stringMaxLength);
+                            }
+                            field.set(obj, value);
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
     }
