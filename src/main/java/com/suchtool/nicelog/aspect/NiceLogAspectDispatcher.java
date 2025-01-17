@@ -1,8 +1,6 @@
 package com.suchtool.nicelog.aspect;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,9 @@ import java.util.List;
 
 public class NiceLogAspectDispatcher  {
     @Autowired(required = false)
-    private List<LogAspectProcessor> logAspectProcessors;
+    private List<NiceLogAspectProcessor> logAspectProcessors;
 
-    public LogAspectProcessor findMatched(JoinPoint joinPoint) {
+    public NiceLogAspectProcessor findMatched(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -23,8 +21,8 @@ public class NiceLogAspectDispatcher  {
             return null;
         }
 
-        LogAspectProcessor matchedProcessor = null;
-        for (LogAspectProcessor logAspectProcessor : logAspectProcessors) {
+        NiceLogAspectProcessor matchedProcessor = null;
+        for (NiceLogAspectProcessor logAspectProcessor : logAspectProcessors) {
             boolean match = match(logAspectProcessor.pointcutExpression(), method);
             if (match) {
                 matchedProcessor = logAspectProcessor;

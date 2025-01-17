@@ -1,29 +1,27 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
-import com.suchtool.nicelog.aspect.LogAspectProcessor;
+import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
+import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 
 /**
- * RabbitMQ日志
+ * XxlJob日志
  */
 @Aspect
-public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
-    private final LogCommonAspectExecutor logCommonAspectExecutor;
+public class NiceLogXxlJobNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public RabbitMQLogAspect(int order) {
-        this.logCommonAspectExecutor = new LogCommonAspectExecutor(this);
+    public NiceLogXxlJobNiceLogAspect(int order) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
 
@@ -34,57 +32,48 @@ public class RabbitMQLogAspect extends LogAspectProcessor implements Ordered {
 
     @Override
     public String pointcutExpression() {
-        return NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT;
+        return NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT
+    @Pointcut(NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT
             + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        logCommonAspectExecutor.before(joinPoint);
+        niceLogLogCommonAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        logCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+        niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        logCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
+        niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
+    /**
+     * 正常返回或者抛异常的处理
+     */
     @Override
     public void returningOrThrowingProcess() {
 
     }
 
     @Override
-    public String provideParam(String param, Method method, Object[] args) {
-        Message message = (Message) args[0];
-        return new String(message.getBody(), StandardCharsets.UTF_8);
-    }
-
-    @Override
     public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.RABBIT_MQ;
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        return null;
+        return EntryTypeEnum.XXL_JOB;
     }
 
     @Override
     public String provideMethodTag(Method method) {
         String methodTag = null;
 
-        if (method.isAnnotationPresent(RabbitListener.class)) {
-            String[] queues = method.getAnnotation(RabbitListener.class).queues();
-            methodTag = String.join(",", queues);
+        if (method.isAnnotationPresent(XxlJob.class)) {
+            methodTag = method.getAnnotation(XxlJob.class).value();
         }
 
         return methodTag;

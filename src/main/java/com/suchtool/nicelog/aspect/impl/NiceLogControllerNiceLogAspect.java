@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.LogCommonAspectExecutor;
-import com.suchtool.nicelog.aspect.LogAspectProcessor;
+import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
+import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
@@ -22,13 +22,13 @@ import java.lang.reflect.Method;
  * Controller的日志
  */
 @Aspect
-public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
-    private final LogCommonAspectExecutor logCommonAspectExecutor;
+public class NiceLogControllerNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public ControllerLogAspect(int order) {
-        this.logCommonAspectExecutor = new LogCommonAspectExecutor(this);
+    public NiceLogControllerNiceLogAspect(int order) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
 
@@ -49,17 +49,17 @@ public class ControllerLogAspect extends LogAspectProcessor implements Ordered {
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        logCommonAspectExecutor.before(joinPoint);
+        niceLogLogCommonAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        logCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+        niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        logCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
+        niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
     @Override
