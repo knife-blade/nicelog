@@ -18,10 +18,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import java.lang.reflect.Method;
 
-public class LogCommonAspectExecutor {
-    private final LogAspectProcessor logAspectProcessor;
+public class NiceLogLogCommonAspectExecutor {
+    private final NiceLogAspectProcessor logAspectProcessor;
 
-    public LogCommonAspectExecutor(LogAspectProcessor logAspectProcessor) {
+    public NiceLogLogCommonAspectExecutor(NiceLogAspectProcessor logAspectProcessor) {
         this.logAspectProcessor = logAspectProcessor;
     }
 
@@ -42,7 +42,7 @@ public class LogCommonAspectExecutor {
             businessNo = logAspectProcessor.provideBusinessNo(method, args);
         } catch (Throwable t) {
             NiceLogUtil.createBuilder()
-                    .errorInfo("参数转JSON字符串异常")
+                    .errorInfo("日志获取参数异常")
                     .throwable(t)
                     .error();
         }

@@ -15,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 
 
 @Configuration
-public class FeignLogResponseDecoder extends SpringDecoder {
-    public FeignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+public class NiceLogFeignLogResponseDecoder extends SpringDecoder {
+    public NiceLogFeignLogResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         super(messageConverters);
     }
 

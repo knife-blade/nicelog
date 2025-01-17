@@ -1,7 +1,6 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
-import com.suchtool.nicelog.annotation.NiceLogOperation;
 import com.suchtool.nicelog.annotation.NiceLogIgnore;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.property.NiceLogProperty;
@@ -11,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 
-public abstract class LogAspectProcessor implements LogParamProvider {
+public abstract class NiceLogAspectProcessor implements NiceLogParamProvider {
 
     /**
      * 判断是否需要处理

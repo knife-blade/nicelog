@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * 日志参数提供者
  */
-public interface LogParamProvider {
+public interface NiceLogParamProvider {
     ExpressionParser PARSER = new SpelExpressionParser();
     ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 

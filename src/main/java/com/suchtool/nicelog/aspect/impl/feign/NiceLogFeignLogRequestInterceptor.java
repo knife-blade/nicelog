@@ -7,13 +7,13 @@ import feign.RequestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 
-public class FeignLogRequestInterceptor implements RequestInterceptor, Ordered {
+public class NiceLogFeignLogRequestInterceptor implements RequestInterceptor, Ordered {
     @Autowired
     private NiceLogProperty niceLogProperty;
 
     private final int order;
 
-    public FeignLogRequestInterceptor(int order) {
+    public NiceLogFeignLogRequestInterceptor(int order) {
         this.order = order;
     }
 
