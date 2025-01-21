@@ -29,7 +29,7 @@ nicelog：功能强大的Java日志组件。
 
 **3. 更多功能**
 
-准备支持：我自己暂时想不到了。如果有需求请提issue
+准备支持：暂时没有。如果有需求请提issue
 
 ## 3.快速开始
 
@@ -91,6 +91,8 @@ public class CustomLogProcessor implements NiceLogProcess {
 **2. 自动收集日志**
 
 自动收集相关组件的日志。原理：使用AOP。
+
+备注：AOP内部已捕获异常，如果有问题，不会影响正常业务执行。
 
 **3. 手动打印日志**
 

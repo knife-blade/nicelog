@@ -13,11 +13,13 @@ import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import com.suchtool.nicelog.util.log.inner.util.NiceLogInnerUtil;
 import com.suchtool.nicetool.util.base.JsonUtil;
 import com.suchtool.nicetool.util.reflect.MethodUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.lang.reflect.Method;
 
+@Slf4j
 public class NiceLogLogCommonAspectExecutor {
     private final NiceLogAspectProcessor logAspectProcessor;
 
@@ -26,6 +28,14 @@ public class NiceLogLogCommonAspectExecutor {
     }
 
     public void before(JoinPoint joinPoint) {
+        try {
+            doBefore(joinPoint);
+        } catch (Exception e) {
+            log.error("NiceLog的before异常", e);
+        }
+    }
+
+    private void doBefore(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -63,6 +73,14 @@ public class NiceLogLogCommonAspectExecutor {
     }
 
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
+        try {
+            doAfterReturning(joinPoint, returnValue);
+        } catch (Exception e) {
+            log.error("NiceLog的afterReturning异常", e);
+        }
+    }
+
+    private void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -98,7 +116,16 @@ public class NiceLogLogCommonAspectExecutor {
         checkAndClearContext();
     }
 
+
     public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
+        try {
+            doAfterThrowing(joinPoint, throwable);
+        } catch (Exception e) {
+            log.error("NiceLog的afterThrowing异常", e);
+        }
+    }
+
+    private void doAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
