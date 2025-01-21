@@ -4,6 +4,8 @@ import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class NiceLogProperty {
     /**
@@ -17,16 +19,21 @@ public class NiceLogProperty {
     private LogLevelEnum logLevel = LogLevelEnum.INFO;
 
     /**
-     * 收集栈日志的包名前缀，多个用逗号隔开。为空则全部收集
+     * 收集栈日志的包名前缀。为空则全部收集
      */
-    private String stackTracePackageName;
+    private List<String> stackTracePackageName;
 
     /**
-     * 收集所有日志
+     * 自动收集日志
      * <p>true：自动收集组件支持的所有日志</p>
      * <p>false：不自动收集日志，需要用{@link NiceLog}注解来启用类或者方法的日志</p>
      */
-    private Boolean collectAll = true;
+    private Boolean autoCollect = true;
+
+    /**
+     * 自动收集的包的前缀。默认只收集启动类所在包
+     */
+    private List<String> autoCollectPackageName;
 
     /**
      * 启用Controller日志
@@ -69,9 +76,9 @@ public class NiceLogProperty {
     private Boolean enableFeignLog = true;
 
     /**
-     * 不收集Feign日志的包名前缀，多个用逗号隔开
+     * 不收集Feign日志的包名前缀
      */
-    private String ignoreFeignLogPackageName;
+    private List<String> ignoreFeignLogPackageName;
 
     /**
      * feign的traceId的header名字
