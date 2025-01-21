@@ -74,16 +74,10 @@ public class NiceLogInnerUtil {
         // 填充上下文
         fillContext(logInnerBO);
 
-        String stackTracePackageName = niceLogProperty.getStackTracePackageName();
-        List<String> stackTracePackageNameList = null;
-        if (StringUtils.hasText(stackTracePackageName)) {
-            stackTracePackageNameList = Arrays.asList(stackTracePackageName.split(","));
-        }
-
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
             logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(
-                    logInnerBO.getThrowable(), stackTracePackageNameList));
+                    logInnerBO.getThrowable(), niceLogProperty.getStackTracePackageName()));
             if (!StringUtils.hasText(logInnerBO.getErrorInfo())) {
                 logInnerBO.setErrorInfo(logInnerBO.getThrowable().getMessage());
             }
@@ -100,7 +94,7 @@ public class NiceLogInnerUtil {
                     }
                     newStackTrace[i - removeLineCount] = stackTrace[i];
                 }
-                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace, stackTracePackageNameList));
+                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace, niceLogProperty.getStackTracePackageName()));
             }
         }
 
