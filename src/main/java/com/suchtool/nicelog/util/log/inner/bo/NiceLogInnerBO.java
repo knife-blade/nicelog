@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 日志内部BO
@@ -23,7 +24,7 @@ public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 时间
      */
-    private LocalDateTime logTime;
+    private OffsetDateTime logTime;
 
     /**
      * 日志级别
