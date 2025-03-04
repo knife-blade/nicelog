@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -109,7 +110,7 @@ public class NiceLogInnerUtil {
             logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
-        logInnerBO.setLogTime(LocalDateTime.now());
+        logInnerBO.setLogTime(OffsetDateTime.now());
     }
 
     private static void fillContext(NiceLogInnerBO logInnerBO) {

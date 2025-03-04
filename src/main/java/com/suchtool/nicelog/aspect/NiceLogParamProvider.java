@@ -1,7 +1,6 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
-import com.suchtool.nicelog.annotation.NiceLogOperation;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicetool.util.base.JsonUtil;
@@ -89,21 +88,13 @@ public interface NiceLogParamProvider {
     }
 
     /**
-     * 先从原注解拼接tag，没有再取@NiceLog的value
+     * 先取@NiceLog的value，没有再从其他注解取tag
      */
     default String provideMethodTag(Method method) {
         String methodTag = null;
 
-        if (method.isAnnotationPresent(NiceLogOperation.class)) {
-            methodTag = method.getAnnotation(NiceLogOperation.class).value();
-        }
-
-        if (!StringUtils.hasText(methodTag)) {
-            Class<?> declaringClass = method.getDeclaringClass();
-            if (declaringClass.isAnnotationPresent(NiceLog.class)) {
-                NiceLog niceLog = declaringClass.getAnnotation(NiceLog.class);
-                methodTag = niceLog.value();
-            }
+        if (method.isAnnotationPresent(NiceLog.class)) {
+            methodTag = method.getAnnotation(NiceLog.class).value();
         }
 
         if (!StringUtils.hasText(methodTag)) {
@@ -157,9 +148,18 @@ public interface NiceLogParamProvider {
     default String provideBusinessNo(Method method, Object[] args) {
         String businessNo = null;
 
-        if (method.isAnnotationPresent(NiceLogOperation.class)) {
-            NiceLogOperation niceLogOperation = method.getAnnotation(NiceLogOperation.class);
-            String businessNoSpEL = niceLogOperation.businessNoSpEL();
+        NiceLog niceLog = null;
+        if (method.isAnnotationPresent(NiceLog.class)) {
+            niceLog = method.getAnnotation(NiceLog.class);
+        } else {
+            Class<?> declaringClass = method.getDeclaringClass();
+            if (declaringClass.isAnnotationPresent(NiceLog.class)) {
+                niceLog = declaringClass.getAnnotation(NiceLog.class);
+            }
+        }
+
+        if (niceLog != null) {
+            String businessNoSpEL = niceLog.businessNoSpEL();
 
             if (StringUtils.hasText(businessNoSpEL)) {
                 EvaluationContext context = new MethodBasedEvaluationContext(

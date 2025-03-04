@@ -113,8 +113,7 @@ NiceLogUtil.createBuilder()
 
 | 注解  | 使用位置  | 作用  | 示例 |
 | ------------ | ------------ | ------------ | ------------ |
-| @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册") |
-| @NiceLogOperation  | 方法  | 指定方法的tag（methodTag）、businessNo的SpEL  | @NiceLogOperation(value = "用户注册", businessNoSpEL = "#userBO.username") |
+| @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
 | @NiceLogIgnore  | 类/方法 | 不自动收集此类/方法的日志  | @NiceLogIgnore |
 
 @NiceLog字段含义：
@@ -122,12 +121,6 @@ NiceLogUtil.createBuilder()
 | 字段       | 描述                  | 默认值  |
 |-----------|-----------------------|------|
 | value | 代表当前类或方法，用于classTag、methodTag字段。 | 空字符串 |
-
-@NiceLogOperation字段含义：
-
-| 字段       | 描述    | 默认值  |
-|-----------|--------|------|
-| value | 代表当前方法，用于methodTag字段 | 空字符串 |
 | businessNoSpEL | 指定业务单号（SpEL），用于businessNo字段。如果参数是对象，这样写：#对象名.字段名，例如：#user.userName；如果参数不是对象，这样写：#字段名。例如：#orderNo | 空字符串 |
 
 @NiceLogOperation字段含义：
