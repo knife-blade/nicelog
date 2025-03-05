@@ -116,14 +116,14 @@ NiceLogUtil.createBuilder()
 | @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
 | @NiceLogIgnore  | 类/方法 | 不自动收集此类/方法的日志  | @NiceLogIgnore |
 
-@NiceLog字段含义：
+@NiceLog
 
 | 字段       | 描述                  | 默认值  |
 |-----------|-----------------------|------|
 | value | 代表当前类或方法，用于classTag、methodTag字段。 | 空字符串 |
 | businessNoSpEL | 指定业务单号（SpEL），用于businessNo字段。如果参数是对象，这样写：#对象名.字段名，例如：#user.userName；如果参数不是对象，这样写：#字段名。例如：#orderNo | 空字符串 |
 
-@NiceLogOperation字段含义：
+@NiceLogIgnore
 
 此注解无字段。
 
@@ -150,7 +150,6 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.enable-feign-log               | 启用Feign日志                          | true |
 | suchtool.nicelog.ignore-feign-log-package-name  | 不收集Feign日志的包名（前缀）。为空则全部收集 | 空  |
 | suchtool.nicelog.feign-trace-id-header          | feign的traceId的header名字             | nice-log-trace-id |
-
 
 ### 5.2 设置优先级
 
@@ -337,7 +336,3 @@ CREATE TABLE `t_website_alarm_log` (
   KEY `idx_entry_method_tag` (`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 ``` 
-
-### ES
-
-待补充
