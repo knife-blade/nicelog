@@ -81,9 +81,9 @@ public class NiceLogConfiguration {
     @Configuration(value = "com.suchtool.nicelog.niceLogAnnotationAspectConfiguration", proxyBeanMethods = false)
     protected static class NiceLogAnnotationAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
-        public NiceNiceLogAnnotationAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+        public NiceLogAnnotationAspect niceLogAnnotationLog(NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
             int order = niceLogAspectOrderProperty.getNiceLogAnnotationLogOrder();
-            return new NiceNiceLogAnnotationAspect(order);
+            return new NiceLogAnnotationAspect(order);
         }
     }
 

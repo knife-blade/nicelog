@@ -5,6 +5,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -23,10 +24,12 @@ public class NiceLogAspectDispatcher  {
 
         NiceLogAspectProcessor matchedProcessor = null;
         for (NiceLogAspectProcessor logAspectProcessor : logAspectProcessors) {
-            boolean match = match(logAspectProcessor.pointcutExpression(), method);
-            if (match) {
-                matchedProcessor = logAspectProcessor;
-                return matchedProcessor;
+            if (StringUtils.hasText(logAspectProcessor.pointcutExpression())) {
+                boolean match = match(logAspectProcessor.pointcutExpression(), method);
+                if (match) {
+                    matchedProcessor = logAspectProcessor;
+                    return matchedProcessor;
+                }
             }
         }
 

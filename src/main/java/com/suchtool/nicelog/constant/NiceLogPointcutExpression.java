@@ -10,4 +10,7 @@ public interface NiceLogPointcutExpression {
     String XXL_JOB_LOG_ASPECT = "@annotation(com.xxl.job.core.handler.annotation.XxlJob)";
     String NICE_LOG_ANNOTATION_ASPECT = "@within(com.suchtool.nicelog.annotation.NiceLog)"
             + " || @annotation(com.suchtool.nicelog.annotation.NiceLog)";
+
+    // 不匹配任意则留空
+    String NOTHING_ASPECT = "";
 }

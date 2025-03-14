@@ -16,12 +16,12 @@ import java.lang.reflect.Method;
  * NiceLog注解日志
  */
 @Aspect
-public class NiceNiceLogAnnotationAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogAnnotationAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceNiceLogAnnotationAspect(int order) {
+    public NiceLogAnnotationAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -33,7 +33,8 @@ public class NiceNiceLogAnnotationAspect extends NiceLogAspectProcessor implemen
 
     @Override
     public String pointcutExpression() {
-        return NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT;
+        // 这里要返回不匹配。否则只有@NiceLog切面时，会死循环
+        return NiceLogPointcutExpression.NOTHING_ASPECT;
     }
 
     @Pointcut(NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT)
@@ -43,7 +44,8 @@ public class NiceNiceLogAnnotationAspect extends NiceLogAspectProcessor implemen
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
         NiceLogAspectProcessor processor = ApplicationContextHolder.getContext()
-                .getBean(NiceLogAspectDispatcher.class).findMatched(joinPoint);
+                .getBean(NiceLogAspectDispatcher.class)
+                .findMatched(joinPoint);
         if (processor != null) {
             processor.before(joinPoint);
         } else {
