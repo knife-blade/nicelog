@@ -4,23 +4,23 @@ import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
-import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
+import org.springframework.kafka.annotation.KafkaListener;
 
 import java.lang.reflect.Method;
 
 /**
- * RocketMQ的日志
+ * Kafka日志
  */
 @Aspect
-public class NiceLogRocketMQNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogKafkaLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogRocketMQNiceLogAspect(int order) {
+    public NiceLogKafkaLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -32,11 +32,11 @@ public class NiceLogRocketMQNiceLogAspect extends NiceLogAspectProcessor impleme
 
     @Override
     public String pointcutExpression() {
-        return NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT;
+        return NiceLogPointcutExpression.KAFKA_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.ROCKET_MQ_LOG_ASPECT
-            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+    @Pointcut(NiceLogPointcutExpression.KAFKA_LOG_ASPECT
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
@@ -55,9 +55,6 @@ public class NiceLogRocketMQNiceLogAspect extends NiceLogAspectProcessor impleme
         niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
-    /**
-     * 正常返回或者抛异常的处理
-     */
     @Override
     public void returningOrThrowingProcess() {
 
@@ -65,14 +62,29 @@ public class NiceLogRocketMQNiceLogAspect extends NiceLogAspectProcessor impleme
 
     @Override
     public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.ROCKETMQ;
+        return EntryTypeEnum.KAFKA;
+    }
+
+    @Override
+    public String provideClassTag(Method method) {
+        return null;
+    }
+
+    @Override
+    public String provideMethodTag(Method method) {
+        String methodTag = null;
+
+        if (method.isAnnotationPresent(KafkaListener.class)) {
+            String[] queues = method.getAnnotation(KafkaListener.class).topics();
+            methodTag = String.join(",", queues);
+        }
+
+        return methodTag;
     }
 
     @Override
     public String provideEntry(Method method) {
-        Class<?> declaringClass = method.getDeclaringClass();
-        RocketMQMessageListener rocketMQMessageListener = declaringClass
-                .getAnnotation(RocketMQMessageListener.class);
-        return rocketMQMessageListener.topic();
+        return provideMethodTag(method);
     }
+
 }

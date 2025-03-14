@@ -1,26 +1,26 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
+import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
-import org.springframework.kafka.annotation.KafkaListener;
 
 import java.lang.reflect.Method;
 
 /**
- * Kafka日志
+ * XxlJob日志
  */
 @Aspect
-public class NiceLogKafkaNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogXxlJobLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogKafkaNiceLogAspect(int order) {
+    public NiceLogXxlJobLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -32,11 +32,11 @@ public class NiceLogKafkaNiceLogAspect extends NiceLogAspectProcessor implements
 
     @Override
     public String pointcutExpression() {
-        return NiceLogPointcutExpression.KAFKA_LOG_ASPECT;
+        return NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT;
     }
 
-    @Pointcut(NiceLogPointcutExpression.KAFKA_LOG_ASPECT
-            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+    @Pointcut(NiceLogPointcutExpression.XXL_JOB_LOG_ASPECT
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
@@ -55,6 +55,9 @@ public class NiceLogKafkaNiceLogAspect extends NiceLogAspectProcessor implements
         niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
+    /**
+     * 正常返回或者抛异常的处理
+     */
     @Override
     public void returningOrThrowingProcess() {
 
@@ -62,21 +65,15 @@ public class NiceLogKafkaNiceLogAspect extends NiceLogAspectProcessor implements
 
     @Override
     public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.KAFKA;
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        return null;
+        return EntryTypeEnum.XXL_JOB;
     }
 
     @Override
     public String provideMethodTag(Method method) {
         String methodTag = null;
 
-        if (method.isAnnotationPresent(KafkaListener.class)) {
-            String[] queues = method.getAnnotation(KafkaListener.class).topics();
-            methodTag = String.join(",", queues);
+        if (method.isAnnotationPresent(XxlJob.class)) {
+            methodTag = method.getAnnotation(XxlJob.class).value();
         }
 
         return methodTag;

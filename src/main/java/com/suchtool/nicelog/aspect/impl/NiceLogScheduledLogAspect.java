@@ -12,12 +12,12 @@ import org.springframework.core.Ordered;
  * Scheduled注解的日志
  */
 @Aspect
-public class NiceLogScheduledNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogScheduledLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogScheduledNiceLogAspect(int order) {
+    public NiceLogScheduledLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -33,7 +33,7 @@ public class NiceLogScheduledNiceLogAspect extends NiceLogAspectProcessor implem
     }
 
     @Pointcut(NiceLogPointcutExpression.SCHEDULED_LOG_ASPECT
-            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

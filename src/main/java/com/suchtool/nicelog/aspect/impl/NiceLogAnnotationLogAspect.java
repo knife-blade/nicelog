@@ -16,12 +16,12 @@ import java.lang.reflect.Method;
  * NiceLog注解日志
  */
 @Aspect
-public class NiceLogAnnotationAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogAnnotationLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogAnnotationAspect(int order) {
+    public NiceLogAnnotationLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
