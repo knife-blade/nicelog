@@ -17,12 +17,12 @@ import java.nio.charset.StandardCharsets;
  * RabbitMQ日志
  */
 @Aspect
-public class NiceLogRabbitMQNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogRabbitMQLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogRabbitMQNiceLogAspect(int order) {
+    public NiceLogRabbitMQLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -38,7 +38,7 @@ public class NiceLogRabbitMQNiceLogAspect extends NiceLogAspectProcessor impleme
     }
 
     @Pointcut(NiceLogPointcutExpression.RABBIT_MQ_LOG_ASPECT
-            + " &&!(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

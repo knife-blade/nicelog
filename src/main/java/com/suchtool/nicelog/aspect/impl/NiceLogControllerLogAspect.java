@@ -22,12 +22,12 @@ import java.lang.reflect.Method;
  * Controller的日志
  */
 @Aspect
-public class NiceLogControllerNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
 
-    public NiceLogControllerNiceLogAspect(int order) {
+    public NiceLogControllerLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -43,7 +43,7 @@ public class NiceLogControllerNiceLogAspect extends NiceLogAspectProcessor imple
     }
 
     @Pointcut(NiceLogPointcutExpression.CONTROLLER_LOG_ASPECT
-            + " && !" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 

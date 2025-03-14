@@ -22,7 +22,7 @@ import java.util.List;
  * Feign的日志
  */
 @Aspect
-public class NiceLogFeignNiceLogAspect extends NiceLogAspectProcessor implements Ordered {
+public class NiceLogFeignLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
     private final int order;
@@ -30,7 +30,7 @@ public class NiceLogFeignNiceLogAspect extends NiceLogAspectProcessor implements
     @Autowired
     private StandardEnvironment standardEnvironment;
 
-    public NiceLogFeignNiceLogAspect(int order) {
+    public NiceLogFeignLogAspect(int order) {
         this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
         this.order = order;
     }
@@ -46,7 +46,7 @@ public class NiceLogFeignNiceLogAspect extends NiceLogAspectProcessor implements
     }
 
     @Pointcut(NiceLogPointcutExpression.FEIGN_LOG_ASPECT
-            + " && !" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
+            + " && !(" + NiceLogPointcutExpression.NICE_LOG_ANNOTATION_ASPECT + ")")
     public void pointcut() {
     }
 
