@@ -115,6 +115,7 @@ NiceLogUtil.createBuilder()
 | ------------ | ------------ | ------------ | ------------ |
 | @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
 | @NiceLogIgnore  | 类/方法 | 不自动收集此类/方法的日志  | @NiceLogIgnore |
+| @NiceLogIgnoreData  | 类/方法 | 不自动收集此类/方法的数据（入参、返回值）  | @NiceLogIgnoreData |
 
 @NiceLog
 
@@ -124,6 +125,10 @@ NiceLogUtil.createBuilder()
 | businessNoSpEL | 指定业务单号（SpEL），用于businessNo字段。如果参数是对象，这样写：#对象名.字段名，例如：#user.userName；如果参数不是对象，这样写：#字段名。例如：#orderNo | 空字符串 |
 
 @NiceLogIgnore
+
+此注解无字段。
+
+@NiceLogIgnoreData
 
 此注解无字段。
 
