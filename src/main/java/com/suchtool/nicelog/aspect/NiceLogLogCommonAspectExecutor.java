@@ -1,5 +1,7 @@
 package com.suchtool.nicelog.aspect;
 
+import com.suchtool.nicelog.annotation.NiceLogIgnore;
+import com.suchtool.nicelog.annotation.NiceLogIgnoreData;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
@@ -47,14 +49,21 @@ public class NiceLogLogCommonAspectExecutor {
 
         String param = null;
         String businessNo = null;
-        try {
-            param = logAspectProcessor.provideParam(null, method, args);
-            businessNo = logAspectProcessor.provideBusinessNo(method, args);
-        } catch (Throwable t) {
-            NiceLogUtil.createBuilder()
-                    .errorInfo("日志获取参数异常")
-                    .throwable(t)
-                    .error();
+
+        Class<?> declaringClass = method.getDeclaringClass();
+
+        // 若类或者方法上没有此注解，才获取数据
+        if (!method.isAnnotationPresent(NiceLogIgnoreData.class)
+                && !declaringClass.isAnnotationPresent(NiceLogIgnoreData.class)) {
+            try {
+                param = logAspectProcessor.provideParam(null, method, args);
+                businessNo = logAspectProcessor.provideBusinessNo(method, args);
+            } catch (Throwable t) {
+                NiceLogUtil.createBuilder()
+                        .errorInfo("日志获取参数异常")
+                        .throwable(t)
+                        .error();
+            }
         }
 
         NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
@@ -97,13 +106,18 @@ public class NiceLogLogCommonAspectExecutor {
 
         String returnValueString = null;
         if (returnValue != null) {
-            try {
-                returnValueString = JsonUtil.toJsonString(returnValue);
-            } catch (Throwable e) {
-                NiceLogUtil.createBuilder()
-                        .mark("nicelog将返回值序列化为json失败")
-                        .throwable(e)
-                        .error();
+            Class<?> declaringClass = method.getDeclaringClass();
+            // 若类或者方法上没有此注解，才获取数据
+            if (!method.isAnnotationPresent(NiceLogIgnoreData.class)
+                    && !declaringClass.isAnnotationPresent(NiceLogIgnoreData.class)) {
+                try {
+                    returnValueString = JsonUtil.toJsonString(returnValue);
+                } catch (Throwable e) {
+                    NiceLogUtil.createBuilder()
+                            .mark("nicelog将返回值序列化为json失败")
+                            .throwable(e)
+                            .error();
+                }
             }
         }
         logInnerBO.setReturnValue(returnValueString);
