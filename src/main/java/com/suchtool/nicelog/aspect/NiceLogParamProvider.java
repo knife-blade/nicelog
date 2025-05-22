@@ -17,9 +17,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -34,6 +32,12 @@ import java.util.Map;
 public interface NiceLogParamProvider {
     ExpressionParser PARSER = new SpelExpressionParser();
     ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+    Collection<Class<?>> IGNORE_LOG_CLASS_LIST = Arrays.asList(
+            Errors.class,             // 比如：BindingResult.class,
+            InputStreamSource.class,  // 比如：MultipartFile
+            ServletResponse.class,
+            ServletRequest.class
+    );
 
     EntryTypeEnum provideEntryType();
 
@@ -132,13 +136,7 @@ public interface NiceLogParamProvider {
         } else {
             // 如果是多个，则放到Map，再序列化
             try {
-                Collection<Class<?>> ignoreLogClassList = Arrays.asList(
-                        Errors.class,            // 比如：BindingResult.class,
-                        InputStreamSource.class,  // 比如：MultipartFile
-                        ServletResponse.class,
-                        ServletRequest.class
-                        );
-                Map<String, Object> map = MethodUtil.parseParam(method, args, ignoreLogClassList);
+                Map<String, Object> map = MethodUtil.parseParam(method, args, IGNORE_LOG_CLASS_LIST);
                 if (!CollectionUtils.isEmpty(map)) {
                     finalParam = JsonUtil.toJsonString(map);
                 }
