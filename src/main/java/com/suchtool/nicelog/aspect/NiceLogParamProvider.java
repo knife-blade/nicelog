@@ -11,14 +11,18 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -129,7 +133,11 @@ public interface NiceLogParamProvider {
             // 如果是多个，则放到Map，再序列化
             try {
                 Collection<Class<?>> ignoreLogClassList = Arrays.asList(
-                        BindingResult.class, MultipartFile.class);
+                        Errors.class,            // 比如：BindingResult.class,
+                        InputStreamSource.class,  // 比如：MultipartFile
+                        ServletResponse.class,
+                        ServletRequest.class
+                        );
                 Map<String, Object> map = MethodUtil.parseParam(method, args, ignoreLogClassList);
                 if (!CollectionUtils.isEmpty(map)) {
                     finalParam = JsonUtil.toJsonString(map);
