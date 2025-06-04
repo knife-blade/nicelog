@@ -44,7 +44,7 @@ public class NiceLogTraceIdUtil {
         if (servletRequestAttributes != null) {
             HttpServletRequest request = servletRequestAttributes.getRequest();
             NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
-            String traceIdOfHeader = request.getHeader(niceLogProperty.getFeignTraceIdHeader());
+            String traceIdOfHeader = request.getHeader(niceLogProperty.getFeignTraceIdRequestHeader());
             if (StringUtils.hasText(traceIdOfHeader)) {
                 traceId = traceIdOfHeader;
             }

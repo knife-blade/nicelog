@@ -5,12 +5,15 @@ import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,9 +24,13 @@ import java.lang.reflect.Method;
 /**
  * Controller的日志
  */
+@Slf4j
 @Aspect
 public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
+
+    @Autowired
+    private NiceLogProperty niceLogProperty;
 
     private final int order;
 
@@ -79,13 +86,27 @@ public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implement
     public void returningOrThrowingProcess() {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        Assert.notNull(servletRequestAttributes, "RequestAttributes不能为null");
-        HttpServletResponse response = servletRequestAttributes.getResponse();
+        if (servletRequestAttributes == null) {
+            log.warn("ServletRequestAttributes为null，不处理");
+            return;
+        }
+        HttpServletResponse httpServletResponse = servletRequestAttributes.getResponse();
 
-        NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
-        if (niceLogContext != null) {
-            // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-            response.addHeader("Trace-Id", niceLogContext.getTraceId());
+        if (httpServletResponse == null) {
+            log.warn("HttpServletResponse为null，不处理");
+            return;
+        }
+
+        if (niceLogProperty.getEnableControllerTraceIdResponseHeader() != null
+            && niceLogProperty.getEnableControllerTraceIdResponseHeader()) {
+            NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
+            if (niceLogContext != null) {
+                String controllerTraceIdHeader = niceLogProperty.getControllerResponseTraceIdHeader();
+                if (StringUtils.hasText(controllerTraceIdHeader)) {
+                    // 将traceId返给前端，这样即可通过traceId查到所有日志信息
+                    httpServletResponse.addHeader(controllerTraceIdHeader, niceLogContext.getTraceId());
+                }
+            }
         }
     }
 

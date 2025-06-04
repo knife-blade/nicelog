@@ -138,23 +138,27 @@ NiceLogUtil.createBuilder()
 
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
-| 配置                                              | 描述                                 | 默认值  |
-|-------------------------------------------------|------------------------------------|------|
-| suchtool.nicelog.enabled                        | 启用日志                               | true |
+| 配置                                              | 描述                             | 默认值  |
+|-------------------------------------------------|-----------------------------------|------|
+| suchtool.nicelog.enabled                        | 启用日志                           | true |
 | suchtool.nicelog.log-level                      | 日志收集级别。支持：debug、info、warn、error | info |
-| suchtool.nicelog.stack-trace-package-name       | 收集栈日志的包名（前缀）。为空则全部收集       | 空 |
-| suchtool.nicelog.auto-collect               | 自动收集日志（Controller、XXL-JOB等） | true |
-| suchtool.nicelog.auto-collect-package-name      | 自动收集的包名（前缀）。为空则全部收集 | 空 |
-| suchtool.nicelog.enable-controller-log          | 启用Controller日志                     | true |
-| suchtool.nicelog.enable-xxl-job-log             | 启用XXL-JOB日志                        | true |
-| suchtool.nicelog.enable-scheduled-log           | 启用@Scheduled日志                     | true |
-| suchtool.nicelog.enable-nice-log-annotation-log | 启用@NiceLog日志                       | true |
-| suchtool.nicelog.enable-rabbit-mq-log           | 启用RabbitMQ日志                       | true |
-| suchtool.nicelog.enable-rocket-mq-log           | 启用RocketMQ日志                       | true |
-| suchtool.nicelog.enable-kafka-log               | 启用Kafka日志                          | true |
-| suchtool.nicelog.enable-feign-log               | 启用Feign日志                          | true |
+| suchtool.nicelog.stack-trace-package-name       | 收集栈日志的包名（前缀）。为空则全部收集  | 空 |
+| suchtool.nicelog.auto-collect                   | 自动收集日志（Controller、XXL-JOB等）  | true |
+| suchtool.nicelog.auto-collect-package-name      | 自动收集的包名（前缀）。为空则全部收集   | 空 |
+| suchtool.nicelog.enable-controller-log          | 启用Controller日志                    | true |
+| suchtool.nicelog.enable-xxl-job-log             | 启用XXL-JOB日志                       | true |
+| suchtool.nicelog.enable-scheduled-log           | 启用@Scheduled日志                    | true |
+| suchtool.nicelog.enable-nice-log-annotation-log | 启用@NiceLog日志                      | true |
+| suchtool.nicelog.enable-rabbit-mq-log           | 启用RabbitMQ日志                      | true |
+| suchtool.nicelog.enable-rocket-mq-log           | 启用RocketMQ日志                      | true |
+| suchtool.nicelog.enable-kafka-log               | 启用Kafka日志                         | true |
+| suchtool.nicelog.enable-feign-log               | 启用Feign日志                         | true |
 | suchtool.nicelog.ignore-feign-log-package-name  | 不收集Feign日志的包名（前缀）。为空则全部收集 | 空  |
-| suchtool.nicelog.feign-trace-id-header          | feign的traceId的header名字             | nice-log-trace-id |
+| suchtool.nicelog.enable-feign-trace-id-request-header  | 启用Feign的Trace-Id请求头 | true  |
+| suchtool.nicelog.feign-trace-id-request-header  | Feign的TraceId的请求Header名字   | Nice-Log-Trace-Id |
+| suchtool.nicelog.enable-controller-trace-id-response-header | 启用Controller的Trace-Id响应头 | true |
+| suchtool.nicelog.controller-trace-id-response-header | Controller的TraceId的响应Header名字 | Nice-Log-Trace-Id |
+| suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） |
 
 ### 5.2 设置优先级
 

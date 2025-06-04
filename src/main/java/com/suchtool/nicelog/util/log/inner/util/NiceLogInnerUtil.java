@@ -153,7 +153,8 @@ public class NiceLogInnerUtil {
                 // 使字段可访问
                 field.setAccessible(true);
                 Integer stringMaxLength = niceLogProperty.getStringMaxLength();
-                if (stringMaxLength != null) {
+                if (stringMaxLength != null
+                    && stringMaxLength >= 0) {
                     try {
                         String value = (String) field.get(obj);
                         if (value != null) {
