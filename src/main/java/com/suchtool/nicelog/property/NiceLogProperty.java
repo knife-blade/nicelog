@@ -81,12 +81,27 @@ public class NiceLogProperty {
     private List<String> ignoreFeignLogPackageName;
 
     /**
-     * feign的traceId的header名字
+     * 启用Feign的Trace-Id请求头
      */
-    private String feignTraceIdHeader = "nice-log-trace-id";
+    private Boolean enableFeignTraceIdRequestHeader = true;
 
     /**
-     * 字符串字段最大保留长度。默认null，不截断
+     * Feign的TraceId的header名字
      */
-    private Integer stringMaxLength;
+    private String feignTraceIdRequestHeader = "Nice-Log-Trace-Id";
+
+    /**
+     * 启用Controller的Trace-Id响应头
+     */
+    private Boolean enableControllerTraceIdResponseHeader = true;
+
+    /**
+     * Controller的TraceId的header名字
+     */
+    private String controllerResponseTraceIdHeader = "Nice-Log-Trace-Id";
+
+    /**
+     * 字符串字段最大保留长度。默认-1，不截断
+     */
+    private Integer stringMaxLength = -1;
 }

@@ -6,6 +6,7 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.util.StringUtils;
 
 public class NiceLogFeignLogRequestInterceptor implements RequestInterceptor, Ordered {
     @Autowired
@@ -19,9 +20,14 @@ public class NiceLogFeignLogRequestInterceptor implements RequestInterceptor, Or
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header(
-                niceLogProperty.getFeignTraceIdHeader(),
-                NiceLogTraceIdUtil.readTraceId());
+        if (niceLogProperty.getEnableFeignTraceIdRequestHeader() != null
+            && niceLogProperty.getEnableFeignTraceIdRequestHeader()) {
+            if (StringUtils.hasText(niceLogProperty.getFeignTraceIdRequestHeader())) {
+                requestTemplate.header(
+                        niceLogProperty.getFeignTraceIdRequestHeader(),
+                        NiceLogTraceIdUtil.readTraceId());
+            }
+        }
     }
 
     @Override
