@@ -75,6 +75,8 @@ public class NiceLogInnerUtil {
         // 填充上下文
         fillContext(logInnerBO);
 
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
             logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(
@@ -85,7 +87,6 @@ public class NiceLogInnerUtil {
         } else {
             if (logInnerBO.getRecordStackTrace() != null
                     && logInnerBO.getRecordStackTrace()) {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 // 移除nicelog内的调用链路
                 int removeLineCount = 6;
                 StackTraceElement[] newStackTrace = new StackTraceElement[stackTrace.length - removeLineCount];
@@ -100,7 +101,6 @@ public class NiceLogInnerUtil {
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         StackTraceElement stackTraceElement = stackTrace[6];
         if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
