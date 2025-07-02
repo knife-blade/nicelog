@@ -84,30 +84,7 @@ public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implement
      */
     @Override
     public void returningOrThrowingProcess() {
-        ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (servletRequestAttributes == null) {
-            log.warn("ServletRequestAttributes为null，不处理");
-            return;
-        }
-        HttpServletResponse httpServletResponse = servletRequestAttributes.getResponse();
 
-        if (httpServletResponse == null) {
-            log.warn("HttpServletResponse为null，不处理");
-            return;
-        }
-
-        if (niceLogProperty.getEnableControllerTraceIdResponseHeader() != null
-            && niceLogProperty.getEnableControllerTraceIdResponseHeader()) {
-            NiceLogContext niceLogContext = NiceLogContextThreadLocal.read();
-            if (niceLogContext != null) {
-                String controllerTraceIdHeader = niceLogProperty.getControllerResponseTraceIdHeader();
-                if (StringUtils.hasText(controllerTraceIdHeader)) {
-                    // 将traceId返给前端，这样即可通过traceId查到所有日志信息
-                    httpServletResponse.addHeader(controllerTraceIdHeader, niceLogContext.getTraceId());
-                }
-            }
-        }
     }
 
     @Override
