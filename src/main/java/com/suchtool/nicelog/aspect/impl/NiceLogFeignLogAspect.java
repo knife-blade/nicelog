@@ -74,8 +74,8 @@ public class NiceLogFeignLogAspect extends NiceLogAspectProcessor implements Ord
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.FEIGN;
+    public String provideEntryType() {
+        return EntryTypeEnum.FEIGN.name();
     }
 
     @Override

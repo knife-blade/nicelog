@@ -59,7 +59,7 @@ public class NiceLogInnerUtil {
     private static void fillCommonField(NiceLogInnerBO logInnerBO) {
         logInnerBO.setAppName(appName);
 
-        if (EntryTypeEnum.CONTROLLER.equals(logInnerBO.getEntryType())) {
+        if (EntryTypeEnum.CONTROLLER.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
             logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
         }
@@ -102,7 +102,7 @@ public class NiceLogInnerUtil {
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
         StackTraceElement stackTraceElement = stackTrace[6];
-        if (EntryTypeEnum.MANUAL.equals(logInnerBO.getEntryType())) {
+        if (EntryTypeEnum.MANUAL.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
             logInnerBO.setLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
@@ -131,7 +131,7 @@ public class NiceLogInnerUtil {
             );
         }
 
-        if (EntryTypeEnum.FEIGN.equals(logInnerBO.getEntryType())) {
+        if (EntryTypeEnum.FEIGN.name().equals(logInnerBO.getEntryType())) {
             NiceLogFeignContext niceLogFeignContext = NiceLogFeignContextThreadLocal.read();
             if (niceLogFeignContext != null) {
                 logInnerBO.setOriginReturnValue(niceLogFeignContext.getFeignOriginResponseBody());

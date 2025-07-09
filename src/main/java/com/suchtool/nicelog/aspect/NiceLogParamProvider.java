@@ -39,7 +39,7 @@ public interface NiceLogParamProvider {
             ServletRequest.class
     );
 
-    EntryTypeEnum provideEntryType();
+    String provideEntryType();
 
     default String provideEntry(Method method) {
         return provideClassTag(method);
@@ -71,7 +71,7 @@ public interface NiceLogParamProvider {
         }
 
         if (!StringUtils.hasText(classTag)) {
-            if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
+            if (EntryTypeEnum.CONTROLLER.name().equals(provideEntryType())
                     && declaringClass.isAnnotationPresent(Api.class)) {
                 Api api = declaringClass.getAnnotation(Api.class);
                 String[] tags = api.tags();
@@ -82,7 +82,7 @@ public interface NiceLogParamProvider {
                 } else {
                     classTag = value;
                 }
-            } else if (EntryTypeEnum.FEIGN.equals(provideEntryType())) {
+            } else if (EntryTypeEnum.FEIGN.name().equals(provideEntryType())) {
                 FeignClient feignClient = declaringClass.getAnnotation(FeignClient.class);
                 classTag = feignClient.value();
             }
@@ -106,7 +106,7 @@ public interface NiceLogParamProvider {
         }
 
         if (!StringUtils.hasText(methodTag)) {
-            if (EntryTypeEnum.CONTROLLER.equals(provideEntryType())
+            if (EntryTypeEnum.CONTROLLER.name().equals(provideEntryType())
                     && method.isAnnotationPresent(ApiOperation.class)) {
                 methodTag = method.getAnnotation(ApiOperation.class).value();
             }

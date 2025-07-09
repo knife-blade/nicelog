@@ -38,8 +38,9 @@ public class NiceLogInnerBO extends NiceLogBO {
 
     /**
      * 入口类型
+     * 对应：{@link EntryTypeEnum#name()}
      */
-    private EntryTypeEnum entryType;
+    private String entryType;
 
     /**
      * 入口

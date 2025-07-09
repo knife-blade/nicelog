@@ -64,8 +64,8 @@ public class NiceLogXxlJobLogAspect extends NiceLogAspectProcessor implements Or
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.XXL_JOB;
+    public String provideEntryType() {
+        return EntryTypeEnum.XXL_JOB.name();
     }
 
     @Override

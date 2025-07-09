@@ -61,8 +61,8 @@ public class NiceLogScheduledLogAspect extends NiceLogAspectProcessor implements
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.SCHEDULED;
+    public String provideEntryType() {
+        return EntryTypeEnum.SCHEDULED.name();
     }
 
 }

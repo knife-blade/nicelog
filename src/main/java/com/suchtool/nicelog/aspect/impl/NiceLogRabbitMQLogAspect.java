@@ -77,8 +77,8 @@ public class NiceLogRabbitMQLogAspect extends NiceLogAspectProcessor implements 
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.RABBIT_MQ;
+    public String provideEntryType() {
+        return EntryTypeEnum.RABBIT_MQ.name();
     }
 
     @Override

@@ -182,7 +182,7 @@ public class NiceLogLogCommonAspectExecutor {
      * 记录上下文信息
      */
     private void recordContext(NiceLogInnerBO logInnerBO) {
-        if (EntryTypeEnum.FEIGN.equals(logAspectProcessor.provideEntryType())) {
+        if (EntryTypeEnum.FEIGN.name().equals(logAspectProcessor.provideEntryType())) {
             NiceLogFeignContext niceLogFeignContext = new NiceLogFeignContext();
             NiceLogFeignContextThreadLocal.write(niceLogFeignContext);
         } else {
