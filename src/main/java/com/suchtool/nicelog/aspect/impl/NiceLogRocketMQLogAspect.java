@@ -64,8 +64,8 @@ public class NiceLogRocketMQLogAspect extends NiceLogAspectProcessor implements 
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.ROCKETMQ;
+    public String provideEntryType() {
+        return EntryTypeEnum.ROCKETMQ.name();
     }
 
     @Override

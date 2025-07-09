@@ -61,8 +61,8 @@ public class NiceLogKafkaLogAspect extends NiceLogAspectProcessor implements Ord
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.KAFKA;
+    public String provideEntryType() {
+        return EntryTypeEnum.KAFKA.name();
     }
 
     @Override

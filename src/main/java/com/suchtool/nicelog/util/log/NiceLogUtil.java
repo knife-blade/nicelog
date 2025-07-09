@@ -36,7 +36,7 @@ public class NiceLogUtil {
     private static void convertAndRecord(NiceLogBO niceLogBO, LogLevelEnum level) {
         NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         BeanUtils.copyProperties(niceLogBO, logInnerBO);
-        logInnerBO.setEntryType(EntryTypeEnum.MANUAL);
+        logInnerBO.setEntryType(EntryTypeEnum.MANUAL.name());
         logInnerBO.setLevel(level);
 
         NiceLogInnerUtil.record(logInnerBO);

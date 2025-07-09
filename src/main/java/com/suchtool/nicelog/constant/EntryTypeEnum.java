@@ -15,9 +15,9 @@ public enum EntryTypeEnum {
     SCHEDULED("Scheduled注解")
     ;
 
-    private final String name;
+    private final String description;
 
-    EntryTypeEnum(String name) {
-        this.name = name;
+    EntryTypeEnum(String description) {
+        this.description = description;
     }
 }

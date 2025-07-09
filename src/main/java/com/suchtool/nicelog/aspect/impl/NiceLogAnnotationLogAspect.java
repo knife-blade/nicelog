@@ -81,8 +81,8 @@ public class NiceLogAnnotationLogAspect extends NiceLogAspectProcessor implement
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.NICE_LOG_ANNOTATION;
+    public String provideEntryType() {
+        return EntryTypeEnum.NICE_LOG_ANNOTATION.name();
     }
 
     @Override

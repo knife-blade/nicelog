@@ -88,8 +88,8 @@ public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implement
     }
 
     @Override
-    public EntryTypeEnum provideEntryType() {
-        return EntryTypeEnum.CONTROLLER;
+    public String provideEntryType() {
+        return EntryTypeEnum.CONTROLLER.name();
     }
 
     @Override

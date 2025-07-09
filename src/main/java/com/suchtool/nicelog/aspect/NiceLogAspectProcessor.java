@@ -52,7 +52,7 @@ public abstract class NiceLogAspectProcessor implements NiceLogParamProvider {
         }
 
         // 如果指定了不收集日志的Feign的包，则不收集
-        if (EntryTypeEnum.FEIGN.equals(provideEntryType())) {
+        if (EntryTypeEnum.FEIGN.name().equals(provideEntryType())) {
             List<String> ignoreFeignLogPackageNameList = niceLogProperty.getIgnoreFeignLogPackageName();
             if (!CollectionUtils.isEmpty(ignoreFeignLogPackageNameList)) {
                 for (String packageName : ignoreFeignLogPackageNameList) {
