@@ -131,8 +131,11 @@ public interface NiceLogParamProvider {
         }
 
         if (args.length == 1) {
-            // 单个则直接序列化
-            finalParam = JsonUtil.toJsonString(args[0]);
+            Object arg = args[0];
+            if (MethodUtil.requireParse(IGNORE_LOG_CLASS_LIST, arg)) {
+                // 单个则直接序列化
+                finalParam = JsonUtil.toJsonString(arg);
+            }
         } else {
             // 如果是多个，则放到Map，再序列化
             try {
