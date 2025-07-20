@@ -138,11 +138,12 @@ NiceLogUtil.createBuilder()
 
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
-| 配置                                              | 描述                             | 默认值  |
+| 配置                                            | 描述                             | 默认值  |
 |-------------------------------------------------|-----------------------------------|------|
 | suchtool.nicelog.enabled                        | 启用日志                           | true |
 | suchtool.nicelog.log-level                      | 日志收集级别。支持：debug、info、warn、error | info |
 | suchtool.nicelog.stack-trace-package-name       | 收集栈日志的包名（前缀）。为空则全部收集  | 空 |
+| suchtool.nicelog.caller-stack-trace-depth       | 调用栈的深度。                         | 6 |
 | suchtool.nicelog.auto-collect                   | 自动收集日志（Controller、XXL-JOB等）  | true |
 | suchtool.nicelog.auto-collect-package-name      | 自动收集的包名（前缀）。为空则全部收集   | 空 |
 | suchtool.nicelog.enable-controller-log          | 启用Controller日志                    | true |
@@ -159,6 +160,8 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.enable-controller-trace-id-response-header | 启用Controller的Trace-Id响应头 | true |
 | suchtool.nicelog.controller-trace-id-response-header | Controller的TraceId的响应Header名字 | Nice-Log-Trace-Id |
 | suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） |
+| suchtool.nicelog.logback-enabled   | 启用logback的接管                     | false |
+| suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈   | false |
 
 ### 5.2 设置优先级
 
@@ -198,15 +201,16 @@ public class DemoApplication {
 ```yaml
 suchtool:
   nicelog:
-    controller-log-order: 10000  # Controller接口日志的顺序。默认值: 10000
-    xxl-job-log-order: 10001  # XxlJob日志的顺序。默认值: 10001
-    rabbit-mq-log-order: 10002  # RabbitMQ日志的顺序。默认值: 10002
-    rocket-mq-log-order: 10003  # RocketMQ日志的顺序。默认值: 10003
-    kafka-log-order: 10004  # Kafka日志的顺序。默认值: 10004
-    feign-log-order: 10005  # Feign日志的顺序。默认值: 10005
-    feign-request-interceptor-order: 10006  # Feign请求拦截器的顺序。默认值: 10006
-    scheduled-log-order: 10007  # Scheduled日志的顺序。默认值: 10007
-    nice-log-annotation-log-order: 10008  # NiceLog注解日志的顺序。默认值: 10008
+    order:
+      controller-log-order: 10000  # Controller接口日志的顺序。默认值: 10000
+      xxl-job-log-order: 10001  # XxlJob日志的顺序。默认值: 10001
+      rabbit-mq-log-order: 10002  # RabbitMQ日志的顺序。默认值: 10002
+      rocket-mq-log-order: 10003  # RocketMQ日志的顺序。默认值: 10003
+      kafka-log-order: 10004  # Kafka日志的顺序。默认值: 10004
+      feign-log-order: 10005  # Feign日志的顺序。默认值: 10005
+      feign-request-interceptor-order: 10006  # Feign请求拦截器的顺序。默认值: 10006
+      scheduled-log-order: 10007  # Scheduled日志的顺序。默认值: 10007
+      nice-log-annotation-log-order: 10008  # NiceLog注解日志的顺序。默认值: 10008
 ```
 
 ### 5.3 日志开关
@@ -246,102 +250,48 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 ```
 
 ## 6. 字段的含义
-| Key                    | 含义             | 备注                                                                                                                                                                                   |
-|------------------------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| traceId                | 链路id           | 作为上下文传递                                                                                                                                                                              |
-| mark                   | 标记             | 手动时可自定义                                                                                                                                                                              |
-| logTime                | 日志时间          |                                                                                                                                                                                      |
-| level                  | 级别             | DEBUG、INFO、WARN、ERROR                                                                                                                                                                |
-| directionType          | 方向             | IN：方法进入；OUT：方法退出；INNER：方法内部执行                                                                                                                                                        |
-| businessNo             | 业务单号         | 手动时可自定义                                                                                                                                                                              |
-| message                | 信息             | 手动时可自定义                                                                                                                                                                              |
-| errorInfo              | 错误信息         | 手动时可自定义                                                                                                                                                                              |
-| errorDetailInfo        | 错误详细信息      | 手动时可自定义                                                                                                                                                                              |
-| throwable              | Throwable异常类   | 手动时可自定义。栈追踪字符串会自动保存到NiceLogInnerBO.stackTrace                                                                                                                                        |
-| recordStackTrace       | 记录栈追踪        | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.stackTrace。若throwable不为空，则使用throwable的栈数据                                                                                           |
-| stackTrace             | 栈追踪字符串      |                                                                                                                                                                                      |
-| entryType              | 入口类型         | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
-| entry                  | 入口             | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。    |
-| entryClassTag          | 入口类的tag      | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。                                                    |
-| entryMethodTag         | 入口方法的tag    | 取值优先级为：@NiceLogOperation的value > @NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。                                                                                                                   |
-| className              | 类名            |                                                                                                                                                                                      |
-| classTag               | 当前类的tag      | 取值同entryClassTag，但不作为上下文传递。                                                                                                                                                          |
-| methodName             | 方法名           |                                                                                                                                                                                      |
-| methodTag              | 当前方法的tag    | 取值同entryMethodTag，但不作为上下文传递。                                                                                                                                                         |
-| methodDetail           | 方法详情         | 全限定类名+方法名+全限定参数                                                                                                                                                                      |
-| lineNumber             | 代码行号         | 只在手动输出时有值。                                                                                                                                                                           |
-| classNameAndLineNumber | 类名及代码行号，中间用:隔开 | 只在手动输出时有值。                                                                                                                                                                           |
-| param                  | 入参             | 手动时可自定义                                                                                                                                                                              |
-| returnValue            | 返回值           | 手动时可自定义                                                                                                                                                                              |
-| originReturnValue      | 原始返回值       | 手动时可自定义                                                                                                                                                                              |
-| operatorId             | 操作人ID        | 手动时可自定义                                                                                                                                                                              |
-| operatorName           | 操作人名字      | 手动时可自定义                                                                                                                                                                              |
-| appName                | 应用名字          | 取spring.application.name配置                                                                                                                                                         |
-| groupName              | 组名字           | 用于区分应用所在的组，建议放到公共组件里指定                                                                                                                                                               |
-| clientIp               | 客户端IP          |                                                                                                                                                                                      |
-| callerIp               | 调用方IP          |                                                                                                                                                                                      |
-| hostIp                 | 主机IP          |                                                                                                                                                                                      |
+| Key | 含义 | 备注 |
+|-----|-----|--------|
+| traceId | 链路id | 作为上下文传递 |
+| mark | 标记 | 手动时可自定义 |
+| logTime | 日志时间 | |
+| level | 级别 | DEBUG、INFO、WARN、ERROR |
+| directionType | 方向 | IN：方法进入；OUT：方法退出；INNER：方法内部执行 |
+| businessNo | 业务单号 | 手动时可自定义 |
+| message | 信息 | 手动时可自定义 |
+| errorInfo | 错误信息 | 手动时可自定义 |
+| errorDetailInfo | 错误详细信息 | 手动时可自定义 |
+| throwable | Throwable异常类 | 手动时可自定义。错误的栈追踪字符串会自动保存到NiceLogInnerBO.errorStackTrace |
+| stackTrace | 调用的栈追踪数组| 手动时可自定义。调用的栈追踪字符串会自动保存到NiceLogInnerBO.callerStackTrace |
+| recordStackTrace | 是否记录调用栈追踪 | 手动时可自定义。用于非异常时主动获得栈追踪，会将栈追踪字符串会保存到NiceLogInnerBO.callerStackTrace。若throwable不为空，则使用throwable的栈数据 |
+| stackTraceDepth | 手动时可自定义。调用栈追踪的深度 | 默认为null |
+| callerStackTrace | 调用的栈追踪字符串 | |
+| errorStackTrace | 错误的栈追踪字符串 | |
+| entryType | 入口类型 | MANUAL：手动；CONTROLLER：接口；RABBIT_MQ：RabbitMQ；XXL_JOB：XXL-JOB；NICE_LOG_ANNOTATION：NiceLog注解；FEIGN：Feign; ROCKETMQ：RocketMQ；KAFKA：Kafka |
+| entry | 入口 | 对于Controller，是URL；对于RabbitMQ，是@RabbitListener的queues；对于XXL-JOB，是@XxlJob的value；对于Feign，是URL；对于RocketMQ，是@RocketMQMessageListener的topic字段；对于Kafka，是@KafkaListener的topics字段。作为上下文传递。 |
+| entryClassTag | 入口类的tag | 取值优先级为：先取@NiceLog的value，若为空则取：对于Controller：Controller类上的@Api的tags > Controller类上的@Api的value；对于Feign：@FeignClient的value字段。作为上下文传递。 |
+| entryMethodTag | 入口方法的tag | 取值优先级为：@NiceLogOperation的value > @NiceLog的value > Controller方法上的@ApiOperation的value。作为上下文传递。 |
+| className | 类名 | |
+| classTag | 当前类的tag | 取值同entryClassTag，但不作为上下文传递。 |
+| methodName | 方法名 | |
+| methodTag | 当前方法的tag | 取值同entryMethodTag，但不作为上下文传递。 |
+| methodDetail | 方法详情 | 全限定类名+方法名+全限定参数 |
+| lineNumber | 代码行号 | 只在手动输出时有值。 |
+| classNameAndLineNumber | 类名及代码行号，中间用:隔开 | 只在手动输出时有值。 |
+| param | 入参 | 手动时可自定义 |
+| returnValue | 返回值 | 手动时可自定义 |
+| originReturnValue | 原始返回值 | 手动时可自定义 |
+| operatorId | 操作人ID | 手动时可自定义 |
+| operatorName | 操作人名字 | 手动时可自定义 |
+| appName | 应用名字 | 取spring.application.name配置 |
+| groupName | 组名字 | 用于区分应用所在的组，建议放到公共组件里指定 |
+| clientIp | 客户端IP | |
+| callerIp | 调用方IP | |
+| hostIp | 主机IP | |
 
-## 7. 建表语句
+## 7. ES语句
 
-如果想将日志存储到数据库或者ES，以下是推荐使用的建表语句。
+如果想将日志存储到ES，以下是推荐使用的建索引语句。
 
-### SQL
-```sql 
-CREATE TABLE `t_website_alarm_log` (
-  `id` bigint NOT NULL COMMENT '主键',
-  `trace_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '追踪ID',
-  `mark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标记',
-  `log_time` datetime DEFAULT NULL COMMENT '日志时间',
-  `level` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志级别',
-  `direction_type` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方向类型',
-  `business_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '业务编号',
-  `message` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '消息',
-  `error_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误信息',
-  `error_detail_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误详细信息',
-  `stack_trace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '堆栈跟踪',
-  `entry_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口类型',
-  `entry` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口',
-  `entry_class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口类标签',
-  `entry_method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '入口方法标签',
-  `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类名称',
-  `class_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类标签',
-  `method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法名称',
-  `method_tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法标签',
-  `method_detail` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法详细信息',
-  `line_number` int DEFAULT NULL COMMENT '行号',
-  `class_name_and_line_number` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类名和行号',
-  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '参数',
-  `return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '返回值',
-  `origin_return_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '原始返回值',
-  `operator_id` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人ID',
-  `operator_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人名字',
-  `app_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '应用名称',
-  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '组名称',
-  `client_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客户端IP',
-  `caller_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '调用方IP',
-  `host_ip` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '主机IP',
-  `other1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息1',
-  `other2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息2',
-  `other3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息3',
-  `other4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息4',
-  `other5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息5',
-  `other6` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息6',
-  `other7` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息7',
-  `other8` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息8',
-  `other9` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息9',
-  `other10` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '其他信息10',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime NOT NULL COMMENT '修改时间',
-  `create_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人ID',
-  `create_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人名字',
-  `update_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人ID',
-  `update_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人名字',
-  `delete_flag` bigint NOT NULL DEFAULT '0' COMMENT '删除标记。0：未删除；其他：已删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_create_time` (`create_time`) USING BTREE COMMENT '创建时间索引',
-  KEY `idx_trace_id` (`trace_id`) USING BTREE COMMENT 'traceId索引',
-  KEY `idx_entry_class_tag` (`entry_class_tag`) USING BTREE COMMENT '入口类标记',
-  KEY `idx_entry_method_tag` (`entry_method_tag`) USING BTREE COMMENT '入口方法标记'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-``` 
+### ES
+待补充

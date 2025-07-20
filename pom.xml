@@ -12,7 +12,7 @@
 
     <groupId>com.suchtool</groupId>
     <artifactId>nicelog-spring-boot-starter</artifactId>
-    <version>1.2.49</version>
+    <version>1.2.50</version>
 
     <packaging>jar</packaging>
     <name>nicelog-spring-boot-starter</name>

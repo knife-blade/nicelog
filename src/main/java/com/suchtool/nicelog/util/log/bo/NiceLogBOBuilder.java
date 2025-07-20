@@ -9,6 +9,10 @@ public final class NiceLogBOBuilder {
         this.niceLogBO = new NiceLogBO();
     }
 
+    public void trace() {
+        NiceLogUtil.trace(niceLogBO);
+    }
+
     public void debug() {
         NiceLogUtil.debug(niceLogBO);
     }
@@ -62,6 +66,16 @@ public final class NiceLogBOBuilder {
 
     public NiceLogBOBuilder recordStackTrace(Boolean recordStackTrace) {
         niceLogBO.setRecordStackTrace(recordStackTrace);
+        return this;
+    }
+
+    public NiceLogBOBuilder stackTraceDepth(Integer stackTraceDepth) {
+        niceLogBO.setStackTraceDepth(stackTraceDepth);
+        return this;
+    }
+
+    public NiceLogBOBuilder callerStackTrace(StackTraceElement[] stackTraceElements) {
+        niceLogBO.setStackTrace(stackTraceElements);
         return this;
     }
 
