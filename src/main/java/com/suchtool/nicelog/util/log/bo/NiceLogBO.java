@@ -43,6 +43,17 @@ public class NiceLogBO {
     private Boolean recordStackTrace;
 
     /**
+     * 调recordStrackTrace时，栈深度
+     */
+    private Integer stackTraceDepth;
+
+    /**
+     * 调用的栈追踪
+     */
+    @JsonIgnore
+    private StackTraceElement[] stackTrace;
+
+    /**
      * 参数
      */
     private String param;

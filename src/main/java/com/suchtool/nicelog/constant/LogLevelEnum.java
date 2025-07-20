@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum LogLevelEnum {
+    TRACE("追踪"),
     DEBUG("调试"),
     INFO("信息"),
     WARN("警告"),

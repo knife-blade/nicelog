@@ -7,7 +7,6 @@ import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 /**
@@ -98,9 +97,14 @@ public class NiceLogInnerBO extends NiceLogBO {
     private String classNameAndLineNumber;
 
     /**
-     * 栈追踪
+     * 调用栈追踪
      */
-    private String stackTrace;
+    private String callerStackTrace;
+
+    /**
+     * 错误栈追踪
+     */
+    private String errorStackTrace;
 
     /**
      * 应用名字

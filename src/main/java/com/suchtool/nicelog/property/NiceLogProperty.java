@@ -24,6 +24,11 @@ public class NiceLogProperty {
     private List<String> stackTracePackageName;
 
     /**
+     * 调用栈的深度
+     */
+    private Integer callerStackTraceDepth = 6;
+
+    /**
      * 自动收集日志
      * <p>true：自动收集组件支持的所有日志</p>
      * <p>false：不自动收集日志，需要用{@link NiceLog}注解来启用类或者方法的日志</p>
@@ -94,4 +99,14 @@ public class NiceLogProperty {
      * 字符串字段最大保留长度。默认-1，不截断
      */
     private Integer stringMaxLength = -1;
+
+    /**
+     * 启用logback的接管
+     */
+    private Boolean logbackEnabled = false;
+
+    /**
+     * 记录logback的调用栈
+     */
+    private Boolean logbackRecordCallerStackTrace = false;
 }

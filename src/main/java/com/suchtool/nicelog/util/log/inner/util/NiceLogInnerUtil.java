@@ -15,27 +15,29 @@ import com.suchtool.nicetool.util.base.ThrowableUtil;
 import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import com.suchtool.nicetool.util.web.ip.ClientIpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 public class NiceLogInnerUtil {
-    private static final String appName;
+    private static String appName;
 
     private static NiceLogProperty niceLogProperty;
 
     static {
-        NiceLogInnerUtil.niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
-        appName = ApplicationContextHolder.getContext().getEnvironment()
-                .getProperty("spring.application.name", "");
+        ApplicationContext context = ApplicationContextHolder.getContext();
+        if (context == null) {
+            log.error("nicelog initialization error：ApplicationContext is null");
+        } else {
+            niceLogProperty = context.getBean(NiceLogProperty.class);
+            appName = context.getEnvironment()
+                    .getProperty("spring.application.name", "");
+        }
     }
 
     public static void record(NiceLogInnerBO logInnerBO) {
@@ -75,33 +77,40 @@ public class NiceLogInnerUtil {
         // 填充上下文
         fillContext(logInnerBO);
 
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement[] callerStackTraceArray = logInnerBO.getStackTrace() != null
+                ? logInnerBO.getStackTrace()
+                : Thread.currentThread().getStackTrace();
+
+        Integer stackTraceDepth = logInnerBO.getStackTraceDepth() != null
+                ? logInnerBO.getStackTraceDepth()
+                : niceLogProperty.getCallerStackTraceDepth();
+
+        if (logInnerBO.getRecordStackTrace() != null
+                && logInnerBO.getRecordStackTrace()) {
+            // 移除nicelog内的调用链路
+            int removeLineCount = stackTraceDepth;
+            StackTraceElement[] newStackTrace = new StackTraceElement[callerStackTraceArray.length - removeLineCount];
+            for (int i = 0; i < callerStackTraceArray.length; i++) {
+                if (i < removeLineCount) {
+                    continue;
+                }
+                newStackTrace[i - removeLineCount] = callerStackTraceArray[i];
+            }
+            logInnerBO.setCallerStackTrace(StackTraceUtil.stackTraceToString(
+                    newStackTrace, niceLogProperty.getStackTracePackageName()));
+        }
 
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
-            logInnerBO.setStackTrace(ThrowableUtil.stackTraceToString(
+            logInnerBO.setErrorStackTrace(ThrowableUtil.stackTraceToString(
                     logInnerBO.getThrowable(), niceLogProperty.getStackTracePackageName()));
             if (!StringUtils.hasText(logInnerBO.getErrorInfo())) {
                 logInnerBO.setErrorInfo(logInnerBO.getThrowable().getMessage());
             }
-        } else {
-            if (logInnerBO.getRecordStackTrace() != null
-                    && logInnerBO.getRecordStackTrace()) {
-                // 移除nicelog内的调用链路
-                int removeLineCount = 6;
-                StackTraceElement[] newStackTrace = new StackTraceElement[stackTrace.length - removeLineCount];
-                for (int i = 0; i < stackTrace.length; i++) {
-                    if (i < removeLineCount) {
-                        continue;
-                    }
-                    newStackTrace[i - removeLineCount] = stackTrace[i];
-                }
-                logInnerBO.setStackTrace(StackTraceUtil.stackTraceToString(newStackTrace, niceLogProperty.getStackTracePackageName()));
-            }
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
-        StackTraceElement stackTraceElement = stackTrace[6];
+        StackTraceElement stackTraceElement = callerStackTraceArray[stackTraceDepth];
         if (EntryTypeEnum.MANUAL.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
