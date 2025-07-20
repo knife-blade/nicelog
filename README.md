@@ -26,6 +26,7 @@ nicelog：功能强大的Java日志组件。
 6. Kafka
 7. Scheduled
 8. Bean的类或方法上加@NiceLog注解
+9. 接管logback日志
 
 **3. 更多功能**
 
@@ -82,7 +83,7 @@ public class CustomLogProcessor implements NiceLogProcess {
     @Override
     public void process(NiceLogInnerBO logInnerBO) {
         // 这里可以这么做：
-        // 1.取出logInnerBO的字段值，赋值到项目本身的日志实体类
+        // 1.取出logInnerBO的字段值
         // 2.打印到控制台或者上传到ES等
     }
 }
@@ -112,10 +113,10 @@ NiceLogUtil.createBuilder()
 **5. 注解大全**
 
 | 注解  | 使用位置  | 作用  | 示例 |
-| ------------ | ------------ | ------------ | ------------ |
-| @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。  | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
-| @NiceLogIgnore  | 类/方法 | 不自动收集此类/方法的日志  | @NiceLogIgnore |
-| @NiceLogIgnoreData  | 类/方法 | 不自动收集此类/方法的数据（入参、返回值）  | @NiceLogIgnoreData |
+| ---- | --------- | ---- | ---- |
+| @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。 | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
+| @NiceLogIgnore | 类/方法 | 不自动收集此类/方法的日志 | @NiceLogIgnore |
+| @NiceLogIgnoreData | 类/方法 | 不自动收集此类/方法的数据（入参、返回值） | @NiceLogIgnoreData |
 
 @NiceLog
 
@@ -165,38 +166,17 @@ NiceLogUtil.createBuilder()
 
 ### 5.2 设置优先级
 
-**NiceLog的优先级**
-
-NiceLog是通过AOP实现的，可以指定本组件的执行顺序，在SpringBoot的启动类上加如下注解即可：
-```
-@EnableNiceLog(order = 1)
-```
-比如：
-```
-package com.knife.example;
-
-import com.suchtool.nicelog.annotation.EnableNiceLog;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-@EnableNiceLog(order = 1)
-public class DemoApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
-
-}
-```
-
-**具体的优先级**
-
 可以用SpringBoot的配置文件指定它们的优先级，优先级越低，则执行顺序越靠前。
+比如：一个@XxlJob方法，它的类上有@RestController，则哪个数值小，就优先调用其日志记录逻辑。
 
-比如：一个Controller上，同时有@NiceLog，@NiceLog数值大，则调用Controller的日志记录逻辑。
+注意：
+1. AOP是环状执行
+    1. 即：如果A比B的优先级的值小，则顺序为：
+    2. A的前置日志=> B的前置日志=> B的后置日志=> A的后置日志
 
-默认情况下，Controller等原来的注解优先级最高，NiceLog注解优先级最低。
+2. @NiceLog例外，它不会与其他AOP都执行。
+    1. 比如：一个Controller上有@NiceLog注解，只会执行一次日志记录。
+    2. 原因：在设计上，@NiceLog是一个收集日志的标记，并不是一个程序入口类型。
 
 ```yaml
 suchtool:
