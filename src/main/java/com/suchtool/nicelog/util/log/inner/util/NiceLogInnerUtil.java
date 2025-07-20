@@ -79,23 +79,24 @@ public class NiceLogInnerUtil {
 
         StackTraceElement[] callerStackTraceArray = logInnerBO.getStackTrace() != null
                 ? logInnerBO.getStackTrace()
-                : Thread.currentThread().getStackTrace();
+                :Thread.currentThread().getStackTrace();
 
         Integer stackTraceDepth = logInnerBO.getStackTraceDepth() != null
                 ? logInnerBO.getStackTraceDepth()
                 : niceLogProperty.getCallerStackTraceDepth();
 
+        // 移除nicelog内的调用链路
+        StackTraceElement[] newStackTrace = new StackTraceElement[callerStackTraceArray.length - stackTraceDepth];
+        for (int i = 0; i < callerStackTraceArray.length; i++) {
+            if (i < stackTraceDepth) {
+                continue;
+            }
+            newStackTrace[i - stackTraceDepth] = callerStackTraceArray[i];
+        }
+        logInnerBO.setStackTrace(newStackTrace);
+
         if (logInnerBO.getRecordStackTrace() != null
                 && logInnerBO.getRecordStackTrace()) {
-            // 移除nicelog内的调用链路
-            int removeLineCount = stackTraceDepth;
-            StackTraceElement[] newStackTrace = new StackTraceElement[callerStackTraceArray.length - removeLineCount];
-            for (int i = 0; i < callerStackTraceArray.length; i++) {
-                if (i < removeLineCount) {
-                    continue;
-                }
-                newStackTrace[i - removeLineCount] = callerStackTraceArray[i];
-            }
             logInnerBO.setCallerStackTrace(StackTraceUtil.stackTraceToString(
                     newStackTrace, niceLogProperty.getStackTracePackageName()));
         }
@@ -110,7 +111,7 @@ public class NiceLogInnerUtil {
         }
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
-        StackTraceElement stackTraceElement = callerStackTraceArray[stackTraceDepth];
+        StackTraceElement stackTraceElement = newStackTrace[0];
         if (EntryTypeEnum.MANUAL.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
