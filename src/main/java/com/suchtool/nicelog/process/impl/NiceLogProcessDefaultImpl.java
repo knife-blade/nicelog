@@ -58,10 +58,10 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
         // 获取LoggerContext
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         // 获取Logger对象
-        Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
 
         if (consoleAppender == null) {
-            Iterator<Appender<ILoggingEvent>> appenderIterator = logger.iteratorForAppenders();
+            Iterator<Appender<ILoggingEvent>> appenderIterator = rootLogger.iteratorForAppenders();
             while (appenderIterator.hasNext()) {
                 Appender<ILoggingEvent> appender = appenderIterator.next();
                 if (appender instanceof ConsoleAppender) {
@@ -92,13 +92,14 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
                 break;
         }
 
+        Logger logger = (Logger) LoggerFactory.getLogger(logInnerBO.getClassName());
         // 模拟日志事件
         LoggingEvent event = new LoggingEvent(
                 "ch.qos.logback.classic.Logger",
                 logger,
                 level,
                 JsonUtil.toJsonString(logInnerBO),
-                null,
+                logInnerBO.getThrowable(),
                 null
         );
 
