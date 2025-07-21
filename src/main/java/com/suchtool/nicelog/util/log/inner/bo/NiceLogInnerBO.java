@@ -1,9 +1,12 @@
 package com.suchtool.nicelog.util.log.inner.bo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
+import com.suchtool.nicetool.util.lib.datetime.constant.DateTimeFormatConstant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,7 +26,7 @@ public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 时间
      */
-    private OffsetDateTime logTime;
+    private String logTime;
 
     /**
      * 日志级别

@@ -109,4 +109,9 @@ public class NiceLogProperty {
      * 记录logback的调用栈
      */
     private Boolean logbackRecordCallerStackTrace = false;
+
+    /**
+     * 日志时间模式
+     */
+    private String logTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 }
