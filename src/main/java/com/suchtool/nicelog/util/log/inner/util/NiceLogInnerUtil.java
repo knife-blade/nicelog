@@ -21,13 +21,16 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 public class NiceLogInnerUtil {
     private static String appName;
 
     private static NiceLogProperty niceLogProperty;
+
+    private static DateTimeFormatter logTimeFormatter;
 
     static {
         ApplicationContext context = ApplicationContextHolder.getContext();
@@ -37,6 +40,7 @@ public class NiceLogInnerUtil {
             niceLogProperty = context.getBean(NiceLogProperty.class);
             appName = context.getEnvironment()
                     .getProperty("spring.application.name", "");
+            logTimeFormatter = DateTimeFormatter.ofPattern(niceLogProperty.getLogTimePattern());
         }
     }
 
@@ -120,7 +124,7 @@ public class NiceLogInnerUtil {
             logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
-        logInnerBO.setLogTime(OffsetDateTime.now());
+        logInnerBO.setLogTime(logTimeFormatter.format(LocalDateTime.now()));
     }
 
     private static void fillContext(NiceLogInnerBO logInnerBO) {
