@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
@@ -124,7 +125,7 @@ public class NiceLogInnerUtil {
             logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
         }
 
-        logInnerBO.setLogTime(logTimeFormatter.format(LocalDateTime.now()));
+        logInnerBO.setLogTime(logTimeFormatter.format(OffsetDateTime.now()));
     }
 
     private static void fillContext(NiceLogInnerBO logInnerBO) {

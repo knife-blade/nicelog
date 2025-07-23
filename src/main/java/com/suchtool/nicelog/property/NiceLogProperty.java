@@ -113,5 +113,5 @@ public class NiceLogProperty {
     /**
      * 日志时间模式
      */
-    private String logTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    private String logTimePattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 }
