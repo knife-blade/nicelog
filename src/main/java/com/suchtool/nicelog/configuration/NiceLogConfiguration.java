@@ -159,7 +159,7 @@ public class NiceLogConfiguration {
 
     @Bean(name = "com.suchtool.nicelog.niceLogApplicationRunner")
     @ConditionalOnExpression("${suchtool.nicelog.logback-enabled:false}")
-    public NiceLogApplicationRunner niceLogProcessDefaultImpl(NiceLogProperty niceLogProperty) {
+    public NiceLogApplicationRunner niceLogApplicationRunner(NiceLogProperty niceLogProperty) {
         return new NiceLogApplicationRunner(niceLogProperty);
     }
 }
