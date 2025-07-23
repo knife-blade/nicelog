@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,19 +32,11 @@ public class NiceLogInnerUtil {
 
     private static DateTimeFormatter logTimeFormatter;
 
-    static {
-        ApplicationContext context = ApplicationContextHolder.getContext();
-        if (context == null) {
-            log.error("nicelog initialization error：ApplicationContext is null");
-        } else {
-            niceLogProperty = context.getBean(NiceLogProperty.class);
-            appName = context.getEnvironment()
-                    .getProperty("spring.application.name", "");
-            logTimeFormatter = DateTimeFormatter.ofPattern(niceLogProperty.getLogTimePattern());
-        }
-    }
-
     public static void record(NiceLogInnerBO logInnerBO) {
+        if (!checkAndConfig()) {
+            return;
+        }
+
         LogLevelEnum logLevelConfig = niceLogProperty.getLogLevel();
         if (logInnerBO.getLevel().compareTo(logLevelConfig) < 0) {
             return;
@@ -58,6 +49,25 @@ public class NiceLogInnerUtil {
         NiceLogProcess niceLogProcess = ApplicationContextHolder.getContext()
                 .getBean(NiceLogProcess.class);
         niceLogProcess.process(logInnerBO);
+    }
+
+    private static boolean checkAndConfig(){
+        if (niceLogProperty != null) {
+            return true;
+        } else {
+            ApplicationContext context = ApplicationContextHolder.getContext();
+            if (context == null) {
+                log.error("nicelog initialization error：ApplicationContext is null");
+                return false;
+            } else {
+                niceLogProperty = context.getBean(NiceLogProperty.class);
+                appName = context.getEnvironment()
+                        .getProperty("spring.application.name", "");
+                logTimeFormatter = DateTimeFormatter.ofPattern(niceLogProperty.getLogTimePattern());
+
+                return true;
+            }
+        }
     }
 
     /**
