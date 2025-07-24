@@ -89,6 +89,11 @@ public final class NiceLogBOBuilder {
         return this;
     }
 
+    public NiceLogBOBuilder enhanceType(String enhanceType) {
+        niceLogBO.setEnhanceType(enhanceType);
+        return this;
+    }
+
     public NiceLogBOBuilder other1(String other1) {
         niceLogBO.setOther1(other1);
         return this;

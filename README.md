@@ -264,11 +264,13 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | originReturnValue | 原始返回值 | 手动时可自定义 |
 | operatorId | 操作人ID | 手动时可自定义 |
 | operatorName | 操作人名字 | 手动时可自定义 |
+| enhanceType | 增强类型 | 手动时可自定义。比如：LOGBACK |
 | appName | 应用名字 | 取spring.application.name配置 |
 | groupName | 组名字 | 用于区分应用所在的组，建议放到公共组件里指定 |
 | clientIp | 客户端IP | |
 | callerIp | 调用方IP | |
 | hostIp | 主机IP | |
+| other1~other10 | 其他 | 手动时可自定义 |
 
 ## 7. ES语句
 
