@@ -2,6 +2,9 @@ package com.suchtool.nicelog.constant;
 
 import lombok.Getter;
 
+/**
+ * 入口类型
+ */
 @Getter
 public enum EntryTypeEnum {
     MANUAL("手动"),

@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
+import com.suchtool.nicelog.constant.EnhanceTypeEnum;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
@@ -33,6 +34,7 @@ public class NiceLogLogbackAppender extends AppenderBase<ILoggingEvent> {
                 .message(event.getFormattedMessage())
                 .callerStackTrace(event.getCallerData())
                 .stackTraceDepth(0)
+                .enhanceType(EnhanceTypeEnum.LOGBACK.name())
                 ;
         if (Boolean.TRUE.equals(getNiceLogProperty().getLogbackRecordCallerStackTrace())) {
             niceLogBOBuilder
