@@ -1,6 +1,5 @@
 package com.suchtool.nicelog.aspect;
 
-import com.suchtool.nicelog.annotation.NiceLogIgnore;
 import com.suchtool.nicelog.annotation.NiceLogIgnoreData;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
@@ -52,9 +51,10 @@ public class NiceLogLogCommonAspectExecutor {
 
         Class<?> declaringClass = method.getDeclaringClass();
 
-        // 若类或者方法上没有此注解，才获取数据
-        if (!method.isAnnotationPresent(NiceLogIgnoreData.class)
-                && !declaringClass.isAnnotationPresent(NiceLogIgnoreData.class)) {
+        NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
+        NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
+        if ((classIgnoreData == null || !classIgnoreData.ignoreParam())
+                && (methodIgnoreData == null || !methodIgnoreData.ignoreParam())) {
             try {
                 param = logAspectProcessor.provideParam(null, method, args);
                 businessNo = logAspectProcessor.provideBusinessNo(method, args);
@@ -107,9 +107,11 @@ public class NiceLogLogCommonAspectExecutor {
         String returnValueString = null;
         if (returnValue != null) {
             Class<?> declaringClass = method.getDeclaringClass();
-            // 若类或者方法上没有此注解，才获取数据
-            if (!method.isAnnotationPresent(NiceLogIgnoreData.class)
-                    && !declaringClass.isAnnotationPresent(NiceLogIgnoreData.class)) {
+
+            NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
+            NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
+            if ((classIgnoreData == null || !classIgnoreData.ignoreReturnValue())
+                    && (methodIgnoreData == null || !methodIgnoreData.ignoreReturnValue())) {
                 try {
                     returnValueString = JsonUtil.toJsonString(returnValue);
                 } catch (Throwable e) {
