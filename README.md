@@ -116,7 +116,7 @@ NiceLogUtil.createBuilder()
 | ---- | --------- | ---- | ---- |
 | @NiceLog | 类/方法 | 自动收集某个类/方法的日志。如果配置了suchtool.nicelog.collect-all为false，可以使用此注解单独收集日志。 | @NiceLog(value = "用户注册", businessNoSpEL = "#userBO.username") |
 | @NiceLogIgnore | 类/方法 | 不自动收集此类/方法的日志 | @NiceLogIgnore |
-| @NiceLogIgnoreData | 类/方法 | 不自动收集此类/方法的数据（入参、返回值） | @NiceLogIgnoreData |
+| @NiceLogIgnoreData | 类/方法 | 不自动收集此类/方法的数据（入参、返回值） | @NiceLogIgnoreData(ignorePram = true, ignoreReturnValue = false) |
 
 @NiceLog
 
@@ -131,7 +131,11 @@ NiceLogUtil.createBuilder()
 
 @NiceLogIgnoreData
 
-此注解无字段。
+| 字段       | 描述                  | 默认值  |
+|-----------|-----------------------|------|
+| ignoreParam| 忽略参数（不收集参数） | true |
+| ignoreReturnValue | 忽略返回值（不收集返回值） |true |
+
 
 ## 5.详细配置
 
