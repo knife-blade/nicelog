@@ -76,17 +76,8 @@ public class NiceLogInnerUtil {
     private static void fillCommonField(NiceLogInnerBO logInnerBO) {
         logInnerBO.setAppName(appName);
 
-        if (EntryTypeEnum.CONTROLLER.name().equals(logInnerBO.getEntryType())) {
-            logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
-            logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
-        }
-
-        try {
-            InetAddress localHost = InetAddress.getLocalHost();
-            if (localHost != null) {
-                logInnerBO.setHostIp(localHost.getHostAddress());
-            }
-        } catch (UnknownHostException e) {
+        if (Boolean.TRUE.equals(niceLogProperty.getEnableIpRecord())) {
+            fillIp(logInnerBO);
         }
 
         // 填充上下文
@@ -136,6 +127,21 @@ public class NiceLogInnerUtil {
         }
 
         logInnerBO.setLogTime(logTimeFormatter.format(OffsetDateTime.now()));
+    }
+
+    private static void fillIp(NiceLogInnerBO logInnerBO) {
+        if (EntryTypeEnum.CONTROLLER.name().equals(logInnerBO.getEntryType())) {
+            logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
+            logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
+        }
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            if (localHost != null) {
+                logInnerBO.setHostIp(localHost.getHostAddress());
+            }
+        } catch (UnknownHostException e) {
+        }
     }
 
     private static void fillContext(NiceLogInnerBO logInnerBO) {

@@ -12,11 +12,11 @@
 
     <groupId>com.suchtool</groupId>
     <artifactId>nicelog-spring-boot-starter</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
 
     <packaging>jar</packaging>
     <name>nicelog-spring-boot-starter</name>
-    <description>collect log automatically for SpringBoot project</description>
+    <description>Collect log automatically for SpringBoot project</description>
 
     <url>https://github.com/knife-blade/nicelog</url>
 
