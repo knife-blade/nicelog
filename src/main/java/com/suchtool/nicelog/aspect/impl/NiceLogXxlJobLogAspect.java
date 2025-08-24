@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -20,8 +21,9 @@ public class NiceLogXxlJobLogAspect extends NiceLogAspectProcessor implements Or
 
     private final int order;
 
-    public NiceLogXxlJobLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    public NiceLogXxlJobLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
+                this, niceLogProperty);
         this.order = order;
     }
 

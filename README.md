@@ -160,10 +160,8 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.enable-kafka-log               | 启用Kafka日志                         | true |
 | suchtool.nicelog.enable-feign-log               | 启用Feign日志                         | true |
 | suchtool.nicelog.ignore-feign-log-package-name  | 不收集Feign日志的包名（前缀）。为空则全部收集 | 空  |
-| suchtool.nicelog.enable-feign-trace-id-request-header  | 启用Feign的Trace-Id请求头 | true  |
 | suchtool.nicelog.feign-trace-id-request-header  | Feign的TraceId的请求Header名字   | Nice-Log-Trace-Id |
-| suchtool.nicelog.enable-controller-trace-id-response-header | 启用Controller的Trace-Id响应头 | true |
-| suchtool.nicelog.controller-trace-id-response-header | Controller的TraceId的响应Header名字 | Nice-Log-Trace-Id |
+| suchtool.nicelog.enable-controller-header-log | 启用Controller的Header日志 | false |
 | suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） |
 | suchtool.nicelog.logback-enabled   | 启用logback的接管                     | false |
 | suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈   | false |
@@ -266,6 +264,8 @@ public class FeignLogResponseDecoder extends SpringDecoder {
 | param | 入参 | 手动时可自定义 |
 | returnValue | 返回值 | 手动时可自定义 |
 | originReturnValue | 原始返回值 | 手动时可自定义 |
+| requestHeader | 请求头 | 支持Controller |
+| responseHeader | 响应头 | 支持Controller。注意：只能获取Controller内设置的Header。 |
 | operatorId | 操作人ID | 手动时可自定义 |
 | operatorName | 操作人名字 | 手动时可自定义 |
 | enhanceType | 增强类型 | 手动时可自定义。比如：LOGBACK |

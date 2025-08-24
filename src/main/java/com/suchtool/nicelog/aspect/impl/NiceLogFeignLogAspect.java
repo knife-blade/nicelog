@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicetool.util.web.http.url.HttpUrlUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -30,8 +31,9 @@ public class NiceLogFeignLogAspect extends NiceLogAspectProcessor implements Ord
     @Autowired
     private StandardEnvironment standardEnvironment;
 
-    public NiceLogFeignLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    public NiceLogFeignLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
+                this, niceLogProperty);
         this.order = order;
     }
 

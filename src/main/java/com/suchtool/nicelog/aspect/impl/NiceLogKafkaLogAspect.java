@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
@@ -20,8 +21,9 @@ public class NiceLogKafkaLogAspect extends NiceLogAspectProcessor implements Ord
 
     private final int order;
 
-    public NiceLogKafkaLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    public NiceLogKafkaLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
+                this, niceLogProperty);
         this.order = order;
     }
 

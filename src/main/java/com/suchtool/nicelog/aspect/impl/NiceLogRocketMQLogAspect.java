@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -20,8 +21,9 @@ public class NiceLogRocketMQLogAspect extends NiceLogAspectProcessor implements 
 
     private final int order;
 
-    public NiceLogRocketMQLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    public NiceLogRocketMQLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
+                this, niceLogProperty);
         this.order = order;
     }
 
