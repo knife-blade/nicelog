@@ -20,13 +20,10 @@ public class NiceLogFeignLogRequestInterceptor implements RequestInterceptor, Or
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        if (niceLogProperty.getEnableFeignTraceIdRequestHeader() != null
-            && niceLogProperty.getEnableFeignTraceIdRequestHeader()) {
-            if (StringUtils.hasText(niceLogProperty.getFeignTraceIdRequestHeader())) {
-                requestTemplate.header(
-                        niceLogProperty.getFeignTraceIdRequestHeader(),
-                        NiceLogTraceIdUtil.readTraceId());
-            }
+        if (StringUtils.hasText(niceLogProperty.getFeignTraceIdRequestHeader())) {
+            requestTemplate.header(
+                    niceLogProperty.getFeignTraceIdRequestHeader(),
+                    NiceLogTraceIdUtil.readTraceId());
         }
     }
 

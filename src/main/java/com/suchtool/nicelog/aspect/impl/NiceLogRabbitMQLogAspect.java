@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
 import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.amqp.core.Message;
@@ -22,8 +23,9 @@ public class NiceLogRabbitMQLogAspect extends NiceLogAspectProcessor implements 
 
     private final int order;
 
-    public NiceLogRabbitMQLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    public NiceLogRabbitMQLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
+                this, niceLogProperty);
         this.order = order;
     }
 

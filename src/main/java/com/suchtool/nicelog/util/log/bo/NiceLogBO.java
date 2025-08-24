@@ -70,6 +70,16 @@ public class NiceLogBO {
     private String originReturnValue;
 
     /**
+     * 请求头
+     */
+    private String requestHeader;
+
+    /**
+     * 响应头
+     */
+    private String responseHeader;
+
+    /**
      * 操作人ID
      */
     private String operatorId;

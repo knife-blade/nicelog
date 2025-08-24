@@ -6,20 +6,19 @@ import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.constant.ProcessIgnoreUrl;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.suchtool.nicelog.util.log.context.NiceLogContext;
-import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicetool.util.base.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Controller的日志
@@ -29,14 +28,15 @@ import java.lang.reflect.Method;
 public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implements Ordered {
     private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
 
-    @Autowired
-    private NiceLogProperty niceLogProperty;
-
     private final int order;
 
-    public NiceLogControllerLogAspect(int order) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(this);
+    private final NiceLogProperty niceLogProperty;
+
+    public NiceLogControllerLogAspect(int order, NiceLogProperty niceLogProperty) {
+        this.niceLogLogCommonAspectExecutor =
+                new NiceLogLogCommonAspectExecutor(this, niceLogProperty);
         this.order = order;
+        this.niceLogProperty = niceLogProperty;
     }
 
     @Override
@@ -103,5 +103,66 @@ public class NiceLogControllerLogAspect extends NiceLogAspectProcessor implement
         }
 
         return url;
+    }
+
+    @Override
+    public String provideRequestHeader() {
+        ServletRequestAttributes servletRequestAttributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes == null) {
+            return null;
+        }
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        return JsonUtil.toJsonString(buildRequestHeaders(request));
+    }
+
+    @Override
+    public String provideResponseHeader() {
+        ServletRequestAttributes servletRequestAttributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes == null) {
+            return null;
+        }
+        HttpServletResponse response = servletRequestAttributes.getResponse();
+        return JsonUtil.toJsonString(buildResponseHeaders(response));
+    }
+
+    private Map<String, String> buildRequestHeaders(HttpServletRequest request) {
+        Map<String, String> headersMap = new HashMap<>();
+
+        // 组装请求头
+        Enumeration<String> requestHeaderNames = request.getHeaderNames();
+        while (requestHeaderNames.hasMoreElements()) {
+            String headerName = requestHeaderNames.nextElement();
+            Enumeration<String> headerValues = request.getHeaders(headerName);
+            StringJoiner headerValuesJoiner = new StringJoiner(niceLogProperty.getControllerHeaderSeparator());
+            while (headerValues.hasMoreElements()) {
+                headerValuesJoiner.add(headerValues.nextElement());
+            }
+            headersMap.put(headerName, headerValuesJoiner.toString());
+        }
+
+        return headersMap;
+    }
+
+    private Map<String, String> buildResponseHeaders(HttpServletResponse response) {
+        // 创建一个Map来存储请求和响应头
+        Map<String, String> headersMap = new HashMap<>();
+
+        Collection<String> headerNames = response.getHeaderNames();
+        if (!CollectionUtils.isEmpty(headerNames)) {
+            for (String headerName : headerNames) {
+                Collection<String> headerValues = response.getHeaders(headerName);
+                StringJoiner headerValuesJoiner = new StringJoiner(niceLogProperty.getControllerHeaderSeparator());
+                if (!CollectionUtils.isEmpty(headerValues)) {
+                    for (String headerValue : headerValues) {
+                        headerValuesJoiner.add(headerValue);
+                    }
+                    headersMap.put(headerName, headerValuesJoiner.toString());
+                }
+            }
+        }
+
+        return headersMap;
     }
 }

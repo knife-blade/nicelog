@@ -86,14 +86,19 @@ public class NiceLogProperty {
     private List<String> ignoreFeignLogPackageName;
 
     /**
-     * 启用Feign的Trace-Id请求头
-     */
-    private Boolean enableFeignTraceIdRequestHeader = true;
-
-    /**
-     * Feign的TraceId的header名字
+     * Feign的TraceId的Header名字。留空则不传递此Header
      */
     private String feignTraceIdRequestHeader = "Nice-Log-Trace-Id";
+
+    /**
+     * 启用Controller的Header日志
+     */
+    private Boolean enableControllerHeaderLog = false;
+
+    /**
+     * Controller的Header分隔符（若有多个相同头）
+     */
+    private String controllerHeaderSeparator = "#";
 
     /**
      * 字符串字段最大保留长度。默认-1，不截断

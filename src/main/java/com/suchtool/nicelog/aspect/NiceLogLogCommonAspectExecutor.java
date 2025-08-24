@@ -4,6 +4,7 @@ import com.suchtool.nicelog.annotation.NiceLogIgnoreData;
 import com.suchtool.nicelog.constant.DirectionTypeEnum;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.NiceLogTraceIdUtil;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
@@ -24,8 +25,12 @@ import java.lang.reflect.Method;
 public class NiceLogLogCommonAspectExecutor {
     private final NiceLogAspectProcessor logAspectProcessor;
 
-    public NiceLogLogCommonAspectExecutor(NiceLogAspectProcessor logAspectProcessor) {
+    private final NiceLogProperty niceLogProperty;
+
+    public NiceLogLogCommonAspectExecutor(NiceLogAspectProcessor logAspectProcessor,
+                                          NiceLogProperty niceLogProperty) {
         this.logAspectProcessor = logAspectProcessor;
+        this.niceLogProperty = niceLogProperty;
     }
 
     public void before(JoinPoint joinPoint) {
@@ -48,13 +53,9 @@ public class NiceLogLogCommonAspectExecutor {
 
         String param = null;
         String businessNo = null;
+        String requestHeader = null;
 
-        Class<?> declaringClass = method.getDeclaringClass();
-
-        NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
-        NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
-        if ((classIgnoreData == null || !classIgnoreData.ignoreParam())
-                && (methodIgnoreData == null || !methodIgnoreData.ignoreParam())) {
+        if (requireRecord(method, true)) {
             try {
                 param = logAspectProcessor.provideParam(null, method, args);
                 businessNo = logAspectProcessor.provideBusinessNo(method, args);
@@ -66,6 +67,10 @@ public class NiceLogLogCommonAspectExecutor {
             }
         }
 
+        if (Boolean.TRUE.equals(niceLogProperty.getEnableControllerHeaderLog())) {
+            requestHeader = logAspectProcessor.provideRequestHeader();
+        }
+
         NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         fillCommonField(logInnerBO, method);
 
@@ -75,6 +80,7 @@ public class NiceLogLogCommonAspectExecutor {
         logInnerBO.setDirectionType(DirectionTypeEnum.IN);
         logInnerBO.setParam(param);
         logInnerBO.setBusinessNo(businessNo);
+        logInnerBO.setRequestHeader(requestHeader);
 
         recordContext(logInnerBO);
 
@@ -104,25 +110,13 @@ public class NiceLogLogCommonAspectExecutor {
         logInnerBO.setLevel(LogLevelEnum.INFO);
         logInnerBO.setDirectionType(DirectionTypeEnum.OUT);
 
-        String returnValueString = null;
-        if (returnValue != null) {
-            Class<?> declaringClass = method.getDeclaringClass();
-
-            NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
-            NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
-            if ((classIgnoreData == null || !classIgnoreData.ignoreReturnValue())
-                    && (methodIgnoreData == null || !methodIgnoreData.ignoreReturnValue())) {
-                try {
-                    returnValueString = JsonUtil.toJsonString(returnValue);
-                } catch (Throwable e) {
-                    NiceLogUtil.createBuilder()
-                            .mark("nicelog将返回值序列化为json失败")
-                            .throwable(e)
-                            .error();
-                }
-            }
+        if (requireRecord(method, false)) {
+            logInnerBO.setReturnValue(logAspectProcessor.provideReturnValue(method, returnValue));
         }
-        logInnerBO.setReturnValue(returnValueString);
+
+        if (Boolean.TRUE.equals(niceLogProperty.getEnableControllerHeaderLog())) {
+            logInnerBO.setResponseHeader(logAspectProcessor.provideResponseHeader());
+        }
 
         NiceLogInnerUtil.record(logInnerBO);
 
@@ -156,6 +150,10 @@ public class NiceLogLogCommonAspectExecutor {
         logInnerBO.setLevel(LogLevelEnum.ERROR);
         logInnerBO.setEntryType(logAspectProcessor.provideEntryType());
         logInnerBO.setThrowable(throwable);
+
+        if (Boolean.TRUE.equals(niceLogProperty.getEnableControllerHeaderLog())) {
+            logInnerBO.setResponseHeader(logAspectProcessor.provideResponseHeader());
+        }
 
         NiceLogInnerUtil.record(logInnerBO);
 
@@ -216,5 +214,20 @@ public class NiceLogLogCommonAspectExecutor {
         logInnerBO.setMethodName(logAspectProcessor.provideMethodName(method));
         logInnerBO.setMethodTag(logAspectProcessor.provideMethodTag(method));
         logInnerBO.setMethodDetail(MethodUtil.parseMethodDetail(method));
+    }
+
+    private boolean requireRecord(Method method, boolean isParam) {
+        Class<?> declaringClass = method.getDeclaringClass();
+
+        NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
+        NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
+
+        if (isParam) {
+            return (classIgnoreData == null || !classIgnoreData.ignoreParam())
+                    && (methodIgnoreData == null || !methodIgnoreData.ignoreParam());
+        } else {
+            return (classIgnoreData == null || !classIgnoreData.ignoreReturnValue())
+                    && (methodIgnoreData == null || !methodIgnoreData.ignoreReturnValue());
+        }
     }
 }

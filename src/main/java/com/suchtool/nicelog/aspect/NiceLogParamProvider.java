@@ -1,6 +1,7 @@
 package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
+import com.suchtool.nicelog.annotation.NiceLogIgnoreData;
 import com.suchtool.nicelog.constant.EntryTypeEnum;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicetool.util.base.JsonUtil;
@@ -32,6 +33,8 @@ import java.util.Map;
 public interface NiceLogParamProvider {
     ExpressionParser PARSER = new SpelExpressionParser();
     ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+
+    // 不收集日志的类
     Collection<Class<?>> IGNORE_LOG_CLASS_LIST = Arrays.asList(
             Errors.class,             // 比如：BindingResult.class,
             InputStreamSource.class,  // 比如：MultipartFile
@@ -106,8 +109,7 @@ public interface NiceLogParamProvider {
         }
 
         if (!StringUtils.hasText(methodTag)) {
-            if (EntryTypeEnum.CONTROLLER.name().equals(provideEntryType())
-                    && method.isAnnotationPresent(ApiOperation.class)) {
+            if (method.isAnnotationPresent(ApiOperation.class)) {
                 methodTag = method.getAnnotation(ApiOperation.class).value();
             }
         }
@@ -154,6 +156,30 @@ public interface NiceLogParamProvider {
         return finalParam;
     }
 
+    default String provideReturnValue(Method method, Object returnValue) {
+        String returnValueString = null;
+
+        if (returnValue != null) {
+            Class<?> declaringClass = method.getDeclaringClass();
+
+            NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
+            NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
+            if ((classIgnoreData == null || !classIgnoreData.ignoreReturnValue())
+                    && (methodIgnoreData == null || !methodIgnoreData.ignoreReturnValue())) {
+                try {
+                    returnValueString = JsonUtil.toJsonString(returnValue);
+                } catch (Throwable e) {
+                    NiceLogUtil.createBuilder()
+                            .mark("nicelog将返回值序列化为json失败")
+                            .throwable(e)
+                            .error();
+                }
+            }
+        }
+
+        return returnValueString;
+    }
+
     default String provideBusinessNo(Method method, Object[] args) {
         String businessNo = null;
 
@@ -178,5 +204,13 @@ public interface NiceLogParamProvider {
         }
 
         return businessNo;
+    }
+
+    default String provideRequestHeader() {
+        return null;
+    }
+
+    default String provideResponseHeader() {
+        return null;
     }
 }

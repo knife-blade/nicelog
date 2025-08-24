@@ -48,9 +48,10 @@ public class NiceLogConfiguration {
     protected static class NiceLogControllerAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogControllerLogAspect")
         public NiceLogControllerLogAspect niceLogControllerLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getControllerLogOrder();
-            return new NiceLogControllerLogAspect(order);
+            return new NiceLogControllerLogAspect(order, niceLogProperty);
         }
     }
 
@@ -60,9 +61,10 @@ public class NiceLogConfiguration {
     protected static class XxlJobAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogXxlJobLogAspect")
         public NiceLogXxlJobLogAspect niceLogXxlJobLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getXxlJobLogOrder();
-            return new NiceLogXxlJobLogAspect(order);
+            return new NiceLogXxlJobLogAspect(order, niceLogProperty);
         }
     }
 
@@ -72,9 +74,10 @@ public class NiceLogConfiguration {
     protected static class ScheduledAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogScheduledLogAspect")
         public NiceLogScheduledLogAspect niceLogScheduledLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getScheduledLogOrder();
-            return new NiceLogScheduledLogAspect(order);
+            return new NiceLogScheduledLogAspect(order, niceLogProperty);
         }
     }
 
@@ -83,9 +86,10 @@ public class NiceLogConfiguration {
     protected static class NiceLogAnnotationAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogAnnotationLogAspect")
         public NiceLogAnnotationLogAspect niceLogAnnotationLog(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getNiceLogAnnotationLogOrder();
-            return new NiceLogAnnotationLogAspect(order);
+            return new NiceLogAnnotationLogAspect(order, niceLogProperty);
         }
     }
 
@@ -95,9 +99,10 @@ public class NiceLogConfiguration {
     protected static class RabbitMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogRabbitMQLogAspect")
         public NiceLogRabbitMQLogAspect niceLogRabbitMQLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getRabbitMQLogOrder();
-            return new NiceLogRabbitMQLogAspect(order);
+            return new NiceLogRabbitMQLogAspect(order, niceLogProperty);
         }
     }
 
@@ -107,9 +112,10 @@ public class NiceLogConfiguration {
     protected static class RocketMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogRocketMQLogAspect")
         public NiceLogRocketMQLogAspect niceLogRocketMQLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getRocketMQLogOrder();
-            return new NiceLogRocketMQLogAspect(order);
+            return new NiceLogRocketMQLogAspect(order, niceLogProperty);
         }
     }
 
@@ -119,9 +125,10 @@ public class NiceLogConfiguration {
     protected static class KafkaAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogKafkaMQLogAspect")
         public NiceLogKafkaLogAspect niceLogKafkaMQLogAspect(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getKafkaLogOrder();
-            return new NiceLogKafkaLogAspect(order);
+            return new NiceLogKafkaLogAspect(order, niceLogProperty);
         }
     }
 
@@ -131,9 +138,10 @@ public class NiceLogConfiguration {
     protected static class FeignLogAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogFeignLogAspect")
         public NiceLogFeignLogAspect niceLogNiceLogAnnotationLog(
-                NiceLogAspectOrderProperty niceLogAspectOrderProperty) {
+                NiceLogAspectOrderProperty niceLogAspectOrderProperty,
+                NiceLogProperty niceLogProperty) {
             int order = niceLogAspectOrderProperty.getFeignLogOrder();
-            return new NiceLogFeignLogAspect(order);
+            return new NiceLogFeignLogAspect(order, niceLogProperty);
         }
 
         @Bean(name = "com.suchtool.nicelog.niceLogFeignLogRequestInterceptor")
