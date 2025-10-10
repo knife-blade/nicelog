@@ -3,7 +3,9 @@ package com.suchtool.nicelog.property;
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.constant.LogLevelEnum;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.time.Duration;
 import java.util.List;
 
 @Data
@@ -124,4 +126,5 @@ public class NiceLogProperty {
      * 启用IP记录
      */
     private Boolean enableIpRecord = true;
+
 }

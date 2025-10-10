@@ -1,113 +1,116 @@
 package com.suchtool.nicelog.process.impl;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.ConsoleAppender;
-import com.suchtool.nicelog.constant.EnhanceTypeEnum;
+import com.suchtool.nicelog.process.NiceLogDetailProcess;
 import com.suchtool.nicelog.process.NiceLogProcess;
-import com.suchtool.nicelog.property.NiceLogProperty;
+import com.suchtool.nicelog.property.NiceLogProcessProperty;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
-import com.suchtool.nicetool.util.base.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
 public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     @Autowired
-    private NiceLogProperty niceLogProperty;
+    private NiceLogProcessProperty niceLogProcessProperty;
 
-    private ConsoleAppender<ILoggingEvent> consoleAppender;
+    private Integer oldAsyncQueueCapacity;
+
+    private BlockingQueue<NiceLogInnerBO> asyncQueue;
+
+    private final NiceLogDetailProcess niceLogDetailProcess;
+
+    private Thread recordAsyncThread;
+
+    public NiceLogProcessDefaultImpl(NiceLogDetailProcess niceLogDetailProcess) {
+        this.niceLogDetailProcess = niceLogDetailProcess;
+    }
 
     @Override
     public void process(NiceLogInnerBO logInnerBO) {
-        if (!Boolean.TRUE.equals(niceLogProperty.getLogbackEnabled())) {
-            print(logInnerBO);
-        } else {
-            if (!EnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
-                printByLogbackConsole(logInnerBO);
+        try {
+            niceLogDetailProcess.preProcess(logInnerBO);
+
+            if (niceLogProcessProperty.getEnableRecordSync()) {
+                niceLogDetailProcess.recordSync(logInnerBO);
             }
-        }
 
-        // 实际项目可以在这里将日志上传到ES。
-    }
-
-    private void print(NiceLogInnerBO logInnerBO) {
-        switch (logInnerBO.getLevel()) {
-            case TRACE:
-                log.trace("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
-            case DEBUG:
-                log.debug("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
-            case INFO:
-                log.info("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
-            case WARN:
-                log.warn("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
-            case ERROR:
-                log.error("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
-        }
-    }
-
-    private void printByLogbackConsole(NiceLogInnerBO logInnerBO) {
-        // 获取LoggerContext
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        // 获取Logger对象
-        Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-
-        if (consoleAppender == null) {
-            Iterator<Appender<ILoggingEvent>> appenderIterator = rootLogger.iteratorForAppenders();
-            while (appenderIterator.hasNext()) {
-                Appender<ILoggingEvent> appender = appenderIterator.next();
-                if (appender instanceof ConsoleAppender) {
-                    // 获取ConsoleAppender
-                    consoleAppender = (ConsoleAppender<ILoggingEvent>) appender;
-                    break;
+            if (niceLogProcessProperty.getEnableRecordAsync()) {
+                asyncLogQueueCheckAndInit();
+                asyncThreadCheckAndInit();
+                boolean offer = asyncQueue.offer(logInnerBO);
+                if (!offer) {
+                    System.out.println("nicelog logQueue is full");
                 }
+            } else {
+                asyncThreadStop();
+                asyncLogQueueDelete();
+            }
+        } catch (Exception e) {
+            System.err.println("nicelog process error");
+            e.printStackTrace();
+        }
+    }
+
+    private void recordAsync() {
+        while (true) {
+            try {
+                niceLogDetailProcess.recordAsync(asyncQueue.take());
+            } catch (Exception e) {
+                System.out.println("nicelog recordAsync exception");
+                e.printStackTrace();
             }
         }
+    }
 
-        Level level = null;
+    /**
+     * 检查并初始化异步日志队列
+     */
+    private void asyncLogQueueCheckAndInit() {
+        if (oldAsyncQueueCapacity == null
+                || !oldAsyncQueueCapacity.equals(niceLogProcessProperty.getRecordAsyncQueueCapacity())) {
+            if (asyncQueue != null) {
+                asyncQueue.clear();
+            }
+            asyncQueue = new LinkedBlockingQueue<NiceLogInnerBO>(niceLogProcessProperty.getRecordAsyncQueueCapacity());
+            oldAsyncQueueCapacity = new Integer(niceLogProcessProperty.getRecordAsyncQueueCapacity());
+        }
+    }
 
-        switch (logInnerBO.getLevel()) {
-            case TRACE:
-                level = Level.TRACE;
-                break;
-            case DEBUG:
-                level = Level.DEBUG;
-                break;
-            case INFO:
-                level = Level.INFO;
-                break;
-            case WARN:
-                level = Level.WARN;
-                break;
-            case ERROR:
-                level = Level.ERROR;
-                break;
+    /**
+     * 删除异步队列日志
+     */
+    private void asyncLogQueueDelete() {
+        if (asyncQueue != null) {
+            asyncQueue.clear();
+            asyncQueue = null;
+        }
+    }
+
+    /**
+     * 检查并初始化异步线程
+     */
+    private void asyncThreadCheckAndInit() {
+        if (recordAsyncThread == null) {
+            recordAsyncThread = new Thread(this::recordAsync);
+            recordAsyncThread.start();
+        } else {
+            if (!recordAsyncThread.isAlive()) {
+                recordAsyncThread.start();
+            }
+        }
+    }
+
+    /**
+     * 停止异步线程
+     */
+    private void asyncThreadStop() {
+        if (recordAsyncThread != null
+                && !recordAsyncThread.isInterrupted()) {
+            recordAsyncThread.interrupt();
         }
 
-        Logger logger = (Logger) LoggerFactory.getLogger(logInnerBO.getClassName());
-        // 模拟日志事件
-        LoggingEvent event = new LoggingEvent(
-                "ch.qos.logback.classic.Logger",
-                logger,
-                level,
-                JsonUtil.toJsonString(logInnerBO),
-                logInnerBO.getThrowable(),
-                null
-        );
-
-        // 使用ConsoleAppender打印消息
-        consoleAppender.doAppend(event);
+        recordAsyncThread = null;
     }
 }

@@ -4,9 +4,12 @@ import com.suchtool.nicelog.aspect.NiceLogAspectDispatcher;
 import com.suchtool.nicelog.aspect.impl.*;
 import com.suchtool.nicelog.aspect.impl.feign.NiceLogFeignLogRequestInterceptor;
 import com.suchtool.nicelog.aspect.impl.feign.NiceLogFeignLogResponseDecoder;
+import com.suchtool.nicelog.process.NiceLogDetailProcess;
 import com.suchtool.nicelog.process.NiceLogProcess;
+import com.suchtool.nicelog.process.impl.NiceLogDetailProcessDefaultImpl;
 import com.suchtool.nicelog.process.impl.NiceLogProcessDefaultImpl;
 import com.suchtool.nicelog.property.NiceLogAspectOrderProperty;
+import com.suchtool.nicelog.property.NiceLogProcessProperty;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.runner.NiceLogApplicationRunner;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -36,6 +39,12 @@ public class NiceLogConfiguration {
     @ConfigurationProperties(prefix = "suchtool.nicelog.order")
     public NiceLogAspectOrderProperty niceLogAspectOrderProperty() {
         return new NiceLogAspectOrderProperty();
+    }
+
+    @Bean(name = "com.suchtool.nicelog.niceLogProcessProperty")
+    @ConfigurationProperties(prefix = "suchtool.nicelog.process")
+    public NiceLogProcessProperty niceLogProcessProperty() {
+        return new NiceLogProcessProperty();
     }
 
     @Bean(name = "com.suchtool.nicelog.niceLogAspectDispatcher")
@@ -159,10 +168,16 @@ public class NiceLogConfiguration {
         }
     }
 
-    @Bean(name = "com.suchtool.nicelog.niceLogProcessDefaultImpl")
+    @Bean(name = "com.suchtool.nicelog.niceLogProcess")
     @ConditionalOnMissingBean(NiceLogProcess.class)
-    public NiceLogProcessDefaultImpl niceLogProcessDefaultImpl() {
-        return new NiceLogProcessDefaultImpl();
+    public NiceLogProcessDefaultImpl niceLogProcess(NiceLogDetailProcess niceLogDetailProcess) {
+        return new NiceLogProcessDefaultImpl(niceLogDetailProcess);
+    }
+
+    @Bean(name = "com.suchtool.nicelog.niceLogDetailProcess")
+    @ConditionalOnMissingBean(NiceLogDetailProcess.class)
+    public NiceLogDetailProcessDefaultImpl niceLogDetailProcess() {
+        return new NiceLogDetailProcessDefaultImpl();
     }
 
     @Bean(name = "com.suchtool.nicelog.niceLogApplicationRunner")
