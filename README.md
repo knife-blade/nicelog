@@ -38,9 +38,9 @@ nicelog：功能强大的Java日志组件。
 
 ```xml
 <dependency>
-    <groupId>com.suchtool</groupId>
-    <artifactId>nicelog-spring-boot-starter</artifactId>
-    <version>{newest-version}</version>
+   <groupId>com.suchtool</groupId>
+   <artifactId>nicelog-spring-boot-starter</artifactId>
+   <version>{newest-version}</version>
 </dependency>
 ```
 
@@ -71,15 +71,110 @@ public class UserController {
 
 ## 4 使用说明
 
-**1. 打印日志**
+### 1. 打印日志
 
 默认情况下，会通过logback输出（默认实现为：NiceLogProcessDefaultImpl）。
 
-支持自定义处理日志：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess的void process(NiceLogInnerBO niceLogInnerBO)方法即可。
+支持自定义处理日志，有两个方法。
+
+#### 法1：继承NiceLogDetailProcessDefaultImpl类
+
+此方法自定义程度低，部分接管日志处理。此法有默认的异步队列：自动捕获异常、队列数据维护、动态改变队列大小等。
+
+方法是：提供一个Bean，继承com.suchtool.nicelog.process.impl.NiceLogDetailProcessDefaultImpl，选择性地覆写以下方法：
+
+```java
+/**
+ * 预处理。默认是空逻辑
+ */
+void preProcess(NiceLogInnerBO logInnerBO);
+
+/**
+ * 同步记录。
+ * 默认：
+ * 1. 若没启用logback接管，用logback输出；
+ * 2. 若启用了logback接管
+ *    2.1 如果不是通过logback调用过来的，则用logback的控制台输出器输出
+ *    2.2 如果是通过logback调用过来的，就不再输出（防止重复记录）。
+ */
+void recordSync(NiceLogInnerBO logInnerBO);
+
+/**
+ * 异步记录。默认是空逻辑
+ */
+void recordAsync(NiceLogInnerBO logInnerBO);
+```
+
+示例：
+
+```java
+
+import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
+import com.suchtool.nicetool.util.base.JsonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomDetailProcessImpl extends NiceLogDetailProcessDefaultImpl {
+    private final String KAFKA_LOG_TOPIC_PREFIX = "applog_";
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${spring.profiles.active}")
+    private String env;
+
+    /**
+     * 预处理
+     */
+    @Override
+    public void preProcess(NiceLogInnerBO logInnerBO) {
+        // 这里可以修改字段，比如：
+        // UserDTO userDTO = UserUtil.currentUser();
+        // if (userDTO != null) {
+        //     logInnerBO.setOperatorId(userDTO.getUserId());
+        //     logInnerBO.setOperatorName(userDTO.getUserName());
+        // }
+    }
+
+    // 同步记录。这里不重写，用默认的即可
+    // @Override
+    // public void recordSync(NiceLogInnerBO logInnerBO) {
+    //     if (!Boolean.TRUE.equals(niceLogProperty.getLogbackEnabled())) {
+    //         print(logInnerBO);
+    //     } else {
+    //         if (!EnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
+    //             printByLogbackConsole(logInnerBO);
+    //         }
+    //     }
+    // }
+
+    /**
+     * 异步记录。这里发送到Kafka
+     */
+    @Override
+    public void recordAsync(NiceLogInnerBO logInnerBO) {
+        kafkaTemplate.send(KAFKA_LOG_TOPIC_PREFIX + env, JsonUtil.toJsonString(logInnerBO));
+    }
+}
+
+```
+
+注意：这里对应suchtool.nicelog.process配置：
+- 如果要启用异步记录，除了覆写recordAsync方法，还需要将suchtool.nicelog.process.enable-record-async配置为true。
+
+#### 法2：实现NiceLogProcess接口
+
+此方法自定义程度最高，完全接管日志处理。
+
+方法是：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess接口，覆写void process(NiceLogInnerBO niceLogInnerBO)方法即可。
+
 例如：
 ```
 @Component
-public class CustomLogProcessor implements NiceLogProcess {
+public class CustomLogProcessor extends NiceLogProcess {
     @Override
     public void process(NiceLogInnerBO logInnerBO) {
         // 这里可以这么做：
@@ -89,13 +184,13 @@ public class CustomLogProcessor implements NiceLogProcess {
 }
 ```
 
-**2. 自动收集日志**
+### 2. 自动收集日志
 
 自动收集相关组件的日志。原理：使用AOP。
 
 备注：AOP内部已捕获异常，如果有问题，不会影响正常业务执行。
 
-**3. 手动打印日志**
+### 3. 手动打印日志
 
 支持手动打印日志：
 ```
@@ -106,11 +201,11 @@ NiceLogUtil.createBuilder()
 
 此工具支持通过链式构造参数并打印，每次输入.都会有代码提示y。
 
-**4. 手动收集日志**
+### 4. 手动收集日志
 
 在类或者方法上加@NiceLog，即可收集出入参、返回值、异常信息。
 
-**5. 注解大全**
+### 5. 注解大全
 
 | 注解  | 使用位置  | 作用  | 示例 |
 | ---- | --------- | ---- | ---- |
@@ -143,29 +238,32 @@ NiceLogUtil.createBuilder()
 
 支持SpringBoot的配置文件进行配置，比如：application.yml。
 
-| 配置                                            | 描述                             | 默认值  |
-|-------------------------------------------------|-----------------------------------|------|
-| suchtool.nicelog.enabled                        | 启用日志                           | true |
-| suchtool.nicelog.log-level                      | 日志收集级别。支持：debug、info、warn、error | info |
-| suchtool.nicelog.stack-trace-package-name       | 收集栈日志的包名（前缀）。为空则全部收集  | 空 |
-| suchtool.nicelog.caller-stack-trace-depth       | 调用栈的深度。                         | 6 |
-| suchtool.nicelog.auto-collect                   | 自动收集日志（Controller、XXL-JOB等）  | true |
-| suchtool.nicelog.auto-collect-package-name      | 自动收集的包名（前缀）。为空则全部收集   | 空 |
-| suchtool.nicelog.enable-controller-log          | 启用Controller日志                    | true |
-| suchtool.nicelog.enable-xxl-job-log             | 启用XXL-JOB日志                       | true |
-| suchtool.nicelog.enable-scheduled-log           | 启用@Scheduled日志                    | true |
-| suchtool.nicelog.enable-nice-log-annotation-log | 启用@NiceLog日志                      | true |
-| suchtool.nicelog.enable-rabbit-mq-log           | 启用RabbitMQ日志                      | true |
-| suchtool.nicelog.enable-rocket-mq-log           | 启用RocketMQ日志                      | true |
-| suchtool.nicelog.enable-kafka-log               | 启用Kafka日志                         | true |
-| suchtool.nicelog.enable-feign-log               | 启用Feign日志                         | true |
-| suchtool.nicelog.ignore-feign-log-package-name  | 不收集Feign日志的包名（前缀）。为空则全部收集 | 空  |
-| suchtool.nicelog.feign-trace-id-request-header  | Feign的TraceId的请求Header名字   | Nice-Log-Trace-Id |
-| suchtool.nicelog.enable-controller-header-log | 启用Controller的Header日志 | false |
-| suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） |
-| suchtool.nicelog.logback-enabled   | 启用logback的接管                     | false |
-| suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈   | false |
-| suchtool.nicelog.log-time-pattern | 日志时间模式 | yyyy-MM-dd'T'HH:mm:ss.SSS |
+| 配置 | 描述 | 默认值 | 是否支持动态配置 |
+|------|------|--------|------------------|
+| suchtool.nicelog.enabled | 启用日志 | true | 否 |
+| suchtool.nicelog.log-level | 日志收集级别。支持：debug、info、warn、error | info | 是 |
+| suchtool.nicelog.stack-trace-package-name | 收集栈日志的包名（前缀）。为空则全部收集 | 空 | 是 |
+| suchtool.nicelog.caller-stack-trace-depth | 调用栈的深度。 | 6 | 是 |
+| suchtool.nicelog.auto-collect | 自动收集日志（Controller、XXL-JOB等） | true | 是 |
+| suchtool.nicelog.auto-collect-package-name | 自动收集的包名（前缀）。为空则全部收集 | 空 | 是 |
+| suchtool.nicelog.enable-controller-log | 启用Controller日志 | true | 否 |
+| suchtool.nicelog.enable-xxl-job-log| 启用XXL-JOB日志 | true | 否 |
+| suchtool.nicelog.enable-scheduled-log | 启用@Scheduled日志 | true | 否 |
+| suchtool.nicelog.enable-nice-log-annotation-log | 启用@NiceLog日志 | true | 否 |
+| suchtool.nicelog.enable-rabbit-mq-log | 启用RabbitMQ日志 | true | 否 |
+| suchtool.nicelog.enable-rocket-mq-log | 启用RocketMQ日志 | true | 否 |
+| suchtool.nicelog.enable-kafka-log | 启用Kafka日志 | true | 否 |
+| suchtool.nicelog.enable-feign-log | 启用Feign日志 | true | 否 |
+| suchtool.nicelog.ignore-feign-log-package-name | 不收集Feign日志的包名（前缀）。为空则全部收集 | 空 | 是 |
+| suchtool.nicelog.feign-trace-id-request-header | Feign的TraceId的请求Header名字 | Nice-Log-Trace-Id | 是 |
+| suchtool.nicelog.enable-controller-header-log | 启用Controller的Header日志 | false | 是 |
+| suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） | 是 |
+| suchtool.nicelog.logback-enabled | 启用logback的接管 | false | 是 |
+| suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈 | false | 是 |
+| suchtool.nicelog.log-time-pattern | 日志时间模式 | yyyy-MM-dd'T'HH:mm:ss.SSS | 是 |
+| suchtool.nicelog.process.enable-record-sync | 启用同步记录。 | true | 是 |
+| suchtool.nicelog.process.enable-record-async | 启用异步记录。 | false | 是 |
+| suchtool.nicelog.process.record-async-queue-capacity | 异步记录的队列容量。 | 5000 | 是 |
 
 ### 5.2 设置优先级
 
@@ -174,26 +272,26 @@ NiceLogUtil.createBuilder()
 
 注意：
 1. AOP是环状执行
-    1. 即：如果A比B的优先级的值小，则顺序为：
-    2. A的前置日志=> B的前置日志=> B的后置日志=> A的后置日志
+   1. 即：如果A比B的优先级的值小，则顺序为：
+   2. A的前置日志=> B的前置日志=> B的后置日志=> A的后置日志
 
 2. @NiceLog例外，它不会与其他AOP都执行。
-    1. 比如：一个Controller上有@NiceLog注解，只会执行一次日志记录。
-    2. 原因：在设计上，@NiceLog是一个收集日志的标记，并不是一个程序入口类型。
+   1. 比如：一个Controller上有@NiceLog注解，只会执行一次日志记录。
+   2. 原因：在设计上，@NiceLog是一个收集日志的标记，并不是一个程序入口类型。
 
 ```yaml
 suchtool:
-  nicelog:
-    order:
-      controller-log-order: 10000  # Controller接口日志的顺序。默认值: 10000
-      xxl-job-log-order: 10001  # XxlJob日志的顺序。默认值: 10001
-      rabbit-mq-log-order: 10002  # RabbitMQ日志的顺序。默认值: 10002
-      rocket-mq-log-order: 10003  # RocketMQ日志的顺序。默认值: 10003
-      kafka-log-order: 10004  # Kafka日志的顺序。默认值: 10004
-      feign-log-order: 10005  # Feign日志的顺序。默认值: 10005
-      feign-request-interceptor-order: 10006  # Feign请求拦截器的顺序。默认值: 10006
-      scheduled-log-order: 10007  # Scheduled日志的顺序。默认值: 10007
-      nice-log-annotation-log-order: 10008  # NiceLog注解日志的顺序。默认值: 10008
+   nicelog:
+      order:
+         controller-log-order: 10000  # Controller接口日志的顺序。默认值: 10000
+         xxl-job-log-order: 10001  # XxlJob日志的顺序。默认值: 10001
+         rabbit-mq-log-order: 10002  # RabbitMQ日志的顺序。默认值: 10002
+         rocket-mq-log-order: 10003  # RocketMQ日志的顺序。默认值: 10003
+         kafka-log-order: 10004  # Kafka日志的顺序。默认值: 10004
+         feign-log-order: 10005  # Feign日志的顺序。默认值: 10005
+         feign-request-interceptor-order: 10006  # Feign请求拦截器的顺序。默认值: 10006
+         scheduled-log-order: 10007  # Scheduled日志的顺序。默认值: 10007
+         nice-log-annotation-log-order: 10008  # NiceLog注解日志的顺序。默认值: 10008
 ```
 
 ### 5.3 日志开关
