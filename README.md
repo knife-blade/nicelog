@@ -258,7 +258,7 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.feign-trace-id-request-header | Feign的TraceId的请求Header名字 | Nice-Log-Trace-Id | 是 |
 | suchtool.nicelog.enable-controller-header-log | 启用Controller的Header日志 | false | 是 |
 | suchtool.nicelog.string-max-length | 字符串字段最大保留长度（数字类型） | null（不截断） | 是 |
-| suchtool.nicelog.logback-enabled | 启用logback的接管 | false | 是 |
+| suchtool.nicelog.logback-enabled | 启用logback的接管 | false | 否 |
 | suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈 | false | 是 |
 | suchtool.nicelog.log-time-pattern | 日志时间模式 | yyyy-MM-dd'T'HH:mm:ss.SSS | 是 |
 | suchtool.nicelog.process.enable-record-sync | 启用同步记录。 | true | 是 |

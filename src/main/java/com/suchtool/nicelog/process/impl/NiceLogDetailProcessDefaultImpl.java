@@ -22,8 +22,11 @@ import java.util.Iterator;
 public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
     private ConsoleAppender<ILoggingEvent> consoleAppender;
 
-    @Autowired
-    private NiceLogProperty niceLogProperty;
+    private final NiceLogProperty niceLogProperty;
+
+    public NiceLogDetailProcessDefaultImpl(NiceLogProperty niceLogProperty) {
+        this.niceLogProperty = niceLogProperty;
+    }
 
     @Override
     public void preProcess(NiceLogInnerBO logInnerBO) {
