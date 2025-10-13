@@ -4,6 +4,7 @@ import com.suchtool.nicelog.aspect.NiceLogAspectDispatcher;
 import com.suchtool.nicelog.aspect.impl.*;
 import com.suchtool.nicelog.aspect.impl.feign.NiceLogFeignLogRequestInterceptor;
 import com.suchtool.nicelog.aspect.impl.feign.NiceLogFeignLogResponseDecoder;
+import com.suchtool.nicelog.listener.NiceLogEnvironmentChangeEventListener;
 import com.suchtool.nicelog.process.NiceLogDetailProcess;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.process.impl.NiceLogDetailProcessDefaultImpl;
@@ -184,5 +185,12 @@ public class NiceLogConfiguration {
     @ConditionalOnExpression("${suchtool.nicelog.logback-enabled:false}")
     public NiceLogApplicationRunner niceLogApplicationRunner(NiceLogProperty niceLogProperty) {
         return new NiceLogApplicationRunner(niceLogProperty);
+    }
+
+    @Bean(name = "com.suchtool.nicelog.niceLogEnvironmentChangeEventListener")
+    @ConditionalOnBean(NiceLogProcessDefaultImpl.class)
+    public NiceLogEnvironmentChangeEventListener niceLogEnvironmentChangeEventListener(
+            NiceLogProcessDefaultImpl niceLogProcessDefault) {
+        return new NiceLogEnvironmentChangeEventListener(niceLogProcessDefault);
     }
 }
