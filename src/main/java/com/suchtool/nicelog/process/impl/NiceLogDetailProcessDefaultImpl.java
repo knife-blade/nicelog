@@ -48,7 +48,7 @@ public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
 
     @Override
     public void recordAsync(NiceLogInnerBO logInnerBO) {
-        // kafkaTemplate.send(KAFKA_LOG_TOPIC_PREFIX + env, JsonUtil.toJsonString(logInnerBO));
+        // 这里可以记录异步日志，比如发送到MQ
     }
 
     private void print(NiceLogInnerBO logInnerBO) {

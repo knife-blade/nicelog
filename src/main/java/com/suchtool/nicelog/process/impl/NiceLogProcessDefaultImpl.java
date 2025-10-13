@@ -6,14 +6,14 @@ import com.suchtool.nicelog.property.NiceLogProcessProperty;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
-public class NiceLogProcessDefaultImpl implements NiceLogProcess {
-
-    private volatile Integer oldAsyncQueueCapacity;
+public class NiceLogProcessDefaultImpl implements NiceLogProcess, ApplicationRunner {
 
     private volatile BlockingQueue<NiceLogInnerBO> asyncQueue;
 
@@ -26,6 +26,16 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     private volatile Thread recordAsyncThread;
 
     @Override
+    public void run(ApplicationArguments args) {
+        try {
+            doCheckAndUpdateConfig();
+        } catch (Exception e) {
+            System.err.println("nicelog application runner error");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void process(NiceLogInnerBO logInnerBO) {
         try {
             niceLogDetailProcess.preProcess(logInnerBO);
@@ -35,15 +45,12 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
             }
 
             if (niceLogProcessProperty.getEnableRecordAsync()) {
-                asyncLogQueueCheckAndInit();
-                asyncThreadCheckAndInit();
-                boolean offer = asyncQueue.offer(logInnerBO);
-                if (!offer) {
-                    System.out.println("nicelog logQueue is full");
+                if (asyncQueue != null) {
+                    boolean offer = asyncQueue.offer(logInnerBO);
+                    if (!offer) {
+                        System.err.println("nicelog logQueue is full");
+                    }
                 }
-            } else {
-                asyncThreadStop();
-                asyncLogQueueDelete();
             }
         } catch (Exception e) {
             System.err.println("nicelog process error");
@@ -51,38 +58,53 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
         }
     }
 
+    public void doCheckAndUpdateConfig() {
+        if (niceLogProcessProperty.getEnableRecordAsync()) {
+            asyncResourceCheckAndInit();
+        } else {
+            asyncResourceDelete();
+        }
+    }
+
     private void recordAsync() {
         while (true) {
             try {
-                niceLogDetailProcess.recordAsync(asyncQueue.take());
+                if (niceLogProcessProperty.getEnableRecordAsync()) {
+                    niceLogDetailProcess.recordAsync(asyncQueue.take());
+                } else {
+                    asyncResourceDelete();
+                    break;
+                }
             } catch (Exception e) {
-                System.out.println("nicelog recordAsync exception");
+                System.err.println("nicelog recordAsync exception");
                 e.printStackTrace();
             }
         }
     }
 
     /**
-     * 检查并初始化异步日志队列
+     * 检查并初始化异步资源
      */
-    private void asyncLogQueueCheckAndInit() {
-        if (oldAsyncQueueCapacity == null
-                || !oldAsyncQueueCapacity.equals(niceLogProcessProperty.getRecordAsyncQueueCapacity())) {
-            if (asyncQueue != null) {
-                asyncQueue.clear();
-            }
-            asyncQueue = new LinkedBlockingQueue<NiceLogInnerBO>(niceLogProcessProperty.getRecordAsyncQueueCapacity());
-            oldAsyncQueueCapacity = new Integer(niceLogProcessProperty.getRecordAsyncQueueCapacity());
-        }
-    }
+    private void asyncResourceCheckAndInit() {
+        asyncThreadStop();
 
-    /**
-     * 删除异步队列日志
-     */
-    private void asyncLogQueueDelete() {
         if (asyncQueue != null) {
             asyncQueue.clear();
         }
+        asyncQueue = new LinkedBlockingQueue<NiceLogInnerBO>(niceLogProcessProperty.getRecordAsyncQueueCapacity());
+
+        asyncThreadCheckAndInit();
+    }
+
+    /**
+     * 删除相关资源
+     */
+    private void asyncResourceDelete() {
+        if (asyncQueue != null) {
+            asyncQueue.clear();
+        }
+
+        asyncThreadStop();
     }
 
     /**
@@ -104,7 +126,7 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
      */
     private void asyncThreadStop() {
         if (recordAsyncThread != null
-                && !recordAsyncThread.isInterrupted()) {
+                && recordAsyncThread.isAlive()) {
             recordAsyncThread.interrupt();
         }
         recordAsyncThread = null;
