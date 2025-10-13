@@ -170,14 +170,15 @@ public class NiceLogConfiguration {
 
     @Bean(name = "com.suchtool.nicelog.niceLogProcess")
     @ConditionalOnMissingBean(NiceLogProcess.class)
-    public NiceLogProcessDefaultImpl niceLogProcess(NiceLogDetailProcess niceLogDetailProcess) {
-        return new NiceLogProcessDefaultImpl(niceLogDetailProcess);
+    public NiceLogProcessDefaultImpl niceLogProcess(NiceLogProcessProperty niceLogProcessProperty,
+                                                    NiceLogDetailProcess niceLogDetailProcess) {
+        return new NiceLogProcessDefaultImpl(niceLogProcessProperty,niceLogDetailProcess);
     }
 
     @Bean(name = "com.suchtool.nicelog.niceLogDetailProcess")
     @ConditionalOnMissingBean(NiceLogDetailProcess.class)
-    public NiceLogDetailProcessDefaultImpl niceLogDetailProcess() {
-        return new NiceLogDetailProcessDefaultImpl();
+    public NiceLogDetailProcessDefaultImpl niceLogDetailProcess(NiceLogProperty niceLogProperty) {
+        return new NiceLogDetailProcessDefaultImpl(niceLogProperty);
     }
 
     @Bean(name = "com.suchtool.nicelog.niceLogApplicationRunner")
