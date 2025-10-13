@@ -5,6 +5,7 @@ import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.property.NiceLogProcessProperty;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,19 +17,13 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
 
     private BlockingQueue<NiceLogInnerBO> asyncQueue;
 
-    private final NiceLogDetailProcess niceLogDetailProcess;
+    @Autowired
+    private NiceLogDetailProcess niceLogDetailProcess;
 
-    private final NiceLogProcessProperty niceLogProcessProperty;
+    @Autowired
+    private NiceLogProcessProperty niceLogProcessProperty;
 
     private Thread recordAsyncThread;
-
-    public NiceLogProcessDefaultImpl(
-            NiceLogProcessProperty niceLogProcessProperty,
-            NiceLogDetailProcess niceLogDetailProcess
-    ) {
-        this.niceLogProcessProperty = niceLogProcessProperty;
-        this.niceLogDetailProcess = niceLogDetailProcess;
-    }
 
     @Override
     public void process(NiceLogInnerBO logInnerBO) {
