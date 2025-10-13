@@ -13,9 +13,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Slf4j
 public class NiceLogProcessDefaultImpl implements NiceLogProcess {
 
-    private Integer oldAsyncQueueCapacity;
+    private volatile Integer oldAsyncQueueCapacity;
 
-    private BlockingQueue<NiceLogInnerBO> asyncQueue;
+    private volatile BlockingQueue<NiceLogInnerBO> asyncQueue;
 
     @Autowired
     private NiceLogDetailProcess niceLogDetailProcess;
@@ -23,7 +23,7 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     @Autowired
     private NiceLogProcessProperty niceLogProcessProperty;
 
-    private Thread recordAsyncThread;
+    private volatile Thread recordAsyncThread;
 
     @Override
     public void process(NiceLogInnerBO logInnerBO) {
@@ -82,7 +82,6 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
     private void asyncLogQueueDelete() {
         if (asyncQueue != null) {
             asyncQueue.clear();
-            asyncQueue = null;
         }
     }
 
@@ -108,7 +107,6 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess {
                 && !recordAsyncThread.isInterrupted()) {
             recordAsyncThread.interrupt();
         }
-
         recordAsyncThread = null;
     }
 }
