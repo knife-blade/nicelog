@@ -57,7 +57,7 @@ public class NiceLogInnerUtil {
         } else {
             ApplicationContext context = ApplicationContextHolder.getContext();
             if (context == null) {
-                log.error("nicelog initialization error：ApplicationContext is null");
+                log.debug("nicelog initialization error：ApplicationContext is null");
                 return false;
             } else {
                 niceLogProperty = context.getBean(NiceLogProperty.class);
