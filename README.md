@@ -32,6 +32,12 @@ nicelog：功能强大的Java日志组件。
 
 准备支持：暂时没有。如果有需求请提issue
 
+**4. 版本信息**
+
+1. JDK8及以上
+2. SpringBoot2、SpringBoot3
+3. Swagger、Swagger（V3）
+
 ## 3.快速开始
 
 **1. 引入依赖**
@@ -79,7 +85,7 @@ public class UserController {
 
 #### 法1：继承NiceLogDetailProcessDefaultImpl类
 
-此方法自定义程度低，部分接管日志处理。此法有默认的异步队列：自动捕获异常、队列数据维护、动态改变队列大小等。
+部分接管日志处理（此方法自定义程度低，有默认的异步队列：自动捕获异常、队列数据维护、动态改变队列大小等）。
 
 方法是：提供一个Bean，继承com.suchtool.nicelog.process.impl.NiceLogDetailProcessDefaultImpl，选择性地覆写以下方法：
 
@@ -167,7 +173,7 @@ public class CustomDetailProcessImpl extends NiceLogDetailProcessDefaultImpl {
 
 #### 法2：实现NiceLogProcess接口
 
-此方法自定义程度最高，完全接管日志处理。
+完全接管日志处理（此方法自定义程度最高）
 
 方法是：提供一个Bean，实现com.suchtool.nicelog.process.NiceLogProcess接口，覆写void process(NiceLogInnerBO niceLogInnerBO)方法即可。
 
@@ -261,6 +267,9 @@ NiceLogUtil.createBuilder()
 | suchtool.nicelog.logback-enabled | 启用logback的接管 | false | 否 |
 | suchtool.nicelog.logback-record-caller-stack-trace | 记录logback的调用栈 | false | 是 |
 | suchtool.nicelog.log-time-pattern | 日志时间模式 | yyyy-MM-dd'T'HH:mm:ss.SSS | 是 |
+| suchtool.nicelog.enable-ip-record | 启用IP记录 | true | 是 |
+| suchtool.nicelog.ignore-log-urls | 不记录日志的URL。支持通配符（AntPathMatcher） | 空 | 是 |
+| suchtool.nicelog.ignore-class-names | 忽略的类名（记录日志，但不序列化此类） | "org.springframework.validation.Errors"（比如：BindingResult），"org.springframework.core.io.InputStreamSource"（比如：MultipartFile）， "javax.servlet.ServletResponse", "javax.servlet.ServletRequest", "jakarta.servlet.ServletResponse","jakarta.servlet.ServletRequest", "reactor.core.publisher.Flux" | 是 |
 | suchtool.nicelog.process.enable-record-sync | 启用同步记录。 | true | 是 |
 | suchtool.nicelog.process.enable-record-async | 启用异步记录。 | false | 是 |
 | suchtool.nicelog.process.record-async-queue-capacity | 异步记录的队列容量。 | 5000 | 是 |

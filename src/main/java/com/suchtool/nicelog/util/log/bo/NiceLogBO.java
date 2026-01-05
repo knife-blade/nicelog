@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.util.log.bo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.suchtool.nicelog.constant.EnhanceTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogEnhanceTypeEnum;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
 import lombok.Data;
 
@@ -90,7 +90,7 @@ public class NiceLogBO {
     private String operatorName;
 
     /**
-     * 增强类型。见：{@link EnhanceTypeEnum#name()}
+     * 增强类型。见：{@link NiceLogEnhanceTypeEnum#name()}
      */
     private String enhanceType;
 

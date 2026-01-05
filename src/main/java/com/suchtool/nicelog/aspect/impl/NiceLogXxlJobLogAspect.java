@@ -1,29 +1,26 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
-import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.aspect.NiceLogAspectExecutor;
+import com.suchtool.nicelog.aspect.NiceLogAbstractAspect;
+import com.suchtool.nicelog.aspect.provider.impl.xxljob.NiceLogXxlJobParamProvider;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.xxl.job.core.handler.annotation.XxlJob;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
-
-import java.lang.reflect.Method;
 
 /**
  * XxlJob日志
  */
 @Aspect
-public class NiceLogXxlJobLogAspect extends NiceLogAspectProcessor implements Ordered {
-    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
+public class NiceLogXxlJobLogAspect extends NiceLogAbstractAspect implements Ordered {
+    private final NiceLogAspectExecutor niceLogAspectExecutor;
 
     private final int order;
 
     public NiceLogXxlJobLogAspect(int order, NiceLogProperty niceLogProperty) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
-                this, niceLogProperty);
+        this.niceLogAspectExecutor = new NiceLogAspectExecutor(
+                this, new NiceLogXxlJobParamProvider(niceLogProperty), niceLogProperty);
         this.order = order;
     }
 
@@ -44,46 +41,16 @@ public class NiceLogXxlJobLogAspect extends NiceLogAspectProcessor implements Or
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        niceLogLogCommonAspectExecutor.before(joinPoint);
+        niceLogAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+        niceLogAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
+        niceLogAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
-
-    /**
-     * 正常返回或者抛异常的处理
-     */
-    @Override
-    public void returningOrThrowingProcess() {
-
-    }
-
-    @Override
-    public String provideEntryType() {
-        return EntryTypeEnum.XXL_JOB.name();
-    }
-
-    @Override
-    public String provideMethodTag(Method method) {
-        String methodTag = null;
-
-        if (method.isAnnotationPresent(XxlJob.class)) {
-            methodTag = method.getAnnotation(XxlJob.class).value();
-        }
-
-        return methodTag;
-    }
-
-    @Override
-    public String provideEntry(Method method) {
-        return provideMethodTag(method);
-    }
-
 }

@@ -1,16 +1,11 @@
 package com.suchtool.nicelog.util.log.inner.bo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
-import com.suchtool.nicelog.constant.DirectionTypeEnum;
-import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.constant.NiceLogEntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogDirectionTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogLogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
-import com.suchtool.nicetool.util.lib.datetime.constant.DateTimeFormatConstant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.OffsetDateTime;
 
 /**
  * 日志内部BO
@@ -31,16 +26,16 @@ public class NiceLogInnerBO extends NiceLogBO {
     /**
      * 日志级别
      */
-    private LogLevelEnum level;
+    private NiceLogLogLevelEnum level;
 
     /**
      * 方向
      */
-    private DirectionTypeEnum directionType;
+    private NiceLogDirectionTypeEnum directionType;
 
     /**
      * 入口类型
-     * 对应：{@link EntryTypeEnum#name()}
+     * 对应：{@link NiceLogEntryTypeEnum#name()}
      */
     private String entryType;
 

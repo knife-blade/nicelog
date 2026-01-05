@@ -32,7 +32,9 @@ public class NiceLogApplicationRunner implements ApplicationRunner {
 
             Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
             rootLogger.addAppender(appender);
-        } catch (Exception e) {
+        } catch (Throwable t) {
+            System.err.println("nicelog addLogbackAppender error");
+            t.printStackTrace();
         }
     }
 

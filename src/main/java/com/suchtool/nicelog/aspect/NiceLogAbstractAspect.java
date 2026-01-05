@@ -2,7 +2,7 @@ package com.suchtool.nicelog.aspect;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.annotation.NiceLogIgnore;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.aspect.provider.NiceLogParamProvider;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import com.suchtool.nicetool.util.spring.SpringBootUtil;
@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NiceLogAspectProcessor implements NiceLogParamProvider {
+public abstract class NiceLogAbstractAspect {
 
     /**
      * 判断是否需要处理
@@ -51,22 +51,12 @@ public abstract class NiceLogAspectProcessor implements NiceLogParamProvider {
             return false;
         }
 
-        // 如果指定了不收集日志的Feign的包，则不收集
-        if (EntryTypeEnum.FEIGN.name().equals(provideEntryType())) {
-            List<String> ignoreFeignLogPackageNameList = niceLogProperty.getIgnoreFeignLogPackageName();
-            if (!CollectionUtils.isEmpty(ignoreFeignLogPackageNameList)) {
-                for (String packageName : ignoreFeignLogPackageNameList) {
-                    if (declaringClass.getName().startsWith(packageName.trim())) {
-                        return false;
-                    }
-                }
-            }
-        }
-
         // 如果类或方法上有NiceLogIgnore，则不处理
         return !method.isAnnotationPresent(NiceLogIgnore.class)
                 && !declaringClass.isAnnotationPresent(NiceLogIgnore.class);
     }
+
+    public abstract String pointcutExpression();
 
     public abstract void before(JoinPoint joinPoint);
 
@@ -77,7 +67,6 @@ public abstract class NiceLogAspectProcessor implements NiceLogParamProvider {
     /**
      * 正常返回或者抛异常的处理
      */
-    public abstract void returningOrThrowingProcess();
+    public void returningOrThrowingProcess() {}
 
-    public abstract String pointcutExpression();
 }

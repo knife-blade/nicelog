@@ -13,6 +13,9 @@ import com.suchtool.nicelog.property.NiceLogAspectOrderProperty;
 import com.suchtool.nicelog.property.NiceLogProcessProperty;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.runner.NiceLogApplicationRunner;
+import com.suchtool.nicelog.util.servlet.NiceLogServletUtil;
+import com.suchtool.nicelog.util.servlet.NiceLogServletUtilJakarta;
+import com.suchtool.nicelog.util.servlet.NiceLogServletUtilJavax;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import feign.codec.Decoder;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -24,8 +27,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
+import org.springframework.web.bind.annotation.RestController;
 
 @Configuration(value = "com.suchtool.nicelog.niceLogConfiguration", proxyBeanMethods = false)
 @ConditionalOnProperty(name = "suchtool.nicelog.enabled", havingValue = "true", matchIfMissing = true)
@@ -53,15 +58,17 @@ public class NiceLogConfiguration {
         return new NiceLogAspectDispatcher();
     }
 
+    @ConditionalOnClass(RestController.class)
     @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLogControllerAspectConfiguration", proxyBeanMethods = false)
     protected static class NiceLogControllerAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogControllerLogAspect")
         public NiceLogControllerLogAspect niceLogControllerLogAspect(
                 NiceLogAspectOrderProperty niceLogAspectOrderProperty,
-                NiceLogProperty niceLogProperty) {
+                NiceLogProperty niceLogProperty,
+                NiceLogServletUtil niceLogServletUtil) {
             int order = niceLogAspectOrderProperty.getControllerLogOrder();
-            return new NiceLogControllerLogAspect(order, niceLogProperty);
+            return new NiceLogControllerLogAspect(order, niceLogProperty, niceLogServletUtil);
         }
     }
 
@@ -149,9 +156,10 @@ public class NiceLogConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogFeignLogAspect")
         public NiceLogFeignLogAspect niceLogNiceLogAnnotationLog(
                 NiceLogAspectOrderProperty niceLogAspectOrderProperty,
-                NiceLogProperty niceLogProperty) {
+                NiceLogProperty niceLogProperty,
+                StandardEnvironment standardEnvironment) {
             int order = niceLogAspectOrderProperty.getFeignLogOrder();
-            return new NiceLogFeignLogAspect(order, niceLogProperty);
+            return new NiceLogFeignLogAspect(order, niceLogProperty, standardEnvironment);
         }
 
         @Bean(name = "com.suchtool.nicelog.niceLogFeignLogRequestInterceptor")
@@ -192,5 +200,41 @@ public class NiceLogConfiguration {
     public NiceLogEnvironmentChangeEventListener niceLogEnvironmentChangeEventListener(
             NiceLogProcessDefaultImpl niceLogProcessDefault) {
         return new NiceLogEnvironmentChangeEventListener(niceLogProcessDefault);
+    }
+
+
+    /**
+     * 区分SpringBoot2和SpringBoot3
+     */
+    @ConditionalOnClass(RestController.class)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
+    @Configuration(value = "com.suchtool.nicelog.niceLogServletUtilConfiguration", proxyBeanMethods = false)
+    protected static class NiceLogServletUtilConfiguration {
+        @Bean(name = "com.suchtool.nicelog.niceLogServletUtil")
+        public NiceLogServletUtil niceLogServletUtil() {
+            return new NiceLogServletUtil();
+        }
+    }
+    @ConditionalOnClass({RestController.class, javax.servlet.http.HttpServletRequest.class})
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
+    @Configuration(value = "com.suchtool.nicelog.niceLogServletUtilJavaxConfiguration", proxyBeanMethods = false)
+    protected static class NiceLogServletUtilJavaxConfiguration {
+        @Bean(name = "com.suchtool.nicelog.niceLogServletUtilJavax")
+        public NiceLogServletUtilJavax niceLogServletUtilJavax(javax.servlet.http.HttpServletRequest httpServletRequest,
+                                                               javax.servlet.http.HttpServletResponse httpServletResponse,
+                                                               NiceLogProperty niceLogProperty) {
+            return new NiceLogServletUtilJavax(httpServletRequest, httpServletResponse, niceLogProperty);
+        }
+    }
+    @ConditionalOnClass({RestController.class, jakarta.servlet.http.HttpServletRequest.class})
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
+    @Configuration(value = "com.suchtool.nicelog.niceLogServletUtilJakartaConfiguration", proxyBeanMethods = false)
+    protected static class NiceLogServletUtilJakartaConfiguration {
+        @Bean(name = "com.suchtool.nicelog.niceLogServletUtilJakarta")
+        public NiceLogServletUtilJakarta niceLogServletUtilJakarta(jakarta.servlet.http.HttpServletRequest httpServletRequest,
+                                                                   jakarta.servlet.http.HttpServletResponse httpServletResponse,
+                                                                   NiceLogProperty niceLogProperty) {
+            return new NiceLogServletUtilJakarta(httpServletRequest, httpServletResponse, niceLogProperty);
+        }
     }
 }

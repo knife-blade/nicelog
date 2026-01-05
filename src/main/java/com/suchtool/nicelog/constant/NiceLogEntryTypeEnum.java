@@ -6,7 +6,7 @@ import lombok.Getter;
  * 入口类型
  */
 @Getter
-public enum EntryTypeEnum {
+public enum NiceLogEntryTypeEnum {
     MANUAL("手动"),
     CONTROLLER("接口"),
     RABBIT_MQ("RabbitMQ"),
@@ -20,7 +20,7 @@ public enum EntryTypeEnum {
 
     private final String description;
 
-    EntryTypeEnum(String description) {
+    NiceLogEntryTypeEnum(String description) {
         this.description = description;
     }
 }

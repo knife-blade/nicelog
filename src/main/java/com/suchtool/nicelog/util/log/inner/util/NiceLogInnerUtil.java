@@ -1,8 +1,8 @@
 package com.suchtool.nicelog.util.log.inner.util;
 
-import com.suchtool.nicelog.constant.DirectionTypeEnum;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
-import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.constant.NiceLogDirectionTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogEntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogLogLevelEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
@@ -33,11 +33,11 @@ public class NiceLogInnerUtil {
     private static DateTimeFormatter logTimeFormatter;
 
     public static void record(NiceLogInnerBO logInnerBO) {
-        if (!checkAndConfig()) {
+        if (!configAndCheckRequireProcess()) {
             return;
         }
 
-        LogLevelEnum logLevelConfig = niceLogProperty.getLogLevel();
+        NiceLogLogLevelEnum logLevelConfig = niceLogProperty.getLogLevel();
         if (logInnerBO.getLevel().compareTo(logLevelConfig) < 0) {
             return;
         }
@@ -51,18 +51,22 @@ public class NiceLogInnerUtil {
         niceLogProcess.process(logInnerBO);
     }
 
-    private static boolean checkAndConfig(){
+    private static boolean configAndCheckRequireProcess() {
         if (niceLogProperty != null) {
-            return true;
+            return niceLogProperty.getEnabled();
         } else {
             ApplicationContext context = ApplicationContextHolder.getContext();
             if (context == null) {
-                log.debug("nicelog initialization error：ApplicationContext is null");
+                log.debug("nicelog init error：ApplicationContext is null");
                 return false;
             } else {
-                niceLogProperty = context.getBean(NiceLogProperty.class);
                 appName = context.getEnvironment()
                         .getProperty("spring.application.name", "");
+                if (context.getBeansOfType(NiceLogProperty.class).size() == 0) {
+                    log.debug("nicelog init error：bean of NiceLogProperty does not exist");
+                    return false;
+                }
+                niceLogProperty = context.getBean(NiceLogProperty.class);
                 logTimeFormatter = DateTimeFormatter.ofPattern(niceLogProperty.getLogTimePattern());
 
                 return true;
@@ -85,7 +89,7 @@ public class NiceLogInnerUtil {
 
         StackTraceElement[] callerStackTraceArray = logInnerBO.getStackTrace() != null
                 ? logInnerBO.getStackTrace()
-                :Thread.currentThread().getStackTrace();
+                : Thread.currentThread().getStackTrace();
 
         Integer stackTraceDepth = logInnerBO.getStackTraceDepth() != null
                 ? logInnerBO.getStackTraceDepth()
@@ -118,19 +122,19 @@ public class NiceLogInnerUtil {
 
         // 通过堆栈获得调用方的类名、方法名、代码行号
         StackTraceElement stackTraceElement = newStackTrace[0];
-        if (EntryTypeEnum.MANUAL.name().equals(logInnerBO.getEntryType())) {
+        if (NiceLogEntryTypeEnum.MANUAL.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setClassName(stackTraceElement.getClassName());
             logInnerBO.setMethodName(stackTraceElement.getMethodName());
             logInnerBO.setLineNumber(String.valueOf(stackTraceElement.getLineNumber()));
             logInnerBO.setClassNameAndLineNumber(logInnerBO.getClassName() + ":" + logInnerBO.getLineNumber());
-            logInnerBO.setDirectionType(DirectionTypeEnum.INNER);
+            logInnerBO.setDirectionType(NiceLogDirectionTypeEnum.INNER);
         }
 
         logInnerBO.setLogTime(logTimeFormatter.format(OffsetDateTime.now()));
     }
 
     private static void fillIp(NiceLogInnerBO logInnerBO) {
-        if (EntryTypeEnum.CONTROLLER.name().equals(logInnerBO.getEntryType())) {
+        if (NiceLogEntryTypeEnum.CONTROLLER.name().equals(logInnerBO.getEntryType())) {
             logInnerBO.setCallerIp(ClientIpUtil.parseRemoteIP());
             logInnerBO.setClientIp(ClientIpUtil.parseClientIP());
         }
@@ -162,7 +166,7 @@ public class NiceLogInnerUtil {
             );
         }
 
-        if (EntryTypeEnum.FEIGN.name().equals(logInnerBO.getEntryType())) {
+        if (NiceLogEntryTypeEnum.FEIGN.name().equals(logInnerBO.getEntryType())) {
             NiceLogFeignContext niceLogFeignContext = NiceLogFeignContextThreadLocal.read();
             if (niceLogFeignContext != null) {
                 logInnerBO.setOriginReturnValue(niceLogFeignContext.getFeignOriginResponseBody());
@@ -185,7 +189,7 @@ public class NiceLogInnerUtil {
                 field.setAccessible(true);
                 Integer stringMaxLength = niceLogProperty.getStringMaxLength();
                 if (stringMaxLength != null
-                    && stringMaxLength >= 0) {
+                        && stringMaxLength >= 0) {
                     try {
                         String value = (String) field.get(obj);
                         if (value != null) {

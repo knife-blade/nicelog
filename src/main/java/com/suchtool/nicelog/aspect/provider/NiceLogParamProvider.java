@@ -1,69 +1,58 @@
-package com.suchtool.nicelog.aspect;
+package com.suchtool.nicelog.aspect.provider;
 
 import com.suchtool.nicelog.annotation.NiceLog;
 import com.suchtool.nicelog.annotation.NiceLogIgnoreData;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicetool.util.base.JsonUtil;
 import com.suchtool.nicetool.util.reflect.MethodUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 /**
  * 日志参数提供者
  */
-public interface NiceLogParamProvider {
+public abstract class NiceLogParamProvider {
     ExpressionParser PARSER = new SpelExpressionParser();
     ParameterNameDiscoverer NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
-    // 不收集日志的类
-    Collection<Class<?>> IGNORE_LOG_CLASS_LIST = Arrays.asList(
-            Errors.class,             // 比如：BindingResult.class,
-            InputStreamSource.class,  // 比如：MultipartFile
-            ServletResponse.class,
-            ServletRequest.class
-    );
+    private final NiceLogProperty niceLogProperty;
 
-    String provideEntryType();
+    public NiceLogParamProvider(NiceLogProperty niceLogProperty) {
+        this.niceLogProperty = niceLogProperty;
+    }
 
-    default String provideEntry(Method method) {
+    public abstract String provideEntryType();
+
+    public String provideEntry(Method method) {
         return provideClassTag(method);
     }
 
-    default String provideEntryClassTag(Method method) {
+    public String provideEntryClassTag(Method method) {
         return provideClassTag(method);
     }
 
-    default String provideEntryMethodTag(Method method) {
+    public String provideEntryMethodTag(Method method) {
         return provideMethodTag(method);
     }
 
-    default String provideClassName(Method method) {
+    public String provideClassName(Method method) {
         return method.getDeclaringClass().getName();
     }
 
     /**
      * 先取@NiceLog的value，若没有再从原注解拼接tag
      */
-    default String provideClassTag(Method method) {
+    public String provideClassTag(Method method) {
         String classTag = null;
 
         Class<?> declaringClass = method.getDeclaringClass();
@@ -73,45 +62,21 @@ public interface NiceLogParamProvider {
             classTag = niceLog.value();
         }
 
-        if (!StringUtils.hasText(classTag)) {
-            if (EntryTypeEnum.CONTROLLER.name().equals(provideEntryType())
-                    && declaringClass.isAnnotationPresent(Api.class)) {
-                Api api = declaringClass.getAnnotation(Api.class);
-                String[] tags = api.tags();
-                String value = api.value();
-                String tagJoin = String.join("+", tags);
-                if (tags.length > 0) {
-                    classTag = tagJoin;
-                } else {
-                    classTag = value;
-                }
-            } else if (EntryTypeEnum.FEIGN.name().equals(provideEntryType())) {
-                FeignClient feignClient = declaringClass.getAnnotation(FeignClient.class);
-                classTag = feignClient.value();
-            }
-        }
-
         return classTag;
     }
 
-    default String provideMethodName(Method method) {
+    public String provideMethodName(Method method) {
         return method.getName();
     }
 
     /**
      * 先取@NiceLog的value，没有再从其他注解取tag
      */
-    default String provideMethodTag(Method method) {
+    public String provideMethodTag(Method method) {
         String methodTag = null;
 
         if (method.isAnnotationPresent(NiceLog.class)) {
             methodTag = method.getAnnotation(NiceLog.class).value();
-        }
-
-        if (!StringUtils.hasText(methodTag)) {
-            if (method.isAnnotationPresent(ApiOperation.class)) {
-                methodTag = method.getAnnotation(ApiOperation.class).value();
-            }
         }
 
         return methodTag;
@@ -120,7 +85,7 @@ public interface NiceLogParamProvider {
     /**
      * 如果param不为空则取它；否则根据method和args去解析
      */
-    default String provideParam(String param, Method method, Object[] args) {
+    public String provideParam(String param, Method method, Object[] args) {
         String finalParam = null;
 
         if (StringUtils.hasText(param)) {
@@ -134,21 +99,21 @@ public interface NiceLogParamProvider {
 
         if (args.length == 1) {
             Object arg = args[0];
-            if (MethodUtil.requireParse(IGNORE_LOG_CLASS_LIST, arg)) {
+            if (MethodUtil.requireParseForClassName(niceLogProperty.getIgnoreClassNames(), arg)) {
                 // 单个则直接序列化
                 finalParam = JsonUtil.toJsonString(arg);
             }
         } else {
             // 如果是多个，则放到Map，再序列化
             try {
-                Map<String, Object> map = MethodUtil.parseParam(method, args, IGNORE_LOG_CLASS_LIST);
+                Map<String, Object> map = MethodUtil.parseParamForClassName(method, args, niceLogProperty.getIgnoreClassNames());
                 if (!CollectionUtils.isEmpty(map)) {
                     finalParam = JsonUtil.toJsonString(map);
                 }
-            } catch (Throwable e) {
+            } catch (Throwable t) {
                 NiceLogUtil.createBuilder()
                         .mark("nicelog解析参数失败")
-                        .throwable(e)
+                        .throwable(t)
                         .error();
             }
         }
@@ -156,11 +121,14 @@ public interface NiceLogParamProvider {
         return finalParam;
     }
 
-    default String provideReturnValue(Method method, Object returnValue) {
+    public String provideReturnValue(Method method, Object returnValue) {
         String returnValueString = null;
 
         if (returnValue != null) {
             Class<?> declaringClass = method.getDeclaringClass();
+            if (!MethodUtil.requireParseForClassName(niceLogProperty.getIgnoreClassNames(), returnValue)) {
+                return returnValueString;
+            }
 
             NiceLogIgnoreData classIgnoreData = declaringClass.getAnnotation(NiceLogIgnoreData.class);
             NiceLogIgnoreData methodIgnoreData = method.getAnnotation(NiceLogIgnoreData.class);
@@ -168,10 +136,10 @@ public interface NiceLogParamProvider {
                     && (methodIgnoreData == null || !methodIgnoreData.ignoreReturnValue())) {
                 try {
                     returnValueString = JsonUtil.toJsonString(returnValue);
-                } catch (Throwable e) {
+                } catch (Throwable t) {
                     NiceLogUtil.createBuilder()
                             .mark("nicelog将返回值序列化为json失败")
-                            .throwable(e)
+                            .throwable(t)
                             .error();
                 }
             }
@@ -180,7 +148,7 @@ public interface NiceLogParamProvider {
         return returnValueString;
     }
 
-    default String provideBusinessNo(Method method, Object[] args) {
+    public String provideBusinessNo(Method method, Object[] args) {
         String businessNo = null;
 
         NiceLog niceLog = null;
@@ -206,11 +174,11 @@ public interface NiceLogParamProvider {
         return businessNo;
     }
 
-    default String provideRequestHeader() {
+    public String provideRequestHeader() {
         return null;
     }
 
-    default String provideResponseHeader() {
+    public String provideResponseHeader() {
         return null;
     }
 }

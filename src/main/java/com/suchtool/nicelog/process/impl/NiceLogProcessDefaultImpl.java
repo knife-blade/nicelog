@@ -29,9 +29,9 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess, ApplicationRun
     public void run(ApplicationArguments args) {
         try {
             doCheckAndUpdateConfig();
-        } catch (Exception e) {
+        } catch (Throwable t) {
             System.err.println("nicelog application runner error");
-            e.printStackTrace();
+            t.printStackTrace();
         }
     }
 
@@ -52,9 +52,9 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess, ApplicationRun
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable t) {
             System.err.println("nicelog process error");
-            e.printStackTrace();
+            t.printStackTrace();
         }
     }
 
@@ -75,9 +75,9 @@ public class NiceLogProcessDefaultImpl implements NiceLogProcess, ApplicationRun
                     asyncResourceDelete();
                     break;
                 }
-            } catch (Exception e) {
+            } catch (Throwable t) {
                 System.err.println("nicelog recordAsync exception");
-                e.printStackTrace();
+                t.printStackTrace();
             }
         }
     }

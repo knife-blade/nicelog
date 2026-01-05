@@ -3,7 +3,7 @@ package com.suchtool.nicelog.constant;
 import lombok.Getter;
 
 @Getter
-public enum LogLevelEnum {
+public enum NiceLogLogLevelEnum {
     TRACE("追踪"),
     DEBUG("调试"),
     INFO("信息"),
@@ -13,7 +13,7 @@ public enum LogLevelEnum {
 
     private final String name;
 
-    LogLevelEnum(String name) {
+    NiceLogLogLevelEnum(String name) {
         this.name = name;
     }
 }
