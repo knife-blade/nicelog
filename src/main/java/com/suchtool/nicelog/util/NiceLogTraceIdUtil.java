@@ -1,15 +1,12 @@
 package com.suchtool.nicelog.util;
 
-import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
+import com.suchtool.nicelog.util.servlet.NiceLogServletUtil;
 import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -39,15 +36,9 @@ public class NiceLogTraceIdUtil {
         String traceId = null;
 
         // 如果header里有traceId，则取出
-        ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (servletRequestAttributes != null) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            NiceLogProperty niceLogProperty = ApplicationContextHolder.getContext().getBean(NiceLogProperty.class);
-            String traceIdOfHeader = request.getHeader(niceLogProperty.getFeignTraceIdRequestHeader());
-            if (StringUtils.hasText(traceIdOfHeader)) {
-                traceId = traceIdOfHeader;
-            }
+        if (ApplicationContextHolder.getContext().getBeansOfType(NiceLogServletUtil.class).size() > 0) {
+            NiceLogServletUtil niceLogServletUtil = ApplicationContextHolder.getContext().getBean(NiceLogServletUtil.class);
+            traceId = niceLogServletUtil.readTraceIdFromHeader();
         }
 
         if (!StringUtils.hasText(traceId)) {

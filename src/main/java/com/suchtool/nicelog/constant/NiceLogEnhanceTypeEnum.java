@@ -6,13 +6,13 @@ import lombok.Getter;
  * 增强类型
  */
 @Getter
-public enum EnhanceTypeEnum {
+public enum NiceLogEnhanceTypeEnum {
     LOGBACK("Logback"),
     ;
 
     private final String description;
 
-    EnhanceTypeEnum(String description) {
+    NiceLogEnhanceTypeEnum(String description) {
         this.description = description;
     }
 }

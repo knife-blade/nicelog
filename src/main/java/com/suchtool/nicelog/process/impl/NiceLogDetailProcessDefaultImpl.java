@@ -7,7 +7,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
-import com.suchtool.nicelog.constant.EnhanceTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogEnhanceTypeEnum;
 import com.suchtool.nicelog.process.NiceLogDetailProcess;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
@@ -40,7 +40,7 @@ public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
         if (!Boolean.TRUE.equals(niceLogProperty.getLogbackEnabled())) {
             print(logInnerBO);
         } else {
-            if (!EnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
+            if (!NiceLogEnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
                 printByLogbackConsole(logInnerBO);
             }
         }

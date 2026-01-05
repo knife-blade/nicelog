@@ -1,7 +1,7 @@
 package com.suchtool.nicelog.util.log;
 
-import com.suchtool.nicelog.constant.EntryTypeEnum;
-import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.constant.NiceLogEntryTypeEnum;
+import com.suchtool.nicelog.constant.NiceLogLogLevelEnum;
 import com.suchtool.nicelog.util.log.bo.NiceLogBO;
 import com.suchtool.nicelog.util.log.bo.NiceLogBOBuilder;
 import com.suchtool.nicelog.util.log.inner.bo.NiceLogInnerBO;
@@ -15,32 +15,32 @@ public class NiceLogUtil {
     }
 
     public static void trace(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.TRACE);
+        convertAndRecord(niceLogBO, NiceLogLogLevelEnum.TRACE);
     }
 
     public static void debug(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.DEBUG);
+        convertAndRecord(niceLogBO, NiceLogLogLevelEnum.DEBUG);
     }
 
     public static void info(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.INFO);
+        convertAndRecord(niceLogBO, NiceLogLogLevelEnum.INFO);
     }
 
     public static void warn(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.WARN);
+        convertAndRecord(niceLogBO, NiceLogLogLevelEnum.WARN);
     }
 
     public static void error(NiceLogBO niceLogBO) {
-        convertAndRecord(niceLogBO, LogLevelEnum.ERROR);
+        convertAndRecord(niceLogBO, NiceLogLogLevelEnum.ERROR);
     }
 
     /**
      * 转换实体类并记录日志
      */
-    private static void convertAndRecord(NiceLogBO niceLogBO, LogLevelEnum level) {
+    private static void convertAndRecord(NiceLogBO niceLogBO, NiceLogLogLevelEnum level) {
         NiceLogInnerBO logInnerBO = new NiceLogInnerBO();
         BeanUtils.copyProperties(niceLogBO, logInnerBO);
-        logInnerBO.setEntryType(EntryTypeEnum.MANUAL.name());
+        logInnerBO.setEntryType(NiceLogEntryTypeEnum.MANUAL.name());
         logInnerBO.setLevel(level);
 
         NiceLogInnerUtil.record(logInnerBO);

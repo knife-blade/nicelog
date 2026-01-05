@@ -1,39 +1,42 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
-import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.aspect.NiceLogAbstractAspect;
+import com.suchtool.nicelog.aspect.NiceLogAspectExecutor;
+import com.suchtool.nicelog.aspect.provider.NiceLogParamProvider;
+import com.suchtool.nicelog.aspect.provider.impl.feign.NiceLogFeignParamProvider;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import com.suchtool.nicetool.util.web.http.url.HttpUrlUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.env.StandardEnvironment;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
+
 
 /**
  * Feign的日志
  */
 @Aspect
-public class NiceLogFeignLogAspect extends NiceLogAspectProcessor implements Ordered {
-    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
+public class NiceLogFeignLogAspect extends NiceLogAbstractAspect implements Ordered {
+    private final NiceLogAspectExecutor niceLogAspectExecutor;
+
+    private final NiceLogProperty niceLogProperty;
 
     private final int order;
 
-    @Autowired
-    private StandardEnvironment standardEnvironment;
+    public NiceLogFeignLogAspect(int order,
+                                 NiceLogProperty niceLogProperty,
+                                 StandardEnvironment standardEnvironment
+    ) {
+        NiceLogParamProvider niceLogParamProvider =
+                new NiceLogFeignParamProvider(niceLogProperty, standardEnvironment);
 
-    public NiceLogFeignLogAspect(int order, NiceLogProperty niceLogProperty) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
-                this, niceLogProperty);
+        this.niceLogProperty = niceLogProperty;
+        this.niceLogAspectExecutor = new NiceLogAspectExecutor(
+                this, niceLogParamProvider, niceLogProperty);
         this.order = order;
     }
 
@@ -54,51 +57,35 @@ public class NiceLogFeignLogAspect extends NiceLogAspectProcessor implements Ord
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        niceLogLogCommonAspectExecutor.before(joinPoint);
+        niceLogAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+        niceLogAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
-    }
-
-    /**
-     * 正常返回或者抛异常的处理
-     */
-    @Override
-    public void returningOrThrowingProcess() {
-
+        niceLogAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
 
     @Override
-    public String provideEntryType() {
-        return EntryTypeEnum.FEIGN.name();
-    }
-
-    @Override
-    public String provideEntry(Method method) {
-        String finalUrl = null;
-
-        Class<?> cls = method.getDeclaringClass();
-        FeignClient feignClient = cls.getAnnotation(FeignClient.class);
-        String url = standardEnvironment.resolvePlaceholders(feignClient.url());
-        String path = standardEnvironment.resolvePlaceholders(feignClient.path());
-
-        String urlPrefix = null;
-        RequestMapping requestMapping = AnnotatedElementUtils.getMergedAnnotation(method, RequestMapping.class);
-        if (requestMapping != null) {
-            String[] value = requestMapping.value();
-            urlPrefix = value[0];
+    public boolean requireProcess(Method method) {
+        boolean requireProcess = super.requireProcess(method);
+        if (!requireProcess) {
+            return requireProcess;
         }
 
-        List<String> urlList = Arrays.asList(url, path, urlPrefix);
-        finalUrl = HttpUrlUtil.joinUrl(urlList, false);
+        List<String> ignoreFeignLogPackageNameList = niceLogProperty.getIgnoreFeignLogPackageName();
+        if (!CollectionUtils.isEmpty(ignoreFeignLogPackageNameList)) {
+            for (String packageName : ignoreFeignLogPackageNameList) {
+                if (method.getDeclaringClass().getName().startsWith(packageName.trim())) {
+                    return false;
+                }
+            }
+        }
 
-        return finalUrl;
+        return true;
     }
 }

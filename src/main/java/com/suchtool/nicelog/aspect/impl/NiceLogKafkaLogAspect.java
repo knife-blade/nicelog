@@ -1,29 +1,26 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
-import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.aspect.NiceLogAbstractAspect;
+import com.suchtool.nicelog.aspect.NiceLogAspectExecutor;
+import com.suchtool.nicelog.aspect.provider.impl.kafka.NiceLogKafkaParamProvider;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
-import org.springframework.kafka.annotation.KafkaListener;
-
-import java.lang.reflect.Method;
 
 /**
  * Kafka日志
  */
 @Aspect
-public class NiceLogKafkaLogAspect extends NiceLogAspectProcessor implements Ordered {
-    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
+public class NiceLogKafkaLogAspect extends NiceLogAbstractAspect implements Ordered {
+    private final NiceLogAspectExecutor niceLogAspectExecutor;
 
     private final int order;
 
     public NiceLogKafkaLogAspect(int order, NiceLogProperty niceLogProperty) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
-                this, niceLogProperty);
+        this.niceLogAspectExecutor = new NiceLogAspectExecutor(
+                this, new NiceLogKafkaParamProvider(niceLogProperty), niceLogProperty);
         this.order = order;
     }
 
@@ -44,49 +41,16 @@ public class NiceLogKafkaLogAspect extends NiceLogAspectProcessor implements Ord
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        niceLogLogCommonAspectExecutor.before(joinPoint);
+        niceLogAspectExecutor.before(joinPoint);
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+        niceLogAspectExecutor.afterReturning(joinPoint, returnValue);
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
+        niceLogAspectExecutor.afterThrowing(joinPoint, throwingValue);
     }
-
-    @Override
-    public void returningOrThrowingProcess() {
-
-    }
-
-    @Override
-    public String provideEntryType() {
-        return EntryTypeEnum.KAFKA.name();
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        return null;
-    }
-
-    @Override
-    public String provideMethodTag(Method method) {
-        String methodTag = null;
-
-        if (method.isAnnotationPresent(KafkaListener.class)) {
-            String[] queues = method.getAnnotation(KafkaListener.class).topics();
-            methodTag = String.join(",", queues);
-        }
-
-        return methodTag;
-    }
-
-    @Override
-    public String provideEntry(Method method) {
-        return provideMethodTag(method);
-    }
-
 }

@@ -1,9 +1,9 @@
 package com.suchtool.nicelog.aspect.impl;
 
-import com.suchtool.nicelog.aspect.NiceLogAspectProcessor;
-import com.suchtool.nicelog.aspect.NiceLogLogCommonAspectExecutor;
+import com.suchtool.nicelog.aspect.NiceLogAbstractAspect;
+import com.suchtool.nicelog.aspect.NiceLogAspectExecutor;
 import com.suchtool.nicelog.aspect.NiceLogAspectDispatcher;
-import com.suchtool.nicelog.constant.EntryTypeEnum;
+import com.suchtool.nicelog.aspect.provider.impl.annotation.NiceLogAnnotationParamProvider;
 import com.suchtool.nicelog.constant.NiceLogPointcutExpression;
 import com.suchtool.nicelog.property.NiceLogProperty;
 import com.suchtool.nicetool.util.spring.ApplicationContextHolder;
@@ -11,20 +11,18 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
 
-import java.lang.reflect.Method;
-
 /**
  * NiceLog注解日志
  */
 @Aspect
-public class NiceLogAnnotationLogAspect extends NiceLogAspectProcessor implements Ordered {
-    private final NiceLogLogCommonAspectExecutor niceLogLogCommonAspectExecutor;
+public class NiceLogAnnotationLogAspect extends NiceLogAbstractAspect implements Ordered {
+    private final NiceLogAspectExecutor niceLogAspectExecutor;
 
     private final int order;
 
     public NiceLogAnnotationLogAspect(int order, NiceLogProperty niceLogProperty) {
-        this.niceLogLogCommonAspectExecutor = new NiceLogLogCommonAspectExecutor(
-                this, niceLogProperty);
+        this.niceLogAspectExecutor = new NiceLogAspectExecutor(
+                this, new NiceLogAnnotationParamProvider(niceLogProperty), niceLogProperty);
         this.order = order;
     }
 
@@ -45,50 +43,35 @@ public class NiceLogAnnotationLogAspect extends NiceLogAspectProcessor implement
 
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
-        NiceLogAspectProcessor processor = ApplicationContextHolder.getContext()
+        NiceLogAbstractAspect processor = ApplicationContextHolder.getContext()
                 .getBean(NiceLogAspectDispatcher.class)
                 .findMatched(joinPoint);
         if (processor != null) {
             processor.before(joinPoint);
         } else {
-            niceLogLogCommonAspectExecutor.before(joinPoint);
+            niceLogAspectExecutor.before(joinPoint);
         }
     }
 
     @AfterReturning(value = "pointcut()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        NiceLogAspectProcessor processor = ApplicationContextHolder.getContext()
+        NiceLogAbstractAspect processor = ApplicationContextHolder.getContext()
                 .getBean(NiceLogAspectDispatcher.class).findMatched(joinPoint);
         if (processor != null) {
             processor.afterReturning(joinPoint, returnValue);
         } else {
-            niceLogLogCommonAspectExecutor.afterReturning(joinPoint, returnValue);
+            niceLogAspectExecutor.afterReturning(joinPoint, returnValue);
         }
     }
 
     @AfterThrowing(value = "pointcut()", throwing = "throwingValue")
     public void afterThrowing(JoinPoint joinPoint, Throwable throwingValue) {
-        NiceLogAspectProcessor processor = ApplicationContextHolder.getContext()
+        NiceLogAbstractAspect processor = ApplicationContextHolder.getContext()
                 .getBean(NiceLogAspectDispatcher.class).findMatched(joinPoint);
         if (processor != null) {
             processor.afterThrowing(joinPoint, throwingValue);
         } else {
-            niceLogLogCommonAspectExecutor.afterThrowing(joinPoint, throwingValue);
+            niceLogAspectExecutor.afterThrowing(joinPoint, throwingValue);
         }
-    }
-
-    @Override
-    public void returningOrThrowingProcess() {
-
-    }
-
-    @Override
-    public String provideEntryType() {
-        return EntryTypeEnum.NICE_LOG_ANNOTATION.name();
-    }
-
-    @Override
-    public String provideClassTag(Method method) {
-        return null;
     }
 }

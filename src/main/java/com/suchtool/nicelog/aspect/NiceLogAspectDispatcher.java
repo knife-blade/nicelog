@@ -12,9 +12,9 @@ import java.util.List;
 
 public class NiceLogAspectDispatcher  {
     @Autowired(required = false)
-    private List<NiceLogAspectProcessor> logAspectProcessors;
+    private List<NiceLogAbstractAspect> logAspectProcessors;
 
-    public NiceLogAspectProcessor findMatched(JoinPoint joinPoint) {
+    public NiceLogAbstractAspect findMatched(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -22,8 +22,8 @@ public class NiceLogAspectDispatcher  {
             return null;
         }
 
-        NiceLogAspectProcessor matchedProcessor = null;
-        for (NiceLogAspectProcessor logAspectProcessor : logAspectProcessors) {
+        NiceLogAbstractAspect matchedProcessor = null;
+        for (NiceLogAbstractAspect logAspectProcessor : logAspectProcessors) {
             if (StringUtils.hasText(logAspectProcessor.pointcutExpression())) {
                 boolean match = match(logAspectProcessor.pointcutExpression(), method);
                 if (match) {

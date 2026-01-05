@@ -33,8 +33,8 @@ public class NiceLogEnvironmentChangeEventListener implements ApplicationListene
                     niceLogProcessDefaultImpl.doCheckAndUpdateConfig();
                 }
             }
-        } catch (Exception e) {
-            log.error("nicelog EnvironmentChangeEventListener error", e);
+        } catch (Throwable t) {
+            log.error("nicelog EnvironmentChangeEventListener error", t);
         }
     }
 }

@@ -1,11 +1,10 @@
 package com.suchtool.nicelog.property;
 
 import com.suchtool.nicelog.annotation.NiceLog;
-import com.suchtool.nicelog.constant.LogLevelEnum;
+import com.suchtool.nicelog.constant.NiceLogLogLevelEnum;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -18,7 +17,7 @@ public class NiceLogProperty {
     /**
      * 日志收集级别
      */
-    private LogLevelEnum logLevel = LogLevelEnum.INFO;
+    private NiceLogLogLevelEnum logLevel = NiceLogLogLevelEnum.INFO;
 
     /**
      * 收集栈日志的包名前缀。为空则全部收集
@@ -127,4 +126,21 @@ public class NiceLogProperty {
      */
     private Boolean enableIpRecord = true;
 
+    /**
+     * 不记录日志的URL
+     */
+    private List<String> ignoreLogUrls;
+
+    /**
+     * 忽略的类名（记录日志，但不序列化此类）
+     */
+    private List<String> ignoreClassNames = Arrays.asList(
+            "org.springframework.validation.Errors",         // 比如：BindingResult
+            "org.springframework.core.io.InputStreamSource", // 比如：MultipartFile
+            "javax.servlet.ServletResponse",
+            "javax.servlet.ServletRequest",
+            "jakarta.servlet.ServletResponse",
+            "jakarta.servlet.ServletRequest",
+            "reactor.core.publisher.Flux"
+    );
 }

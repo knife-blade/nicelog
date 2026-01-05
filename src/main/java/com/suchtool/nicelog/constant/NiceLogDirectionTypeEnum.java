@@ -3,7 +3,7 @@ package com.suchtool.nicelog.constant;
 import lombok.Getter;
 
 @Getter
-public enum DirectionTypeEnum {
+public enum NiceLogDirectionTypeEnum {
     IN("进入"),
     INNER("内部"),
     OUT("返回"),
@@ -11,7 +11,7 @@ public enum DirectionTypeEnum {
 
     private final String name;
 
-    DirectionTypeEnum(String name) {
+    NiceLogDirectionTypeEnum(String name) {
         this.name = name;
     }
 }
