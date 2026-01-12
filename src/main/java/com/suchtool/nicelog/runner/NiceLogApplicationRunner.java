@@ -4,12 +4,12 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.suchtool.nicelog.enhance.logback.NiceLogLogbackAppender;
 import com.suchtool.nicelog.property.NiceLogProperty;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
 public class NiceLogApplicationRunner implements ApplicationRunner {
-    private NiceLogProperty niceLogProperty;
+    private final NiceLogProperty niceLogProperty;
 
     public NiceLogApplicationRunner(NiceLogProperty niceLogProperty) {
         this.niceLogProperty = niceLogProperty;
@@ -24,7 +24,7 @@ public class NiceLogApplicationRunner implements ApplicationRunner {
 
     private void addLogbackAppender() {
         try {
-            LoggerContext loggerContext = (LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory();
+            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
             NiceLogLogbackAppender appender = new NiceLogLogbackAppender(niceLogProperty);
             appender.setContext(loggerContext);
             appender.setName("NICE_LOG_LOGBACK_APPENDER");

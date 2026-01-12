@@ -38,10 +38,13 @@ public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
     @Override
     public void recordSync(NiceLogInnerBO logInnerBO) {
         if (!Boolean.TRUE.equals(niceLogProperty.getLogbackEnabled())) {
-            print(logInnerBO);
+            printByLogback(logInnerBO);
         } else {
+            // 这里必须要这么判断。否则，若启用logback增强，使用log.info打印，会死循环
             if (!NiceLogEnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
                 printByLogbackConsole(logInnerBO);
+            } else {
+                printBySystem(logInnerBO);
             }
         }
     }
@@ -51,22 +54,40 @@ public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
         // 这里可以记录异步日志，比如发送到MQ
     }
 
-    private void print(NiceLogInnerBO logInnerBO) {
+    private void printBySystem(NiceLogInnerBO logInnerBO) {
+        String jsonString = JsonUtil.toJsonString(logInnerBO);
         switch (logInnerBO.getLevel()) {
             case TRACE:
-                log.trace("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
             case DEBUG:
-                log.debug("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
                 break;
             case INFO:
-                log.info("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
-                break;
             case WARN:
-                log.warn("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
+                System.out.println(jsonString);
                 break;
             case ERROR:
-                log.error("nicelog日志：{}", JsonUtil.toJsonString(logInnerBO));
+                System.err.println(jsonString);
+                break;
+        }
+    }
+
+    private void printByLogback(NiceLogInnerBO logInnerBO) {
+        String jsonString = JsonUtil.toJsonString(logInnerBO);
+
+        switch (logInnerBO.getLevel()) {
+            case TRACE:
+                log.trace("nicelog日志：{}", jsonString);
+                break;
+            case DEBUG:
+                log.debug("nicelog日志：{}", jsonString);
+                break;
+            case INFO:
+                log.info("nicelog日志：{}", jsonString);
+                break;
+            case WARN:
+                log.warn("nicelog日志：{}", jsonString);
+                break;
+            case ERROR:
+                log.error("nicelog日志：{}", jsonString);
                 break;
         }
     }

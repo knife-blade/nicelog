@@ -12,7 +12,7 @@
 
     <groupId>com.suchtool</groupId>
     <artifactId>nicelog-spring-boot-starter</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 
     <packaging>jar</packaging>
     <name>nicelog-spring-boot-starter</name>
@@ -136,11 +136,23 @@
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.7</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

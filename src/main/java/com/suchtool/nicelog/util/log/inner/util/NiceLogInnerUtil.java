@@ -5,6 +5,7 @@ import com.suchtool.nicelog.constant.NiceLogEntryTypeEnum;
 import com.suchtool.nicelog.constant.NiceLogLogLevelEnum;
 import com.suchtool.nicelog.process.NiceLogProcess;
 import com.suchtool.nicelog.property.NiceLogProperty;
+import com.suchtool.nicelog.util.log.NiceLogUtil;
 import com.suchtool.nicelog.util.log.context.NiceLogContext;
 import com.suchtool.nicelog.util.log.context.NiceLogContextThreadLocal;
 import com.suchtool.nicelog.util.log.context.feign.NiceLogFeignContext;
@@ -113,10 +114,32 @@ public class NiceLogInnerUtil {
 
         // 填充栈追踪
         if (logInnerBO.getThrowable() != null) {
+            Throwable throwable = logInnerBO.getThrowable();
+            Throwable causeThrowable = null;
+            String lastStackTraceString = null;
+            String errorInfo = null;
+
+            if (throwable.getCause() == null) {
+                causeThrowable = throwable;
+                errorInfo = throwable.getMessage();
+            } else {
+                causeThrowable = throwable.getCause();
+                lastStackTraceString = ThrowableUtil.stackTraceToString(
+                        throwable, niceLogProperty.getStackTracePackageName());
+
+                errorInfo = throwable.getMessage();
+                if (!StringUtils.hasText(errorInfo)) {
+                    errorInfo = causeThrowable.getMessage();
+                }
+            }
+
             logInnerBO.setErrorStackTrace(ThrowableUtil.stackTraceToString(
-                    logInnerBO.getThrowable(), niceLogProperty.getStackTracePackageName()));
+                    causeThrowable, niceLogProperty.getStackTracePackageName()));
             if (!StringUtils.hasText(logInnerBO.getErrorInfo())) {
-                logInnerBO.setErrorInfo(logInnerBO.getThrowable().getMessage());
+                logInnerBO.setErrorInfo(errorInfo);
+            }
+            if (!StringUtils.hasText(lastStackTraceString)) {
+                logInnerBO.setErrorDetailInfo(lastStackTraceString);
             }
         }
 
