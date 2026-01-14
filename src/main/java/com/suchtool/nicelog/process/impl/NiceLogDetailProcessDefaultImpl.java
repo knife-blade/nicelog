@@ -40,34 +40,17 @@ public class NiceLogDetailProcessDefaultImpl implements NiceLogDetailProcess {
         if (!Boolean.TRUE.equals(niceLogProperty.getLogbackEnabled())) {
             printByLogback(logInnerBO);
         } else {
-            // 这里必须要这么判断。否则，若启用logback增强，使用log.info打印，会死循环
+            // 这里必须这么判断。否则，若启用logback增强，这里再用log.info打印，会死循环
             if (!NiceLogEnhanceTypeEnum.LOGBACK.name().equals(logInnerBO.getEnhanceType())) {
                 printByLogbackConsole(logInnerBO);
-            } else {
-                printBySystem(logInnerBO);
             }
+            // 启用logback增强，又是log.xxx打印的，不处理。会原样logback输出，不会包装到logInnerBO
         }
     }
 
     @Override
     public void recordAsync(NiceLogInnerBO logInnerBO) {
         // 这里可以记录异步日志，比如发送到MQ
-    }
-
-    private void printBySystem(NiceLogInnerBO logInnerBO) {
-        String jsonString = JsonUtil.toJsonString(logInnerBO);
-        switch (logInnerBO.getLevel()) {
-            case TRACE:
-            case DEBUG:
-                break;
-            case INFO:
-            case WARN:
-                System.out.println(jsonString);
-                break;
-            case ERROR:
-                System.err.println(jsonString);
-                break;
-        }
     }
 
     private void printByLogback(NiceLogInnerBO logInnerBO) {
