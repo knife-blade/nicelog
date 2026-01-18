@@ -110,8 +110,8 @@ public class NiceLogConfiguration {
         }
     }
 
-    @ConditionalOnProperty(name = "suchtool.nicelog.enable-rabbit-mq-log", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(RabbitListener.class)
+    @ConditionalOnProperty(name = "suchtool.nicelog.enable-rabbit-mq-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLogRabbitMQAspectConfiguration", proxyBeanMethods = false)
     protected static class RabbitMQAspectConfiguration {
         @Bean(name = "com.suchtool.nicelog.niceLogRabbitMQLogAspect")
@@ -215,7 +215,9 @@ public class NiceLogConfiguration {
             return new NiceLogServletUtil();
         }
     }
+
     @ConditionalOnClass({RestController.class, javax.servlet.http.HttpServletRequest.class})
+    @ConditionalOnMissingClass({"jakarta.servlet.http.HttpServletRequest"})
     @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLogServletUtilJavaxConfiguration", proxyBeanMethods = false)
     protected static class NiceLogServletUtilJavaxConfiguration {
@@ -226,7 +228,9 @@ public class NiceLogConfiguration {
             return new NiceLogServletUtilJavax(httpServletRequest, httpServletResponse, niceLogProperty);
         }
     }
+
     @ConditionalOnClass({RestController.class, jakarta.servlet.http.HttpServletRequest.class})
+    @ConditionalOnMissingClass({"javax.servlet.http.HttpServletRequest"})
     @ConditionalOnProperty(name = "suchtool.nicelog.enable-controller-log", havingValue = "true", matchIfMissing = true)
     @Configuration(value = "com.suchtool.nicelog.niceLogServletUtilJakartaConfiguration", proxyBeanMethods = false)
     protected static class NiceLogServletUtilJakartaConfiguration {
